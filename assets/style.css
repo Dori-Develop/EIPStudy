@@ -466,6 +466,80 @@ button { font: inherit; cursor: pointer; }
   overflow-x: auto; -webkit-overflow-scrolling: touch;
 }
 
+/* ---------- 오답노트 (wrong.html) ---------- */
+.wtabs {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin: 0 0 18px;
+}
+.wtab {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 13px;
+  background: var(--bg-elev); color: var(--fg-muted);
+  border: 1px solid var(--border); border-radius: 999px;
+  font-size: 13px; cursor: pointer;
+  transition: border-color .15s, color .15s;
+}
+.wtab:hover { border-color: var(--accent); color: var(--fg); }
+.wtab[aria-pressed="true"] {
+  border-color: var(--accent); color: var(--accent); font-weight: 700;
+}
+.wtab__n {
+  min-width: 18px; padding: 0 5px;
+  background: var(--bg-sunken); border-radius: 999px;
+  font-size: 11.5px; text-align: center; color: var(--fg-faint);
+}
+.wtab[aria-pressed="true"] .wtab__n { color: var(--accent); }
+
+.wempty {
+  margin: 40px 0; text-align: center;
+  color: var(--fg-faint); font-size: 14px;
+}
+
+.wlist { display: flex; flex-direction: column; gap: 14px; }
+
+.wcard {
+  position: relative;
+  padding: 15px 16px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border); border-radius: var(--radius);
+}
+.wcard.is-ok { border-color: var(--good); }
+.wcard.is-no { border-color: var(--warn); }
+
+.wcard__head {
+  display: flex; align-items: flex-start; gap: 10px;
+  margin: 0 0 8px;
+}
+.wcard__loc {
+  flex: 1 1 auto; min-width: 0;
+  font-size: 12px; color: var(--fg-faint);
+  text-decoration: none;
+}
+a.wcard__loc:hover { color: var(--accent); text-decoration: underline; }
+.wcard__head .quiz__fav { position: static; flex: none; }
+
+.wcard__stat {
+  margin: 0 0 11px;
+  font-size: 11.5px; color: var(--fg-faint);
+}
+.wcard__stub { font-size: 13px; color: var(--fg-faint); }
+
+/* 문항 본문은 섹션 퀴즈와 같은 스타일을 그대로 쓴다 (qcard.js 가 같은 클래스를 붙인다) */
+.wcard__body .quiz__q { padding-left: 0; }
+.wcard__body .quiz__q::before { content: none; }
+
+.wcard__foot {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  margin-top: 12px;
+}
+.wcard__cat {
+  padding: 6px 9px;
+  background: var(--bg); color: var(--fg-muted);
+  border: 1px solid var(--border); border-radius: var(--radius-s);
+  font-size: 12.5px; font-family: inherit; cursor: pointer;
+}
+.wcard__note { font-size: 11.5px; color: var(--good); }
+
 /* ---- O / X ---- */
 .quiz__ox { display: flex; gap: 8px; }
 .quiz__oxbtn {

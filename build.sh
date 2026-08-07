@@ -28,6 +28,11 @@ if [ ${#sources[@]} -eq 0 ]; then
   exit 1
 fi
 
+# 전 챕터 목차(assets/toc.js)를 만들기 위해 루프를 돌며 모은다.
+# 오답노트·모의 문제지가 "이 문항이 어느 챕터 어느 섹션인가"를 이름으로 보여주려면
+# 챕터 페이지 밖에서도 섹션 제목을 알 수 있어야 한다.
+toc_js=""
+
 for md in "${sources[@]}"; do
   id="$(basename "$md" .md)"                       # ch01
   title="$(grep -m1 '^# ' "$md" | sed 's/^# //' || true)"
@@ -43,10 +48,12 @@ for md in "${sources[@]}"; do
   quiz_scripts=""
   if [ -f "content/quiz/${id}.js" ]; then
     cp "content/quiz/${id}.js" "assets/bank-${id}.js"
-    # wrongstore.js 가 먼저 와야 한다 — quiz.js 가 window.EIP_WRONG 을 참조한다.
+    # 순서가 중요하다 — quiz.js 가 window.EIP_WRONG(기록)과 window.EIP_QCARD(위젯)를
+    # 참조하므로 둘 다 먼저 실려야 한다. 못 실리면 quiz.js 가 조용히 물러난다.
     quiz_scripts="
 <script src=\"../assets/bank-${id}.js\"></script>
 <script src=\"../assets/wrongstore.js\"></script>
+<script src=\"../assets/qcard.js\"></script>
 <script src=\"../assets/quiz.js\"></script>"
   fi
 
@@ -107,6 +114,13 @@ for md in "${sources[@]}"; do
     [ -n "$sections_js" ] && sections_js="${sections_js},"
     sections_js="${sections_js}{f:\"${page}\",n:\"$(esc "$num")\",t:\"$(esc "$label")\"}"
   done < "$TMP/titles.txt"
+
+  # 전 챕터 목차에 이 챕터를 얹는다. bank 는 이 챕터에 문제 은행이 있는지 —
+  # 오답노트가 필요한 은행만 골라 내려받는 데 쓴다.
+  has_bank="false"
+  [ -f "content/quiz/${id}.js" ] && has_bank="true"
+  [ -n "$toc_js" ] && toc_js="${toc_js},"
+  toc_js="${toc_js}${id}:{t:\"$(esc "$subtitle")\",bank:${has_bank},s:[${sections_js}]}"
 
   meta_js="id:\"${id}\",title:\"$(esc "$title")\",subtitle:\"$(esc "$subtitle")\",total:${total}"
 
@@ -269,6 +283,16 @@ MID2
   rm -rf "$TMP"
   echo "  ✓ ${id}.html + ${id}/ (${total}개 섹션)  ←  ${md}"
 done
+
+# ---- 7) 전 챕터 목차 ----
+# 챕터 페이지 밖(오답노트·모의 문제지·메모 모아보기)에서 섹션 제목을 쓰기 위한 파일.
+# fetch 로 읽으면 file:// 에서 CORS 로 막히므로 전역 변수를 담은 스크립트로 만든다.
+{
+  printf '/* build.sh 가 생성한다. 직접 고치지 말 것.\n'
+  printf '   t = 챕터 제목 · bank = 문제 은행 유무 · s = 섹션 목록 {f 파일, n 번호, t 제목} */\n'
+  printf 'window.EIP_TOC = {%s};\n' "$toc_js"
+} > "assets/toc.js"
+echo "  ✓ assets/toc.js (전 챕터 목차)"
 
 echo ""
 echo "빌드 완료. ${sources[*]} → 챕터 목차 + 섹션 페이지"

@@ -17,6 +17,12 @@
   var bank = window['EIP_BANK_' + CH.id];
   if (!bank || !bank.length) return;
 
+  /* 문항을 그리고 채점하는 일은 assets/qcard.js 가 전담한다.
+     오답노트·모의 문제지가 같은 위젯을 쓰므로 채점 규칙이 갈라지지 않는다.
+     build.sh 가 qcard.js 를 먼저 싣지만, 못 실었다면 조용히 물러난다. */
+  var Q = window.EIP_QCARD;
+  if (!Q) return;
+
   var secNo = CH.index + 1;
   var items = [];
   var i;
@@ -61,39 +67,11 @@
     setJSON('quiz.' + CH.id, all);
   }
 
-  /* ------------------------------------------------------------- 정답 판정 */
-  function norm(s) {
-    return String(s).replace(/\s+/g, ' ').replace(/^ | $/g, '').toLowerCase();
-  }
-  /* 공백·구두점을 모두 걷어낸 형태로 한 번 더 비교한다
-     → '자료 흐름도' = '자료흐름도', 'CO-COMO' = 'cocomo' */
-  function normHard(s) {
-    return norm(s).replace(/[\s\-_.()]/g, '');
-  }
-
-  function matchText(input, answers, strict) {
-    var a = norm(input);
-    var b = normHard(input);
-    var j;
-    for (j = 0; j < answers.length; j++) {
-      if (a === norm(answers[j])) return true;
-      /* code 유형은 출력 형식 자체가 답일 수 있어 느슨한 비교를 쓰지 않는다 */
-      if (!strict && b === normHard(answers[j])) return true;
-    }
-    return false;
-  }
-
   /* ------------------------------------------------------------- DOM 헬퍼 */
   function el(tag, cls, text) {
     var n = document.createElement(tag);
     if (cls) n.className = cls;
     if (text != null) n.textContent = text;
-    return n;
-  }
-  function html(tag, cls, markup) {
-    var n = document.createElement(tag);
-    if (cls) n.className = cls;
-    if (markup != null) n.innerHTML = markup;
     return n;
   }
 
@@ -167,126 +145,25 @@
       li.appendChild(fav);
     }
 
-    li.appendChild(html('div', 'quiz__q', item.q));
-
-    if (item.t === 'code' && item.code) {
-      var pre = el('pre', 'quiz__code');
-      pre.appendChild(el('code', item.lang ? 'lang-' + item.lang : null, item.code));
-      li.appendChild(pre);
-    }
-
-    var row = { item: item, li: li, graded: false };
-
-    if (item.t === 'ox') {
-      var oxWrap = el('div', 'quiz__ox');
-      row.picked = null;
-      row.buttons = [];
-      ['O', 'X'].forEach(function (label, k) {
-        var b = el('button', 'quiz__oxbtn', label);
-        b.type = 'button';
-        b.setAttribute('aria-pressed', 'false');
-        b.addEventListener('click', function () {
-          if (row.graded) return;
-          row.picked = (k === 0);
-          row.buttons.forEach(function (other, m) {
-            other.setAttribute('aria-pressed', m === k ? 'true' : 'false');
-          });
-        });
-        row.buttons.push(b);
-        oxWrap.appendChild(b);
-      });
-      li.appendChild(oxWrap);
-
-    } else if (item.t === 'choice') {
-      var name = 'q-' + item.id;
-      var opts = el('div', 'quiz__choices');
-      row.radios = [];
-      (item.c || []).forEach(function (text, k) {
-        var lab = el('label', 'quiz__choice');
-        var r = document.createElement('input');
-        r.type = 'radio';
-        r.name = name;
-        r.value = String(k);
-        lab.appendChild(r);
-        /* 보기도 문제 본문(q)과 같이 HTML 을 허용한다.
-           연산자·코드 조각을 <code> 로 감싸야 읽히는 문항이 있어서다.
-           textContent 로 두면 태그가 문자 그대로 노출된다. */
-        lab.appendChild(html('span', null, text));
-        opts.appendChild(lab);
-        row.radios.push(r);
-      });
-      li.appendChild(opts);
-
-    } else {
-      var inp = document.createElement('input');
-      inp.type = 'text';
-      inp.className = 'quiz__input';
-      inp.setAttribute('autocomplete', 'off');
-      inp.setAttribute('autocapitalize', 'off');
-      inp.spellcheck = false;
-      inp.placeholder = item.t === 'code' ? '출력 결과' : '답을 입력하세요';
-      inp.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') { e.preventDefault(); grade(); }
-      });
-      li.appendChild(inp);
-      row.input = inp;
-    }
+    /* 문항 본문·입력·채점은 공용 위젯이 맡는다 */
+    var card = Q.create(item, li);
+    card.onEnter(grade);
 
     list.appendChild(li);
-    return row;
+    return { item: item, li: li, card: card, graded: false };
   }
 
   /* ------------------------------------------------------------------ 채점 */
-  function judge(row) {
-    var item = row.item;
-    if (item.t === 'ox') {
-      if (row.picked === null) return { ok: false, mine: '(무응답)' };
-      return { ok: row.picked === item.a, mine: row.picked ? 'O' : 'X' };
-    }
-    if (item.t === 'choice') {
-      var k = -1, n;
-      for (n = 0; n < row.radios.length; n++) {
-        if (row.radios[n].checked) k = n;
-      }
-      if (k < 0) return { ok: false, mine: '(무응답)' };
-      return { ok: k === item.a, mine: (item.c || [])[k] };
-    }
-    var v = row.input.value;
-    if (!norm(v)) return { ok: false, mine: '(무응답)' };
-    return { ok: matchText(v, item.a, item.t === 'code'), mine: v };
-  }
-
-  function answerText(item) {
-    if (item.t === 'ox') return item.a ? 'O' : 'X';
-    if (item.t === 'choice') return (item.c || [])[item.a];
-    return (item.a && item.a[0]) || '';
-  }
-
   function grade() {
     var score = 0;
     rows.forEach(function (row) {
-      var res = judge(row);
+      var res = row.card.judge();
       row.graded = true;
       if (res.ok) score++;
 
       row.li.classList.add(res.ok ? 'is-ok' : 'is-no');
-
-      /* 입력 잠금 */
-      if (row.input) row.input.disabled = true;
-      if (row.radios) row.radios.forEach(function (r) { r.disabled = true; });
-      if (row.buttons) row.buttons.forEach(function (b) { b.disabled = true; });
-
-      var fb = el('div', 'quiz__fb');
-      var mark = el('span', 'quiz__mark', res.ok ? '정답' : '오답');
-      fb.appendChild(mark);
-
-      if (!res.ok) {
-        fb.appendChild(html('span', 'quiz__ans',
-          '내 답 <b>' + escapeHtml(String(res.mine)) + '</b> · 정답 <b>' +
-          escapeHtml(String(answerText(row.item))) + '</b>'));
-      }
-      if (row.item.why) fb.appendChild(html('div', 'quiz__why', row.item.why));
-      row.li.appendChild(fb);
+      row.card.lock();
+      row.card.showResult(res);
 
       recordResult(row.item, res.ok);
     });
@@ -296,9 +173,5 @@
     gradeBtn.textContent = '다시 풀기';
     scoreBox.textContent = rows.length + '문항 중 ' + score + '개 정답';
     scoreBox.className = 'quiz__score' + (score === rows.length ? ' is-perfect' : '');
-  }
-
-  function escapeHtml(s) {
-    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 })();
