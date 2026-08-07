@@ -294,5 +294,225 @@ done
 } > "assets/toc.js"
 echo "  ✓ assets/toc.js (전 챕터 목차)"
 
+# ---- 8) 약어 사전 (glossary.html) ----
+# 본문에서 "약어(풀네임)" 꼴을 훑어 assets/glossary-data.js 를 만든다.
+# 섹션 제목은 담지 않는다 — toc.js 에 이미 있어서 [챕터, 섹션번호]만 있으면 찾아진다.
+#
+# ⚠️ 한글은 여러 바이트라 [가-힣] 같은 문자 "범위" 를 쓰면 깨진다.
+#    범위 대신 ASCII 여부([A-Za-z] · [^ -~])로 뒤집어 판정한다.
+#    (같은 이유로 2) 의 섹션 제목도 sed 로 처리하고 있다)
+GLOSS_TSV=".glossarytmp"
+: > "$GLOSS_TSV"
+
+for md in "${sources[@]}"; do
+  awk -v ch="$(basename "$md" .md)" '
+    BEGIN {
+      sec = 0; fence = 0
+      # 대문자로 쓰이지만 약어가 아닌 것 — SQL·프로그래밍 예약어와 관계 연산자.
+      # 풀네임이 붙을 리 없는데 "한글명(KEYWORD)" 꼴로 본문에 자주 나온다.
+      split("AND OR NOT IN ALL ANY EXISTS UNION INTERSECT EXCEPT MINUS SELECT INSERT UPDATE DELETE WHERE FROM JOIN GROUP ORDER HAVING INTO VALUES SET CASE WHEN THEN ELSE END NULL TRUE FALSE IF FOR WHILE DO BREAK CONTINUE RETURN OUT OUTPUT INPUT PRINT NEW CLASS PUBLIC PRIVATE STATIC VOID DIFFERENCE INTERSECTION PRODUCT DIVISION PROJECT SELECTION", bl, " ")
+      for (bi in bl) BLOCK[bl[bi]] = 1
+    }
+
+    function trim(s) { gsub(/^[ \t]+|[ \t]+$/, "", s); return s }
+
+    function plain(s) {
+      gsub(/\*\*/, "", s); gsub(/`/, "", s)
+      gsub(/<br>/, " ", s); gsub(/<br\/>/, " ", s)
+      return s
+    }
+
+    # 약어답게 생겼는가 — 대문자 둘 이상, 소문자는 둘 이하.
+    # GoF·PnP·IPSec·BaaS 는 통과하고 Check-In·Fan-Out·End-to-End 은 걸린다.
+    function isAbbr(a,   up, lo, i, c) {
+      if (length(a) < 2 || length(a) > 15) return 0
+      if (a !~ /^[A-Za-z][A-Za-z0-9\/&.+-]*$/) return 0
+      up = 0; lo = 0
+      for (i = 1; i <= length(a); i++) {
+        c = substr(a, i, 1)
+        if (c ~ /[A-Z]/) up++; else if (c ~ /[a-z]/) lo++
+      }
+      return up >= 2 && lo <= 2
+    }
+
+    # 괄호 안이 정말 그 약어의 풀이인가 — 약어의 글자가 순서대로 나타나야 한다.
+    #   COCOMO ⊂ COnstructive COst MOdel  ✅
+    #   SPICE  ⊄ ISO/IEC 15504            ❌ 버전 번호일 뿐
+    #   SADT   ⊄ SoftTech                 ❌ 만든 회사일 뿐
+    function expands(a, full,   ua, uf, i, j, n) {
+      ua = toupper(a); gsub(/[^A-Z0-9]/, "", ua)
+      uf = toupper(full); gsub(/[^A-Z0-9]/, "", uf)
+      if (ua == "" || uf == "") return 0
+      # 풀이 안에 약어가 낱말로 그대로 있으면 풀이가 아니다 — SQL(Dynamic SQL)
+      if (toupper(full) ~ ("(^|[^A-Z])" toupper(a) "([^A-Z]|$)")) return 0
+      j = 1
+      for (i = 1; i <= length(ua); i++) {
+        n = index(substr(uf, j), substr(ua, i, 1))
+        if (n == 0) return 0
+        j = j + n
+      }
+      return 1
+    }
+
+    # 여는 괄호 앞에서 한글명을 건진다.
+    # 제목(#)이나 표 칸(|)처럼 시작점이 분명할 때만 캔다 —
+    # 산문 한가운데서는 어디부터가 이름인지 알 수 없다.
+    function korean(before, isHead,   s, n, parts) {
+      korRank = 0
+      if (isHead) { sub(/^#+[ \t]*/, "", before); s = before; korRank = 1 }
+      else if (index(before, "|") > 0) { n = split(before, parts, /\|/); s = parts[n]; korRank = 2 }
+      else return ""
+      s = plain(s)
+      sub(/^[ \t]*[(]?[0-9]+[).][ \t]*/, "", s)
+      gsub(/①|②|③|④|⑤|⑥|⑦|⑧|⑨|⑩|⑪|⑫/, "", s)
+      s = trim(s); sub(/[ \t]*[-·:,]+$/, "", s); s = trim(s)
+      if (s == "" || length(s) > 20) { korRank = 0; return "" }
+      if (s ~ /[A-Za-z]/) { korRank = 0; return "" }   # 영문이 섞였으면 이름이 아니다
+      if (s !~ /[^ -~]/) { korRank = 0; return "" }    # ASCII 뿐이면 한글이 없다 ("&")
+      return s
+    }
+
+    function emit(a, full, kor) {
+      if (!isAbbr(a)) return
+      if (a == toupper(a) && (a in BLOCK)) return
+      if (full != "" && !expands(a, full)) full = ""
+      if (full == "" && kor == "") return
+      # 풀네임이 없으면 짧은 것만 — DIFFERENCE 같은 전각 용어가 섞이는 것을 막는다
+      if (full == "" && length(a) > 6) return
+      print ch "\t" sec "\t" a "\t" full "\t" kor "\t" (kor == "" ? 9 : korRank)
+    }
+
+    {
+      line = $0; sub(/\r$/, "", line)
+      if (line ~ /^```/) { fence = 1 - fence; next }
+      if (fence) next
+      if (line ~ /^## /) sec++
+      if (sec == 0) next
+
+      isHead = (line ~ /^#{2,4} /)
+      work = plain(line)
+      pos = 1
+      while (1) {
+        rest = substr(work, pos)
+        if (match(rest, /\([^()]*\)/) == 0) break
+        start = pos + RSTART - 1
+        inner = trim(substr(work, start + 1, RLENGTH - 2))
+        before = substr(work, 1, start - 1)
+        pos = start + RLENGTH
+
+        kor = korean(before, isHead && start > 1)
+
+        # ① 한글명(ABBR; Full Name)
+        if (inner ~ /;/) {
+          p = index(inner, ";")
+          emit(trim(substr(inner, 1, p - 1)), trim(substr(inner, p + 1)), kor)
+          continue
+        }
+        # ② ABBR(Full Name) — 괄호 바로 앞 낱말이 약어
+        if (inner ~ /^[A-Za-z][A-Za-z0-9 ,.\/&*+-]*$/ && inner ~ / /) {
+          tail = before
+          sub(/^.*[^A-Za-z0-9\/&.+-]/, "", tail)
+          a = trim(tail)
+          if (isAbbr(a)) {
+            emit(a, inner, korean(substr(before, 1, length(before) - length(a)), isHead && start > 1))
+            continue
+          }
+        }
+        # ③ 한글명(ABBR) — 풀네임 없이 이름만
+        if (inner ~ /^[A-Za-z][A-Za-z0-9\/&.+-]*$/ && kor != "") emit(inner, "", kor)
+      }
+    }
+  ' "$md" >> "$GLOSS_TSV"
+done
+
+# 8-2) 약어가 "나오는 곳" 을 모은다.
+# 위에서 모은 것은 풀네임이 붙은 정의 지점뿐이라 약어당 한두 곳에 그친다.
+# 실제로는 DFD 처럼 여러 챕터에 흩어져 나오는 것이 많아 그쪽이 더 쓸모 있다.
+GLOSS_ABBR=".glossaryabbr"
+GLOSS_HITS=".glossaryhits"
+cut -f3 "$GLOSS_TSV" | sort -u > "$GLOSS_ABBR"
+: > "$GLOSS_HITS"
+
+for md in "${sources[@]}"; do
+  awk -v ch="$(basename "$md" .md)" '
+    NR == FNR { KNOWN[$1] = 1; next }          # 첫 파일 = 약어 목록
+    {
+      line = $0; sub(/\r$/, "", line)
+      if (line ~ /^```/) { fence = 1 - fence; next }
+      if (fence) next                          # 코드 블록 안의 SQL 예약어 등은 세지 않는다
+      if (line ~ /^## /) sec++
+      if (sec == 0) next
+      # 영숫자가 아닌 것은 전부 구분자 — 한글이 바로 붙은 "DFD와" 도 갈라진다
+      gsub(/[^A-Za-z0-9]/, " ", line)
+      n = split(line, tok, " ")
+      for (i = 1; i <= n; i++) {
+        if (tok[i] in KNOWN) print tok[i] "\t" ch "\t" sec
+      }
+    }
+  ' "$GLOSS_ABBR" "$md" >> "$GLOSS_HITS"
+done
+
+{
+  printf '/* build.sh 가 content/*.md 에서 뽑아 생성한다. 직접 고치지 말 것.\n'
+  printf '   a 약어 · f 풀네임 · k 한글명 · s 나오는 곳 [챕터, 섹션 순번(0부터)]\n'
+  printf '   섹션 제목은 assets/toc.js 에 있으므로 여기에 담지 않는다. */\n'
+  printf 'window.EIP_GLOSSARY = [\n'
+  awk -F'\t' -v cap=8 '
+    function esc(s) { gsub(/\\/, "\\\\", s); gsub(/"/, "\\\"", s); return s }
+
+    # 섹션 하나를 "나오는 곳" 에 더한다. 목록은 cap 개까지만 담고
+    # 전체 개수(total)는 따로 세어 화면이 "외 N곳" 을 말할 수 있게 한다.
+    function addSec(a, c, s,   key) {
+      key = a SUBSEP c SUBSEP s
+      if (key in sseen) return
+      sseen[key] = 1
+      total[a]++
+      if (scount[a] >= cap) return
+      scount[a]++
+      secs[a] = secs[a] (secs[a] == "" ? "" : ",") "[\"" c "\"," (s - 1) "]"
+    }
+
+    # ---- 첫 파일: 정의 지점 (약어 · 풀네임 · 한글명) ----
+    FNR == NR {
+      a = $3
+      if (!(a in seen)) { seen[a] = 1; order[++n] = a; kr[a] = ""; krank[a] = 9 }
+      # 풀네임은 서로 다른 뜻이 있을 수 있다 — SCM 은 형상 관리이자 공급망 관리다
+      if ($4 != "") {
+        u = toupper($4)
+        if (!((a SUBSEP u) in fseen) && fcount[a] < 2) {
+          fseen[a SUBSEP u] = 1; fcount[a]++
+          full[a] = (full[a] == "" ? $4 : full[a] " · " $4)
+        }
+      }
+      # 한글명은 제목에서 캔 것(1)이 표 칸(2)을 이긴다
+      if ($5 != "" && $6 + 0 < krank[a]) { kr[a] = $5; krank[a] = $6 + 0 }
+      addSec(a, $1, $2)      # 정의 지점을 먼저 채운다 — 가장 볼 만한 곳이다
+      next
+    }
+
+    # ---- 둘째 파일: 그냥 언급된 곳 ----
+    { if ($1 in seen) addSec($1, $2, $3) }
+
+    END {
+      for (i = 1; i <= n; i++) sortkey[toupper(order[i]) "\t" order[i]] = order[i]
+      PROCINFO["sorted_in"] = "@ind_str_asc"
+      # ⚠️ 콤마를 항목 뒤가 아니라 앞에 찍는다. 배열 끝에 콤마가 남으면
+      #    ES3 에서는 빈 칸이 하나 더 생겨 G[G.length-1] 이 undefined 가 된다.
+      first = 1
+      for (k in sortkey) {
+        a = sortkey[k]
+        printf "%s{a:\"%s\",f:\"%s\",k:\"%s\",n:%d,s:[%s]}\n", (first ? "" : ","), \
+               esc(a), esc(full[a]), esc(kr[a]), total[a], secs[a]
+        first = 0
+      }
+    }
+  ' "$GLOSS_TSV" "$GLOSS_HITS"
+  printf '];\n'
+} > "assets/glossary-data.js"
+
+gloss_n="$(wc -l < "$GLOSS_ABBR" | tr -d ' ')"
+rm -f "$GLOSS_TSV" "$GLOSS_ABBR" "$GLOSS_HITS"
+echo "  ✓ assets/glossary-data.js (약어 ${gloss_n}개)"
+
 echo ""
 echo "빌드 완료. ${sources[*]} → 챕터 목차 + 섹션 페이지"
