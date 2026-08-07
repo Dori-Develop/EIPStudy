@@ -436,10 +436,12 @@ button { font: inherit; cursor: pointer; }
 .quiz__item:first-child { border-top: 0; }
 
 /* ★ 저장한 문제 — 지문 오른쪽 위. 지문이 닿지 않도록 quiz__q 에 여백을 준다.
-   ⚠️ 크기를 고정하고 flex 로 가운데 정렬한다. line-height 만 주면 ★ 글리프가
-      박스 아래로 삐져나와 "보이는 별보다 위를 눌러야" 하는 상태가 된다. */
+   ⚠️ z-index 가 반드시 필요하다. 바로 다음 형제인 .quiz__q 도 position: relative 라
+      (번호를 ::before 로 절대 배치하기 때문) 위치 지정 요소끼리는 DOM 순서가 늦은
+      쪽이 위에 그려진다. 없으면 지문이 별을 덮어 위쪽 8px 만 눌린다.
+   크기를 고정하고 flex 로 가운데 정렬해 터치 영역도 확보한다. */
 .quiz__fav {
-  position: absolute; top: 8px; right: 8px;
+  position: absolute; top: 8px; right: 8px; z-index: 1;
   display: flex; align-items: center; justify-content: center;
   width: 30px; height: 30px; padding: 0;
   background: none; border: 0;
