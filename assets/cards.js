@@ -1,14 +1,20 @@
 /* ==========================================================================
    EIP Study — 암기 카드
 
-   설계는 EIPStudy-notes/TODO.md T17. 아래 두 가지는 확정된 결정이라 바꾸지 말 것.
+   설계는 EIPStudy-notes/TODO.md T17. 아래 세 가지는 확정된 결정이라 바꾸지 말 것.
 
-   ① 방향의 뜻을 두 단계에서 일치시킨다 — 좌 = 남긴다 · 우 = 흘려보낸다
-        1단계 전체 카드 :  좌 = 저장        우 = 그냥 넘김
-        2단계 저장함    :  좌 = 계속 보관   우 = 소거(다 외웠다)
-      저장함을 좌우로 넘기며 비워 나가는 것이 이 기능의 핵심이다.
+   ① 뜻은 하나다 — 남긴다 / 흘려보낸다
+        1단계 전체 카드 :  남긴다 = 저장        흘려보낸다 = 그냥 넘김
+        2단계 저장함    :  남긴다 = 계속 보관   흘려보낸다 = 소거(다 외웠다)
+      저장함을 넘기며 비워 나가는 것이 이 기능의 핵심이다.
 
-   ② 우클릭(contextmenu)은 입력으로 쓰지 않는다. 브라우저 메뉴가 뜨고,
+   ② 축은 기기마다 다르다.
+        PC     : 좌 = 남긴다 · 우 = 흘려보낸다   (좌·우 끝 클릭 · 키보드 ← →)
+        모바일 : 위 = 남긴다 · 아래 = 흘려보낸다 (위아래로 밀기)
+      모바일에서 좌우로 밀면 페이지 세로 스크롤과 계속 부딪힌다.
+      축을 세로로 옮기고 카드가 세로 제스처를 통째로 가져가는 편이 깨끗하다.
+
+   ③ 우클릭(contextmenu)은 입력으로 쓰지 않는다. 브라우저 메뉴가 뜨고,
       preventDefault 로 막으면 "붙여넣기가 안 되는 페이지"가 되어 사용자가 당황한다.
       마우스는 카드를 좌 · 가운데 · 우 세 구역으로 나눠 누른 위치로 구분한다.
       손가락은 구역을 나누지 않고 어디를 눌러도 뒤집기다 — 모바일에서 넘기는 방법은
@@ -28,26 +34,22 @@
   var S = (window.EIP && window.EIP.store) || null;
 
   var SWIPE_MIN = 55;      /* 이만큼 밀어야 넘김으로 친다 (px) */
-  /* 🚨 LOCK_MIN 은 작아야 한다. 방향을 정하기 전에는 preventDefault 를 못 하는데,
-        그 사이에 브라우저가 세로 스크롤을 시작해 버리면 그 뒤로는 못 막는다
-        (event.cancelable 이 false 가 된다). 10px 로 뒀더니 실제로 그랬다.
-        3px 은 손떨림은 걸러 내면서 브라우저가 아직 결정하기 전이다. */
-  var LOCK_MIN = 3;
-  var Y_BIAS = 1.5;        /* 세로가 가로보다 이 배 이상이어야 스크롤로 넘긴다 */
   var ZONE = 0.34;         /* 카드 좌·우 끝 34% 가 넘김 구역, 가운데 32% 가 뒤집기 */
   var OUT_MS = 190;        /* 날아가는 동안 */
 
-  /* 단계별 좌·우의 뜻. 화면 문구와 동작이 한곳에서 나오도록 묶어 둔다. */
+  /* 단계별로 "남긴다(keep)"·"흘려보낸다(pass)"가 무엇인지.
+     화면 문구와 동작이 한곳에서 나오도록 묶어 둔다.
+     pc/touch 는 같은 뜻을 축만 바꿔 적은 것이다. */
   var STAGES = {
     1: {
       name: '전체 카드',
-      left: { label: '저장', hint: '← 저장', act: 'save' },
-      right: { label: '넘김', hint: '넘김 →', act: 'skip' }
+      left: { pc: '← 저장', touch: '↑ 저장', act: 'save' },
+      right: { pc: '넘김 →', touch: '넘김 ↓', act: 'skip' }
     },
     2: {
       name: '저장함',
-      left: { label: '보관', hint: '← 계속 보관', act: 'keep' },
-      right: { label: '소거', hint: '외웠다 →', act: 'drop' }
+      left: { pc: '← 계속 보관', touch: '↑ 계속 보관', act: 'keep' },
+      right: { pc: '외웠다 →', touch: '외웠다 ↓', act: 'drop' }
     }
   };
 
@@ -125,7 +127,9 @@
   function current() { return deck[pos] || null; }
 
   /* ------------------------------------------------------------- 동작 */
-  function act(side) {
+  /* side 는 뜻('left' 남긴다 · 'right' 흘려보낸다), vertical 은 날아가는 방향.
+     민 방향으로 날아가야 방금 무엇을 했는지 손이 기억한다. */
+  function act(side, vertical) {
     if (busy) return;
     var card = current();
     if (!card) return;
@@ -138,9 +142,11 @@
     if (spec.act === 'drop') { delete saved[card.id]; persist(); }
 
     busy = true;
-    cardEl.classList.add(side === 'left' ? 'is-out-left' : 'is-out-right');
+    cardEl.classList.add(vertical
+      ? (side === 'left' ? 'is-out-up' : 'is-out-down')
+      : (side === 'left' ? 'is-out-left' : 'is-out-right'));
     setTimeout(function () {
-      cardEl.classList.remove('is-out-left', 'is-out-right');
+      cardEl.classList.remove('is-out-left', 'is-out-right', 'is-out-up', 'is-out-down');
       busy = false;
       pos++;
       flipped = false;
@@ -268,10 +274,17 @@
     deckEl.hidden = false;
     doneEl.hidden = true;
 
+    /* PC 용·모바일 용을 둘 다 그려 두고 CSS 미디어 쿼리가 하나만 보여 준다.
+       JS 로 기기를 판별해 하나만 그리면, 노트북에 마우스를 꽂았다 뺐다 할 때
+       화면이 안 따라온다. 판별은 CSS 에 맡기는 편이 정확하다. */
     var spec = STAGES[stage];
     hintEl.innerHTML = '';
-    hintEl.appendChild(el('span', 'chint__side', spec.left.hint));
-    hintEl.appendChild(el('span', 'chint__side', spec.right.hint));
+    ['left', 'right'].forEach(function (k) {
+      var box = el('span', 'chint__side');
+      box.appendChild(el('span', 'only-pc', spec[k].pc));
+      box.appendChild(el('span', 'only-touch', spec[k].touch));
+      hintEl.appendChild(box);
+    });
 
     /* 어느 챕터 어느 섹션에서 온 카드인지. 그 섹션으로 바로 갈 수 있게 링크로 둔다 —
        카드만 봐서는 이해가 안 될 때 본문을 열어 보는 것이 유일한 다음 행동이다. */
@@ -311,7 +324,6 @@
 
   function bindInput() {
     var startX = 0, startY = 0, dragging = false, swiped = false;
-    var axis = '';        /* '' 아직 판단 안 함 · 'x' 카드 넘기기 · 'y' 페이지 스크롤 */
     var fromTouch = false;
 
     /* --- 누르기 ---
@@ -326,15 +338,14 @@
       if (z === 'mid') flip(); else act(z);
     });
 
-    /* --- 터치: 좌우로 밀기 ---
-       손가락이 처음 LOCK_MIN 만큼 움직인 순간 방향을 하나로 못 박는다.
-       가로로 잠기면 preventDefault 로 브라우저의 세로 스크롤을 끊는다 —
-       안 그러면 비스듬히 밀 때 카드는 옆으로 가면서 페이지가 같이 위아래로 흔들린다.
-       ⚠️ 그래서 touchmove 는 반드시 passive: false 여야 한다. passive 면 막을 수 없다.
-          CSS 의 touch-action: pan-y 는 그대로 둔다 — 세로로 잠겼을 때 쓸 스크롤이다. */
+    /* --- 터치: 위아래로 밀기 ---
+       CSS 의 touch-action: none 이 카드 위 제스처를 통째로 우리에게 준다.
+       브라우저가 스크롤을 시작할 일이 없으므로 preventDefault 도, 방향 잠금도 필요 없다.
+       좌우로 밀 때 페이지가 같이 흔들리던 문제를 축을 옮겨 근본에서 없앤 것이다.
+
+       ⚠️ 대신 카드 위에서는 페이지가 스크롤되지 않는다. 카드 위아래 여백으로 스크롤한다. */
     function endDrag() {
       dragging = false;
-      axis = '';
       cardEl.classList.remove('is-dragging');
       cardEl.style.transform = '';
     }
@@ -345,37 +356,26 @@
       startY = e.touches[0].clientY;
       dragging = true;
       swiped = false;
-      axis = '';
       fromTouch = true;
       cardEl.classList.add('is-dragging');
     }, { passive: true });
 
     cardEl.addEventListener('touchmove', function (e) {
       if (!dragging) return;
-      var dx = e.touches[0].clientX - startX;
       var dy = e.touches[0].clientY - startY;
-
-      if (!axis) {
-        /* 아직 어느 쪽인지 모를 만큼 조금 움직였다 — 판단을 미룬다 */
-        if (Math.abs(dx) < LOCK_MIN && Math.abs(dy) < LOCK_MIN) return;
-        /* 카드는 좌우로 넘기는 물건이라 세로로 확실히 기울어야 세로로 친다 */
-        axis = Math.abs(dy) > Math.abs(dx) * Y_BIAS ? 'y' : 'x';
-        if (axis === 'y') { endDrag(); return; }   /* 페이지 스크롤에 넘긴다 */
-      }
-
-      if (e.cancelable) e.preventDefault();
-      cardEl.style.transform = 'translateX(' + dx + 'px) rotate(' + (dx / 28) + 'deg)';
-    }, { passive: false });
+      cardEl.style.transform = 'translateY(' + dy + 'px)';
+    }, { passive: true });
 
     cardEl.addEventListener('touchend', function (e) {
       if (!dragging) return;
-      var lockedX = axis === 'x';
       endDrag();
-      if (!lockedX) return;
-      var dx = (e.changedTouches[0] || {}).clientX - startX;
-      if (Math.abs(dx) >= SWIPE_MIN) {
+      var t = e.changedTouches[0] || {};
+      var dy = t.clientY - startY;
+      var dx = t.clientX - startX;
+      /* 가로로 더 많이 갔으면 넘기려던 것이 아니다 — 제자리로 돌아간다 */
+      if (Math.abs(dy) >= SWIPE_MIN && Math.abs(dy) > Math.abs(dx)) {
         swiped = true;
-        act(dx < 0 ? 'left' : 'right');
+        act(dy < 0 ? 'left' : 'right', true);   /* 위로 = 남긴다 · 아래로 = 흘려보낸다 */
       }
     });
 
@@ -441,11 +441,15 @@
     cardEl.appendChild(inner);
     deckEl.appendChild(cardEl);
 
-    /* 뒤집기 안내를 카드 위 힌트 줄에서 뺐으므로 여기서만 알려 준다 */
-    deckEl.appendChild(el('p', 'ckeys',
+    /* 뒤집기 안내를 카드 위 힌트 줄에서 뺐으므로 여기서만 알려 준다.
+       쓰지 않는 조작을 읽게 하지 않는다 — 기기에 맞는 줄만 보인다. */
+    var keys = el('p', 'ckeys');
+    keys.appendChild(el('span', 'only-pc',
       '가운데를 눌러 뒤집기 · 좌우 끝을 눌러 넘기기' +
-      '  |  모바일은 눌러서 뒤집고 좌우로 밀어 넘기기' +
-      '  |  Space 뒤집기 · ← → 넘기기 · Backspace 되돌리기'));
+      '   ·   Space 뒤집기 · ← → 넘기기 · Backspace 되돌리기'));
+    keys.appendChild(el('span', 'only-touch',
+      '눌러서 뒤집기 · 위아래로 밀어 넘기기'));
+    deckEl.appendChild(keys);
 
     root.appendChild(deckEl);
 
