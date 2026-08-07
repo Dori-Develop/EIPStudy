@@ -195,7 +195,10 @@
         r.name = name;
         r.value = String(k);
         lab.appendChild(r);
-        lab.appendChild(el('span', null, text));
+        /* 보기도 문제 본문(q)과 같이 HTML 을 허용한다.
+           연산자·코드 조각을 <code> 로 감싸야 읽히는 문항이 있어서다.
+           textContent 로 두면 태그가 문자 그대로 노출된다. */
+        lab.appendChild(html('span', null, text));
         opts.appendChild(lab);
         row.radios.push(r);
       });
