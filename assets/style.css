@@ -970,3 +970,126 @@ mark, .hl {
 @media print {
   .pagenav, .seclist__check { display: none !important; }
 }
+
+/* ==========================================================================
+   모의 문제지 (exam.html · assets/exam.js)
+   문항 카드 자체는 .quiz__* 를 그대로 쓴다 — 여기서 다시 만들지 말 것
+   ========================================================================== */
+.exam__loading { color: var(--fg-faint); font-size: 14px; padding: 20px 0; }
+
+.exam__form {
+  margin: 22px 0 16px;
+  border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--bg-elev);
+  overflow: hidden;
+}
+.exam__row {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 13px 16px;
+  border-top: 1px solid var(--border-soft);
+}
+.exam__row:first-child { border-top: 0; }
+.exam__label {
+  flex: none; width: 58px; padding-top: 7px;
+  font-size: 13px; font-weight: 700; color: var(--fg-muted);
+}
+.exam__ctrl { flex: 1; min-width: 0; }
+
+.exam__sel {
+  width: 100%; max-width: 460px;
+  padding: 8px 10px;
+  border: 1px solid var(--border); border-radius: var(--radius-s);
+  background: var(--bg); color: var(--fg);
+  font-family: inherit; font-size: 13.5px;
+}
+.exam__sel:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+
+.exam__radios { display: flex; flex-wrap: wrap; gap: 6px; }
+.exam__radio, .exam__check {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 7px 12px;
+  border: 1px solid var(--border); border-radius: 999px;
+  background: var(--bg);
+  font-size: 13px; cursor: pointer;
+}
+.exam__radio:hover, .exam__check:hover { border-color: var(--accent); }
+.exam__radio input, .exam__check input { margin: 0; accent-color: var(--accent); }
+
+.exam__go { margin: 0 0 6px; }
+.exam__note { margin: 0; font-size: 12.5px; color: var(--fg-faint); }
+
+/* ---- 시험지 ---- */
+.exam__head {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  margin: 22px 0 4px; padding: 13px 16px;
+  background: var(--bg-sunken);
+  border: 1px solid var(--border); border-radius: var(--radius);
+}
+.exam__headmain { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.exam__headmain strong { font-size: 15px; }
+.exam__headsub { font-size: 12.5px; color: var(--fg-faint); }
+.exam__timer {
+  flex: none;
+  font-family: var(--font-mono); font-size: 19px; font-weight: 700;
+  color: var(--fg-muted); font-variant-numeric: tabular-nums;
+}
+.exam__timer.is-urgent { color: var(--warn); }
+
+.exam__list {
+  border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--bg-elev); overflow: hidden;
+  margin: 12px 0 0;
+}
+.exam__list .quiz__item { border-top: 1px solid var(--border-soft); }
+.exam__list .quiz__item:first-child { border-top: 0; }
+
+.exam__foot {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  margin: 16px 0 0;
+}
+.exam__ghost {
+  display: inline-flex; align-items: center;
+  padding: 9px 16px;
+  border: 1px solid var(--border); border-radius: var(--radius-s);
+  background: var(--bg-elev); color: var(--fg-muted);
+  font-size: 13px; font-weight: 600;
+}
+.exam__ghost:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
+
+/* ---- 결과 ---- */
+.exam__result {
+  margin: 22px 0 8px; padding: 18px;
+  border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--bg-elev);
+}
+.exam__score {
+  display: flex; align-items: baseline; gap: 10px;
+  margin: 0 0 4px;
+}
+.exam__score strong { font-size: 28px; letter-spacing: -.02em; }
+.exam__score span { font-size: 15px; color: var(--fg-muted); font-weight: 600; }
+.exam__timeout { margin: 6px 0 0; font-size: 13px; color: var(--warn); }
+
+.exam__bars { margin: 16px 0 0; display: flex; flex-direction: column; gap: 8px; }
+.exam__barrow { display: flex; align-items: center; gap: 10px; font-size: 12.5px; }
+.exam__barname {
+  flex: none; width: 168px; color: var(--fg-muted);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.exam__barrow .bar { flex: 1; min-width: 0; }
+.exam__barnum {
+  flex: none; width: 44px; text-align: right;
+  color: var(--fg-faint); font-variant-numeric: tabular-nums;
+}
+
+.exam__acts { display: flex; gap: 10px; flex-wrap: wrap; margin: 18px 0 0; }
+
+@media (max-width: 560px) {
+  .exam__row { flex-direction: column; gap: 8px; }
+  .exam__label { width: auto; padding-top: 0; }
+  .exam__barname { width: 96px; }
+}
+
+@media print {
+  .exam__form, .exam__foot, .exam__acts, .exam__timer { display: none !important; }
+}

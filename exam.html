@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="실제 출제 비율로 뽑은 모의 문제지 — 정보처리기사 실기 학습 사이트">
+<title>모의 문제지 · EIP Study</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <a class="hdr__title" href="index.html" style="padding-left:8px">
+    EIP Study
+    <small>정보처리기사 실기</small>
+  </a>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="layout">
+  <main class="main">
+    <div class="wrap">
+
+      <section class="hero">
+        <h1>모의 문제지</h1>
+        <p>
+          최근 7회분 기출의 <strong>단원별 출제 비율</strong>을 그대로 재현해 문제를 뽑습니다.
+          회차마다 구성이 달라지므로 매번 다른 시험지가 나옵니다.
+          틀린 문제는 오답노트에 자동으로 쌓입니다.
+        </p>
+      </section>
+
+      <div id="exam-setup"></div>
+      <div id="exam-sheet" style="display:none"></div>
+
+      <footer class="footer">
+        <p>
+          기록은 이 브라우저에만 저장됩니다.
+          <a class="dangerlink" href="index.html">← 홈으로</a>
+        </p>
+      </footer>
+
+    </div>
+  </main>
+</div>
+
+<script src="assets/app.js"></script>
+<script src="assets/toc.js"></script>
+<script src="assets/wrongstore.js"></script>
+<script src="assets/qcard.js"></script>
+<script src="assets/exam.js"></script>
+</body>
+</html>
