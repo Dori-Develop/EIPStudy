@@ -62,6 +62,20 @@
 }
 .cctl__btn:disabled { opacity: .4; cursor: default; }
 
+/* ---------- 카드 블록 ----------
+   🔒 밀기를 받는 범위는 카드 요소가 아니라 이 블록 전체다
+   (위치 표시 · 좌우 힌트 · 카드 · 조작 안내).
+
+   모바일에서 넘기는 축이 세로라 브라우저 스크롤과 같은 축이다.
+   축을 나눠 가지려던 pan-y 방식은 비스듬히 밀 때마다 페이지가 흔들려 실패했고,
+   카드 요소만 잡았더니 이번에는 **카드 위아래 여백을 짚었을 때** 바깥이 따라왔다.
+   눈에는 다 "카드 있는 자리"인데 손끝 몇 px 차이로 갈리면 고장으로 읽힌다.
+
+   ⚠️ 대신 이 블록 위에서는 페이지가 스크롤되지 않는다.
+      블록 바깥(챕터 선택 줄 위쪽, 푸터 아래쪽)으로 스크롤한다.
+   📌 touch-action 은 선언일 뿐이고 실제로 끊는 것은 cards.js 의 preventDefault 다. */
+.cdeck { touch-action: none; }
+
 /* ---------- 카드 위 정보 ---------- */
 .cmeta {
   display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 8px;
@@ -91,11 +105,7 @@ a.cmeta__where:hover { color: var(--accent); text-decoration: underline; }
   width: 100%; min-height: 260px;
   perspective: 1200px;
   cursor: pointer; user-select: none; -webkit-user-select: none;
-  /* 🔒 카드 위 제스처는 통째로 우리가 받는다. 모바일에서 넘기는 축이 세로라
-     브라우저 스크롤과 같은 축이기 때문이다. 둘을 나눠 가지려던 pan-y 방식은
-     비스듬히 밀 때마다 페이지가 흔들려 실패했다.
-     ⚠️ 대신 카드 위에서는 페이지가 스크롤되지 않는다 — 위아래 여백으로 스크롤한다. */
-  touch-action: none;
+  touch-action: none;   /* .cdeck 과 한 벌 — 설명은 .cdeck 쪽에 */
   -webkit-tap-highlight-color: transparent;
   transition: transform .19s ease, opacity .19s ease;
 }

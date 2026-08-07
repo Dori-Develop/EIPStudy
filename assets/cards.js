@@ -355,8 +355,22 @@
       cardEl.style.transform = '';
     }
 
-    cardEl.addEventListener('touchstart', function (e) {
+    /* 링크에서 시작한 제스처는 건드리지 않는다 — 섹션으로 가려던 손이다 */
+    function startsOnLink(node) {
+      while (node && node !== deckEl) {
+        if (node.tagName === 'A') return true;
+        node = node.parentNode;
+      }
+      return false;
+    }
+
+    /* 🚨 카드 요소가 아니라 카드 블록(deckEl)에서 받는다.
+       카드만 잡고 있으면 카드 위아래 여백이나 힌트 줄을 짚었을 때
+       바깥 스크롤이 그대로 따라온다. 눈에는 다 "카드 있는 자리"로 보이는데
+       손끝 몇 px 차이로 동작이 갈리면 고장으로 읽힌다. */
+    deckEl.addEventListener('touchstart', function (e) {
       if (busy || e.touches.length !== 1) return;
+      if (startsOnLink(e.target)) return;
       startX = e.touches[0].clientX;
       startY = e.touches[0].clientY;
       dragging = true;
@@ -365,14 +379,14 @@
       cardEl.classList.add('is-dragging');
     }, { passive: true });
 
-    cardEl.addEventListener('touchmove', function (e) {
+    deckEl.addEventListener('touchmove', function (e) {
       if (!dragging) return;
       if (e.cancelable) e.preventDefault();   /* 바깥 스크롤을 끊는다 */
       var dy = e.touches[0].clientY - startY;
       cardEl.style.transform = 'translateY(' + dy + 'px)';
     }, { passive: false });
 
-    cardEl.addEventListener('touchend', function (e) {
+    deckEl.addEventListener('touchend', function (e) {
       if (!dragging) return;
       endDrag();
       var t = e.changedTouches[0] || {};
@@ -385,7 +399,7 @@
       }
     });
 
-    cardEl.addEventListener('touchcancel', function () {
+    deckEl.addEventListener('touchcancel', function () {
       if (dragging) endDrag();
     });
 
