@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
 <meta name="description" content="정보처리기사 실기 — 02. 데이터 입·출력 구현 — 도해와 표로 정리한 학습 노트">
-<title>트리와 이진 트리 · 02. 데이터 입·출력 구현</title>
+<title>데이터 검증 · 02. 데이터 입·출력 구현</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
 <link rel="stylesheet" href="../assets/style.css">
 <script>
@@ -15,7 +15,7 @@ if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
 document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
 </script>
 <script>
-window.EIP_CHAPTER = {id:"ch02",title:"정보처리기사 실기 — 02. 데이터 입·출력 구현",subtitle:"02. 데이터 입·출력 구현",total:33,base:"../",page:"section",index:30,sections:[{f:"s01.html",n:"1",t:"데이터 전환"},{f:"s02.html",n:"2",t:"데이터 검증"},{f:"s03.html",n:"3",t:"오류 데이터 측정 및 정제"},{f:"s04.html",n:"4",t:"데이터베이스 개요"},{f:"s05.html",n:"5",t:"데이터베이스 설계"},{f:"s06.html",n:"6",t:"데이터 모델의 개념"},{f:"s07.html",n:"7",t:"데이터 모델의 구성 요소"},{f:"s08.html",n:"8",t:"식별자(Identifier)"},{f:"s09.html",n:"9",t:"E-R(개체-관계) 모델"},{f:"s10.html",n:"10",t:"관계형 데이터베이스의 구조"},{f:"s11.html",n:"11",t:"키(Key)"},{f:"s12.html",n:"12",t:"무결성(Integrity)"},{f:"s13.html",n:"13",t:"관계대수와 관계해석"},{f:"s14.html",n:"14",t:"이상과 함수적 종속"},{f:"s15.html",n:"15",t:"정규화(Normalization)"},{f:"s16.html",n:"16",t:"반정규화(Denormalization)"},{f:"s17.html",n:"17",t:"시스템 카탈로그"},{f:"s18.html",n:"18",t:"데이터베이스 저장 공간 설계"},{f:"s19.html",n:"19",t:"트랜잭션 분석과 CRUD 분석"},{f:"s20.html",n:"20",t:"인덱스(Index)"},{f:"s21.html",n:"21",t:"뷰와 클러스터"},{f:"s22.html",n:"22",t:"파티션(Partition)"},{f:"s23.html",n:"23",t:"분산 데이터베이스 설계"},{f:"s24.html",n:"24",t:"데이터베이스 이중화와 서버 클러스터링"},{f:"s25.html",n:"25",t:"데이터베이스 보안"},{f:"s26.html",n:"26",t:"데이터베이스 백업"},{f:"s27.html",n:"27",t:"스토리지(Storage)"},{f:"s28.html",n:"28",t:"논리 데이터 모델의 물리 데이터 모델 변환"},{f:"s29.html",n:"29",t:"물리 데이터 모델 품질 검토"},{f:"s30.html",n:"30",t:"자료 구조"},{f:"s31.html",n:"31",t:"트리와 이진 트리"},{f:"s32.html",n:"32",t:"정렬(Sort)"},{f:"s33.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+window.EIP_CHAPTER = {id:"ch02",title:"정보처리기사 실기 — 02. 데이터 입·출력 구현",subtitle:"02. 데이터 입·출력 구현",total:33,base:"../",page:"section",index:30,sections:[{f:"s01.html",n:"1",t:"자료 구조"},{f:"s02.html",n:"2",t:"트리와 이진 트리"},{f:"s03.html",n:"3",t:"정렬(Sort)"},{f:"s04.html",n:"4",t:"데이터베이스 개요"},{f:"s05.html",n:"5",t:"데이터베이스 설계"},{f:"s06.html",n:"6",t:"데이터 모델의 개념"},{f:"s07.html",n:"7",t:"데이터 모델의 구성 요소"},{f:"s08.html",n:"8",t:"식별자(Identifier)"},{f:"s09.html",n:"9",t:"E-R(개체-관계) 모델"},{f:"s10.html",n:"10",t:"관계형 데이터베이스의 구조"},{f:"s11.html",n:"11",t:"키(Key)"},{f:"s12.html",n:"12",t:"무결성(Integrity)"},{f:"s13.html",n:"13",t:"관계대수와 관계해석"},{f:"s14.html",n:"14",t:"이상과 함수적 종속"},{f:"s15.html",n:"15",t:"정규화(Normalization)"},{f:"s16.html",n:"16",t:"반정규화(Denormalization)"},{f:"s17.html",n:"17",t:"시스템 카탈로그"},{f:"s18.html",n:"18",t:"데이터베이스 저장 공간 설계"},{f:"s19.html",n:"19",t:"트랜잭션 분석과 CRUD 분석"},{f:"s20.html",n:"20",t:"인덱스(Index)"},{f:"s21.html",n:"21",t:"뷰와 클러스터"},{f:"s22.html",n:"22",t:"파티션(Partition)"},{f:"s23.html",n:"23",t:"분산 데이터베이스 설계"},{f:"s24.html",n:"24",t:"데이터베이스 이중화와 서버 클러스터링"},{f:"s25.html",n:"25",t:"데이터베이스 보안"},{f:"s26.html",n:"26",t:"데이터베이스 백업"},{f:"s27.html",n:"27",t:"스토리지(Storage)"},{f:"s28.html",n:"28",t:"논리 데이터 모델의 물리 데이터 모델 변환"},{f:"s29.html",n:"29",t:"물리 데이터 모델 품질 검토"},{f:"s30.html",n:"30",t:"데이터 전환"},{f:"s31.html",n:"31",t:"데이터 검증"},{f:"s32.html",n:"32",t:"오류 데이터 측정 및 정제"},{f:"s33.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
 </script>
 </head>
 <body>
@@ -53,73 +53,35 @@ window.EIP_CHAPTER = {id:"ch02",title:"정보처리기사 실기 — 02. 데이�
     </article>
     <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
 <script type="text/markdown" id="markdown-source">
-## (31) 트리와 이진 트리
+## (31) 데이터 검증
 
-### 트리(Tree)
+### 데이터 검증
 
-정점(Node)과 선분(Branch)을 이용해 사이클을 이루지 않도록 구성한
-**비선형 계층 구조**.
+원천 시스템에서 추출한 데이터가 목적 시스템에 **정확히 반영됐는지 확인**하는 작업.
 
-### 트리 관련 용어 ⭐
+### 검증 방법 ⭐
 
-| 용어 | 의미 |
+**어느 단계에서 보느냐**로 나눔.
+
+| 검증 방법 | 설명 |
 |---|---|
-| **노드**(Node) | 트리의 기본 요소 |
-| **근 노드**(Root Node) | 트리의 **맨 위에 있는** 노드 |
-| **디그리**(Degree, 차수) | **각 노드에서 뻗어 나온 가지의 수** |
-| **단말 노드**(Terminal / Leaf) | 자식이 하나도 없는 노드. **디그리가 0** |
-| **비단말 노드** | 자식이 하나 이상 있는 노드 |
-| **조상 노드** | 임의의 노드에서 **근 노드에 이르는 경로상의** 노드들 |
-| **자식 노드** | 어떤 노드에 **연결된 다음 레벨**의 노드들 |
-| **부모 노드** | 어떤 노드에 **연결된 이전 레벨**의 노드 |
-| **형제 노드**(Sibling) | **같은 부모**를 가진 노드들 |
-| **트리의 디그리** | 노드들의 디그리 중 **가장 많은 수** |
+| **로그 검증** | 전환 과정에서 생성되는 **추출·전환·적재 로그**를 확인 |
+| **기본 항목 검증** | 로그 검증 외에 별도로 **필수 항목**을 정해 검증 |
+| **응용 프로그램 검증** | 응용 프로그램을 이용해 데이터 전환의 정합성을 검증 |
+| **응용 데이터 검증** | 사전에 정의된 업무 규칙을 기준으로 데이터 정합성을 검증 |
+| **값 검증** | 숫자 항목의 **합계 검증**, 데이터 값 **범위 검증** |
 
-### 이진 트리(Binary Tree)
+### 검증 단계 ⭐
 
-모든 노드의 **차수를 2 이하로 제한**한 트리.
+**전환 흐름을 따라가며** 단계마다 검증함.
 
-| 종류 | 설명 |
+| 단계 | 검증 내용 |
 |---|---|
-| **정 이진 트리**(Full) | 단말 노드를 제외한 모든 노드의 **차수가 2** |
-| **완전 이진 트리**(Complete) | 노드가 **왼쪽부터 빠짐없이 채워진** 트리 |
-| **포화 이진 트리**(Perfect) | 모든 레벨이 **완전히 채워진** 트리. 노드 수는 **2^h − 1** |
-
-### 이진 트리의 운행법(순회) ⭐⭐
-
-**Root(D)를 언제 방문하느냐**로 이름이 정해짐. Left = L, Right = R.
-
-| 운행법 | 순서 | 외우는 법 |
-|---|---|---|
-| **전위 운행**(Preorder) | **D → L → R** | Root 가 **앞**에 |
-| **중위 운행**(Inorder) | **L → D → R** | Root 가 **가운데** |
-| **후위 운행**(Postorder) | **L → R → D** | Root 가 **뒤**에 |
-
-**예제**
-
-```mermaid
-flowchart TD
-    A((A)) --> B((B))
-    A --> C((C))
-    B --> D((D))
-    B --> E((E))
-    C --> F((F))
-    C --> G((G))
-```
-
-| 운행법 | 결과 |
-|---|---|
-| 전위(Preorder) | **A B D E C F G** |
-| 중위(Inorder) | **D B E A F C G** |
-| 후위(Postorder) | **D E B F G C A** |
-
-### 수식의 표기법
-
-| 표기법 | 형태 | 예 (`A + B`) |
-|---|---|---|
-| **전위**(Prefix) | 연산자 → 피연산자 | **+ A B** |
-| **중위**(Infix) | 피연산자 → 연산자 → 피연산자 | **A + B** |
-| **후위**(Postfix) | 피연산자 → 연산자 | **A B +** |
+| **추출** | 원천 시스템 데이터 → 추출 데이터 |
+| **전환** | 추출 데이터 → 전환 데이터 |
+| **DB 적재** | 전환 데이터 → 적재 로그 |
+| **DB 적재 후** | 적재 로그 → 목적 시스템 데이터 |
+| **전환 완료 후** | 목적 시스템 데이터 → 데이터 전환 결과 |
 
 ---
 

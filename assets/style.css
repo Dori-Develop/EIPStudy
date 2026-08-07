@@ -435,10 +435,14 @@ button { font: inherit; cursor: pointer; }
 }
 .quiz__item:first-child { border-top: 0; }
 
-/* ★ 저장한 문제 — 지문 오른쪽 위. 지문이 닿지 않도록 quiz__q 에 여백을 준다 */
+/* ★ 저장한 문제 — 지문 오른쪽 위. 지문이 닿지 않도록 quiz__q 에 여백을 준다.
+   ⚠️ 크기를 고정하고 flex 로 가운데 정렬한다. line-height 만 주면 ★ 글리프가
+      박스 아래로 삐져나와 "보이는 별보다 위를 눌러야" 하는 상태가 된다. */
 .quiz__fav {
-  position: absolute; top: 12px; right: 12px;
-  background: none; border: 0; padding: 2px 4px;
+  position: absolute; top: 8px; right: 8px;
+  display: flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; padding: 0;
+  background: none; border: 0;
   font-size: 15px; line-height: 1; cursor: pointer;
   color: var(--border);
   transition: color .15s, transform .1s;

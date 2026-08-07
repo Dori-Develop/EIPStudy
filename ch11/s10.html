@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
 <meta name="description" content="정보처리기사 실기 — 11. 응용 SW 기초 기술 활용 — 도해와 표로 정리한 학습 노트">
-<title>경로 제어와 트래픽 제어 · 11. 응용 SW 기초 기술 활용</title>
+<title>OSI 참조 모델 · 11. 응용 SW 기초 기술 활용</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
 <link rel="stylesheet" href="../assets/style.css">
 <script>
@@ -15,7 +15,7 @@ if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
 document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
 </script>
 <script>
-window.EIP_CHAPTER = {id:"ch11",title:"정보처리기사 실기 — 11. 응용 SW 기초 기술 활용",subtitle:"11. 응용 SW 기초 기술 활용",total:16,base:"../",page:"section",index:9,sections:[{f:"s01.html",n:"1",t:"운영체제의 개념과 종류"},{f:"s02.html",n:"2",t:"기억장치 관리"},{f:"s03.html",n:"3",t:"가상기억장치"},{f:"s04.html",n:"4",t:"프로세스와 스케줄링"},{f:"s05.html",n:"5",t:"환경 변수와 기본 명령어"},{f:"s06.html",n:"6",t:"인터넷과 IP 주소"},{f:"s07.html",n:"7",t:"OSI 참조 모델"},{f:"s08.html",n:"8",t:"네트워크 장비"},{f:"s09.html",n:"9",t:"TCP/IP"},{f:"s10.html",n:"10",t:"경로 제어와 트래픽 제어"},{f:"s11.html",n:"11",t:"소프트웨어·하드웨어·네트워크 신기술"},{f:"s12.html",n:"12",t:"소프트웨어 개발 보안과 관련 법령"},{f:"s13.html",n:"13",t:"회복과 병행 제어"},{f:"s14.html",n:"14",t:"교착 상태"},{f:"s15.html",n:"15",t:"데이터 표준화"},{f:"s16.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+window.EIP_CHAPTER = {id:"ch11",title:"정보처리기사 실기 — 11. 응용 SW 기초 기술 활용",subtitle:"11. 응용 SW 기초 기술 활용",total:16,base:"../",page:"section",index:9,sections:[{f:"s01.html",n:"1",t:"운영체제의 개념과 종류"},{f:"s02.html",n:"2",t:"기억장치 관리"},{f:"s03.html",n:"3",t:"가상기억장치"},{f:"s04.html",n:"4",t:"프로세스와 스케줄링"},{f:"s05.html",n:"5",t:"교착 상태"},{f:"s06.html",n:"6",t:"환경 변수와 기본 명령어"},{f:"s07.html",n:"7",t:"회복과 병행 제어"},{f:"s08.html",n:"8",t:"데이터 표준화"},{f:"s09.html",n:"9",t:"인터넷과 IP 주소"},{f:"s10.html",n:"10",t:"OSI 참조 모델"},{f:"s11.html",n:"11",t:"네트워크 장비"},{f:"s12.html",n:"12",t:"TCP/IP"},{f:"s13.html",n:"13",t:"경로 제어와 트래픽 제어"},{f:"s14.html",n:"14",t:"소프트웨어·하드웨어·네트워크 신기술"},{f:"s15.html",n:"15",t:"소프트웨어 개발 보안과 관련 법령"},{f:"s16.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
 </script>
 </head>
 <body>
@@ -53,30 +53,23 @@ window.EIP_CHAPTER = {id:"ch11",title:"정보처리기사 실기 — 11. 응용 
     </article>
     <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
 <script type="text/markdown" id="markdown-source">
-## (10) 경로 제어와 트래픽 제어
+## (10) OSI 참조 모델
 
-### 경로 제어(Routing) ⭐
+### OSI(Open System Interconnection) 참조 모델 ⭐⭐⭐
 
-송·수신 측 간의 **송신 경로 중에서 최적의 패킷 교환 경로를 결정**하는 기능.
+다른 시스템 간의 원활한 통신을 위해 **ISO(국제표준화기구)** 에서 제안한 **통신 규약(Protocol)**.
 
-**경로 제어 프로토콜**
+| 계층 | 이름 | 역할 | 전송 단위 | 장비 |
+|:---:|---|---|---|---|
+| **7** | **응용 계층**(Application) | 사용자가 **네트워크에 접근할 수 있도록** 서비스 제공 | 데이터 | – |
+| **6** | **표현 계층**(Presentation) | **코드 변환, 데이터 암호화·압축, 구문 검색** | 데이터 | – |
+| **5** | **세션 계층**(Session) | **송·수신 측 간의 관련성을 유지**하고 대화 제어를 담당. **동기점** 설정 | 데이터 | – |
+| **4** | **전송 계층**(Transport) | **종단 시스템(End-to-End) 간의 신뢰성 있는 데이터 전송**. 오류·흐름 제어 | **세그먼트** | 게이트웨이 |
+| **3** | **네트워크 계층**(Network) | **경로 설정(Routing)**, 트래픽 제어, 패킷 정보 전송 | **패킷** | **라우터** |
+| **2** | **데이터 링크 계층**(Data Link) | **인접한 두 개의 노드 사이의 신뢰성 있는 전송**. 흐름 제어, 오류 제어, 순서 제어 | **프레임** | **브리지, 스위치** |
+| **1** | **물리 계층**(Physical) | 실제 회선 연결을 위한 **전기적·기계적·기능적 특성** 정의 | **비트** | **리피터, 허브** |
 
-| 프로토콜 | 설명 |
-|---|---|
-| **RIP**(Routing Information Protocol) | **소규모 네트워크**에서 사용. **거리 벡터(Distance Vector)** 알고리즘. **최대 홉 수 15**로 제한 |
-| **OSPF**(Open Shortest Path First) | **대규모 네트워크**에서 사용. **링크 상태(Link State)** 알고리즘. RIP 의 단점 보완 |
-| **BGP**(Border Gateway Protocol) | **자율 시스템(AS) 간의 경로 정보**를 교환. 인터넷 백본에서 사용 |
-| **IGRP / EIGRP** | **시스코**가 개발한 라우팅 프로토콜 |
-
-### 트래픽 제어 ⭐
-
-**전송되는 패킷의 흐름 또는 그 양을 조절**하는 기능.
-
-| 종류 | 설명 |
-|---|---|
-| **흐름 제어**(Flow Control) | 송·수신 측 사이의 전송되는 **패킷의 양이나 속도를 규제**.<br>**정지-대기(Stop-and-Wait)**, **슬라이딩 윈도우(Sliding Window)** |
-| **폭주(혼잡) 제어**(Congestion Control) | **네트워크 내의 패킷 수를 조절**해 오버플로를 방지.<br>**느린 시작(Slow Start)**, **혼잡 회피(Congestion Avoidance)** |
-| **교착 상태 방지**(Dead Lock Prevention) | 노드가 다른 노드의 패킷을 받아들이지 못해 **패킷 흐름이 정지되는 상태를 방지** |
+> 📌 암기: **"물데네전세표응"** (아래에서 위로) 또는 **"응표세전네데물"** (위에서 아래로)
 
 ---
 

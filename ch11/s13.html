@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
 <meta name="description" content="정보처리기사 실기 — 11. 응용 SW 기초 기술 활용 — 도해와 표로 정리한 학습 노트">
-<title>회복과 병행 제어 · 11. 응용 SW 기초 기술 활용</title>
+<title>경로 제어와 트래픽 제어 · 11. 응용 SW 기초 기술 활용</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
 <link rel="stylesheet" href="../assets/style.css">
 <script>
@@ -15,7 +15,7 @@ if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
 document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
 </script>
 <script>
-window.EIP_CHAPTER = {id:"ch11",title:"정보처리기사 실기 — 11. 응용 SW 기초 기술 활용",subtitle:"11. 응용 SW 기초 기술 활용",total:16,base:"../",page:"section",index:12,sections:[{f:"s01.html",n:"1",t:"운영체제의 개념과 종류"},{f:"s02.html",n:"2",t:"기억장치 관리"},{f:"s03.html",n:"3",t:"가상기억장치"},{f:"s04.html",n:"4",t:"프로세스와 스케줄링"},{f:"s05.html",n:"5",t:"환경 변수와 기본 명령어"},{f:"s06.html",n:"6",t:"인터넷과 IP 주소"},{f:"s07.html",n:"7",t:"OSI 참조 모델"},{f:"s08.html",n:"8",t:"네트워크 장비"},{f:"s09.html",n:"9",t:"TCP/IP"},{f:"s10.html",n:"10",t:"경로 제어와 트래픽 제어"},{f:"s11.html",n:"11",t:"소프트웨어·하드웨어·네트워크 신기술"},{f:"s12.html",n:"12",t:"소프트웨어 개발 보안과 관련 법령"},{f:"s13.html",n:"13",t:"회복과 병행 제어"},{f:"s14.html",n:"14",t:"교착 상태"},{f:"s15.html",n:"15",t:"데이터 표준화"},{f:"s16.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+window.EIP_CHAPTER = {id:"ch11",title:"정보처리기사 실기 — 11. 응용 SW 기초 기술 활용",subtitle:"11. 응용 SW 기초 기술 활용",total:16,base:"../",page:"section",index:12,sections:[{f:"s01.html",n:"1",t:"운영체제의 개념과 종류"},{f:"s02.html",n:"2",t:"기억장치 관리"},{f:"s03.html",n:"3",t:"가상기억장치"},{f:"s04.html",n:"4",t:"프로세스와 스케줄링"},{f:"s05.html",n:"5",t:"교착 상태"},{f:"s06.html",n:"6",t:"환경 변수와 기본 명령어"},{f:"s07.html",n:"7",t:"회복과 병행 제어"},{f:"s08.html",n:"8",t:"데이터 표준화"},{f:"s09.html",n:"9",t:"인터넷과 IP 주소"},{f:"s10.html",n:"10",t:"OSI 참조 모델"},{f:"s11.html",n:"11",t:"네트워크 장비"},{f:"s12.html",n:"12",t:"TCP/IP"},{f:"s13.html",n:"13",t:"경로 제어와 트래픽 제어"},{f:"s14.html",n:"14",t:"소프트웨어·하드웨어·네트워크 신기술"},{f:"s15.html",n:"15",t:"소프트웨어 개발 보안과 관련 법령"},{f:"s16.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
 </script>
 </head>
 <body>
@@ -53,53 +53,30 @@ window.EIP_CHAPTER = {id:"ch11",title:"정보처리기사 실기 — 11. 응용 
     </article>
     <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
 <script type="text/markdown" id="markdown-source">
-## (13) 회복과 병행 제어
+## (13) 경로 제어와 트래픽 제어
 
-### 회복(Recovery) ⭐
+### 경로 제어(Routing) ⭐
 
-트랜잭션들을 수행하는 도중 장애가 발생해 데이터베이스가 손상되었을 때
-**손상되기 이전의 정상 상태로 복구**하는 작업.
+송·수신 측 간의 **송신 경로 중에서 최적의 패킷 교환 경로를 결정**하는 기능.
 
-**장애의 유형**
+**경로 제어 프로토콜**
 
-| 유형 | 내용 |
+| 프로토콜 | 설명 |
 |---|---|
-| **트랜잭션 장애** | 트랜잭션의 **논리적 오류**나 입력 데이터의 불량 등 |
-| **시스템 장애** | 하드웨어의 오동작, **정전** 등 |
-| **미디어 장애** | 디스크 헤드 손상 등 **저장 장치의 물리적 손상** |
+| **RIP**(Routing Information Protocol) | **소규모 네트워크**에서 사용. **거리 벡터(Distance Vector)** 알고리즘. **최대 홉 수 15**로 제한 |
+| **OSPF**(Open Shortest Path First) | **대규모 네트워크**에서 사용. **링크 상태(Link State)** 알고리즘. RIP 의 단점 보완 |
+| **BGP**(Border Gateway Protocol) | **자율 시스템(AS) 간의 경로 정보**를 교환. 인터넷 백본에서 사용 |
+| **IGRP / EIGRP** | **시스코**가 개발한 라우팅 프로토콜 |
 
-**회복 기법** — 연기 갱신 기법, 즉각 갱신 기법, 그림자 페이지 대체 기법, 검사점 기법
+### 트래픽 제어 ⭐
 
-| 연산 | 의미 |
+**전송되는 패킷의 흐름 또는 그 양을 조절**하는 기능.
+
+| 종류 | 설명 |
 |---|---|
-| **REDO**(재실행) | **완료된** 트랜잭션의 내용을 로그를 이용해 **다시 실행** |
-| **UNDO**(취소) | **완료되지 못한** 트랜잭션의 변경 내용을 **취소** |
-
-### 병행 제어(Concurrency Control) ⭐⭐
-
-여러 개의 트랜잭션이 실행될 때 데이터베이스의 **일관성을 유지**하기 위해
-**트랜잭션 간의 상호 작용을 제어**하는 것.
-
-**병행 제어를 하지 않을 때 발생하는 문제점** ⭐
-
-| 문제 | 내용 |
-|---|---|
-| **갱신 분실**(Lost Update) | 두 개 이상의 트랜잭션이 같은 자료를 공유해 갱신할 때 **일부 갱신이 손실**되는 현상 |
-| **비완료 의존성**(Uncommitted Dependency) | 하나의 트랜잭션이 **비정상 종료되었는데** 회복되기 전에 다른 트랜잭션이 **참조**하는 현상. **임시 갱신** |
-| **모순성**(Inconsistency) | 두 개의 트랜잭션이 병행 수행되면서 **원치 않는 자료를 이용**해 **데이터베이스가 일관성을 잃는** 현상 |
-| **연쇄 복귀**(Cascading Rollback) | 병행 수행되던 트랜잭션 중 하나가 실패해 **롤백하면 다른 트랜잭션도 함께 롤백**되는 현상 |
-
-**병행 제어 기법** ⭐
-
-| 기법 | 설명 |
-|---|---|
-| **로킹**(Locking) | 트랜잭션이 어떤 데이터에 접근하고자 할 때 **잠금(Lock)을 설정**해 다른 트랜잭션이 접근하지 못하게 함.<br>**로킹 단위가 크면** 로크 수가 적어 관리는 쉽지만 **병행성 수준이 낮아짐**.<br>**로킹 단위가 작으면** 병행성 수준이 높아지지만 **관리가 복잡**해짐 |
-| **타임 스탬프 순서**(Time Stamp Ordering) | 트랜잭션과 트랜잭션이 읽거나 갱신한 데이터에 대해 **트랜잭션이 실행을 시작하기 전에 타임 스탬프를 부여**해 부여된 시간에 따라 순서대로 처리 |
-| **최적 병행 수행**(낙관적 검증) | 트랜잭션 수행 동안은 **어떠한 검사도 하지 않고**, 트랜잭션 종료 시 일괄적으로 검사 |
-| **다중 버전 기법** | 트랜잭션이 데이터를 읽을 때 **여러 버전 중 적절한 버전**을 선택해 읽음 |
-
-> ⚠️ **로킹 단위 ↑ → 로크 수 ↓, 병행성 ↓, 오버헤드 ↓**
-> **로킹 단위 ↓ → 로크 수 ↑, 병행성 ↑, 오버헤드 ↑**
+| **흐름 제어**(Flow Control) | 송·수신 측 사이의 전송되는 **패킷의 양이나 속도를 규제**.<br>**정지-대기(Stop-and-Wait)**, **슬라이딩 윈도우(Sliding Window)** |
+| **폭주(혼잡) 제어**(Congestion Control) | **네트워크 내의 패킷 수를 조절**해 오버플로를 방지.<br>**느린 시작(Slow Start)**, **혼잡 회피(Congestion Avoidance)** |
+| **교착 상태 방지**(Dead Lock Prevention) | 노드가 다른 노드의 패킷을 받아들이지 못해 **패킷 흐름이 정지되는 상태를 방지** |
 
 ---
 

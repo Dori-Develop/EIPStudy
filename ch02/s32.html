@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
 <meta name="description" content="정보처리기사 실기 — 02. 데이터 입·출력 구현 — 도해와 표로 정리한 학습 노트">
-<title>정렬(Sort) · 02. 데이터 입·출력 구현</title>
+<title>오류 데이터 측정 및 정제 · 02. 데이터 입·출력 구현</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
 <link rel="stylesheet" href="../assets/style.css">
 <script>
@@ -15,7 +15,7 @@ if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
 document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
 </script>
 <script>
-window.EIP_CHAPTER = {id:"ch02",title:"정보처리기사 실기 — 02. 데이터 입·출력 구현",subtitle:"02. 데이터 입·출력 구현",total:33,base:"../",page:"section",index:31,sections:[{f:"s01.html",n:"1",t:"데이터 전환"},{f:"s02.html",n:"2",t:"데이터 검증"},{f:"s03.html",n:"3",t:"오류 데이터 측정 및 정제"},{f:"s04.html",n:"4",t:"데이터베이스 개요"},{f:"s05.html",n:"5",t:"데이터베이스 설계"},{f:"s06.html",n:"6",t:"데이터 모델의 개념"},{f:"s07.html",n:"7",t:"데이터 모델의 구성 요소"},{f:"s08.html",n:"8",t:"식별자(Identifier)"},{f:"s09.html",n:"9",t:"E-R(개체-관계) 모델"},{f:"s10.html",n:"10",t:"관계형 데이터베이스의 구조"},{f:"s11.html",n:"11",t:"키(Key)"},{f:"s12.html",n:"12",t:"무결성(Integrity)"},{f:"s13.html",n:"13",t:"관계대수와 관계해석"},{f:"s14.html",n:"14",t:"이상과 함수적 종속"},{f:"s15.html",n:"15",t:"정규화(Normalization)"},{f:"s16.html",n:"16",t:"반정규화(Denormalization)"},{f:"s17.html",n:"17",t:"시스템 카탈로그"},{f:"s18.html",n:"18",t:"데이터베이스 저장 공간 설계"},{f:"s19.html",n:"19",t:"트랜잭션 분석과 CRUD 분석"},{f:"s20.html",n:"20",t:"인덱스(Index)"},{f:"s21.html",n:"21",t:"뷰와 클러스터"},{f:"s22.html",n:"22",t:"파티션(Partition)"},{f:"s23.html",n:"23",t:"분산 데이터베이스 설계"},{f:"s24.html",n:"24",t:"데이터베이스 이중화와 서버 클러스터링"},{f:"s25.html",n:"25",t:"데이터베이스 보안"},{f:"s26.html",n:"26",t:"데이터베이스 백업"},{f:"s27.html",n:"27",t:"스토리지(Storage)"},{f:"s28.html",n:"28",t:"논리 데이터 모델의 물리 데이터 모델 변환"},{f:"s29.html",n:"29",t:"물리 데이터 모델 품질 검토"},{f:"s30.html",n:"30",t:"자료 구조"},{f:"s31.html",n:"31",t:"트리와 이진 트리"},{f:"s32.html",n:"32",t:"정렬(Sort)"},{f:"s33.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+window.EIP_CHAPTER = {id:"ch02",title:"정보처리기사 실기 — 02. 데이터 입·출력 구현",subtitle:"02. 데이터 입·출력 구현",total:33,base:"../",page:"section",index:31,sections:[{f:"s01.html",n:"1",t:"자료 구조"},{f:"s02.html",n:"2",t:"트리와 이진 트리"},{f:"s03.html",n:"3",t:"정렬(Sort)"},{f:"s04.html",n:"4",t:"데이터베이스 개요"},{f:"s05.html",n:"5",t:"데이터베이스 설계"},{f:"s06.html",n:"6",t:"데이터 모델의 개념"},{f:"s07.html",n:"7",t:"데이터 모델의 구성 요소"},{f:"s08.html",n:"8",t:"식별자(Identifier)"},{f:"s09.html",n:"9",t:"E-R(개체-관계) 모델"},{f:"s10.html",n:"10",t:"관계형 데이터베이스의 구조"},{f:"s11.html",n:"11",t:"키(Key)"},{f:"s12.html",n:"12",t:"무결성(Integrity)"},{f:"s13.html",n:"13",t:"관계대수와 관계해석"},{f:"s14.html",n:"14",t:"이상과 함수적 종속"},{f:"s15.html",n:"15",t:"정규화(Normalization)"},{f:"s16.html",n:"16",t:"반정규화(Denormalization)"},{f:"s17.html",n:"17",t:"시스템 카탈로그"},{f:"s18.html",n:"18",t:"데이터베이스 저장 공간 설계"},{f:"s19.html",n:"19",t:"트랜잭션 분석과 CRUD 분석"},{f:"s20.html",n:"20",t:"인덱스(Index)"},{f:"s21.html",n:"21",t:"뷰와 클러스터"},{f:"s22.html",n:"22",t:"파티션(Partition)"},{f:"s23.html",n:"23",t:"분산 데이터베이스 설계"},{f:"s24.html",n:"24",t:"데이터베이스 이중화와 서버 클러스터링"},{f:"s25.html",n:"25",t:"데이터베이스 보안"},{f:"s26.html",n:"26",t:"데이터베이스 백업"},{f:"s27.html",n:"27",t:"스토리지(Storage)"},{f:"s28.html",n:"28",t:"논리 데이터 모델의 물리 데이터 모델 변환"},{f:"s29.html",n:"29",t:"물리 데이터 모델 품질 검토"},{f:"s30.html",n:"30",t:"데이터 전환"},{f:"s31.html",n:"31",t:"데이터 검증"},{f:"s32.html",n:"32",t:"오류 데이터 측정 및 정제"},{f:"s33.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
 </script>
 </head>
 <body>
@@ -53,51 +53,44 @@ window.EIP_CHAPTER = {id:"ch02",title:"정보처리기사 실기 — 02. 데이�
     </article>
     <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
 <script type="text/markdown" id="markdown-source">
-## (32) 정렬(Sort)
+## (32) 오류 데이터 측정 및 정제
 
-### 정렬
+### 오류 데이터 측정
 
-자료를 특정 기준에 따라 **순서대로 나열하는 것**.
+데이터 품질 분석을 통해 원천 및 목적 시스템 데이터의 **오류를 측정**하는 작업.
 
-### 주요 정렬 알고리즘 ⭐⭐
+```mermaid
+flowchart LR
+    A[데이터 품질 분석] --> B[오류 관리 목록 작성] --> C[오류 데이터 측정]
+```
 
-| 정렬 | 방식 | 평균 시간 복잡도 | 최악 시간 복잡도 |
-|---|---|---|---|
-| **삽입 정렬**<br>(Insertion Sort) | 이미 정렬된 부분에 **새 자료의 위치를 찾아 삽입** | O(n²) | O(n²) |
-| **선택 정렬**<br>(Selection Sort) | n 개 중 **최솟값을 찾아 첫 번째와 교환**하는 과정을 반복 | O(n²) | O(n²) |
-| **버블 정렬**<br>(Bubble Sort) | **인접한 두 원소를 비교해 교환**하는 과정을 반복 | O(n²) | O(n²) |
-| **쉘 정렬**<br>(Shell Sort) | 삽입 정렬을 개선. **일정한 간격(Gap)** 으로 나눠 정렬 | O(n^1.5) | O(n²) |
-| **퀵 정렬**<br>(Quick Sort) | **피벗(Pivot)** 을 기준으로 분할해 정렬. **분할 정복** | **O(n log₂n)** | O(n²) |
-| **힙 정렬**<br>(Heap Sort) | **완전 이진 트리(힙)** 를 이용 | **O(n log₂n)** | **O(n log₂n)** |
-| **합병 정렬**<br>(Merge Sort) | 자료를 **반씩 나눈 뒤 정렬하며 합병** | **O(n log₂n)** | **O(n log₂n)** |
-| **기수 정렬**<br>(Radix Sort) | **자릿수를 기준**으로 버킷에 분배해 정렬 | O(dn) | O(dn) |
-
-> ⚠️ **퀵 정렬은 평균 O(n log₂n) 이지만 최악은 O(n²)** 임. 이 대비가 자주 나옴.
-> 💡 **항상 O(n log₂n)** 인 것은 **힙 정렬과 합병 정렬** 둘뿐임.
-
-### 검색 알고리즘
-
-| 검색 | 설명 | 시간 복잡도 |
-|---|---|---|
-| **선형 검색**(Linear) | 처음부터 **순차적으로** 비교 | O(n) |
-| **이진 검색**(Binary) | **정렬된** 자료를 반씩 나눠 비교 | O(log₂n) |
-
-**이진 검색의 중간 위치** = (초기 위치 + 최종 위치) ÷ 2 (소수점 이하 버림)
-
-### 해싱(Hashing)
-
-**해시 함수**를 이용해 키 값으로부터 레코드가 저장될 주소를 **직접 계산**하는 방식.
-
-| 용어 | 의미 |
+| 구분 | 내용 |
 |---|---|
-| **버킷**(Bucket) | 하나의 주소를 갖는 파일의 한 구역. 여러 개의 슬롯으로 구성 |
-| **슬롯**(Slot) | 한 개의 레코드를 저장할 수 있는 공간 |
-| **충돌**(Collision) | 서로 다른 키가 **같은 주소로 계산**되는 현상 |
-| **동의어**(Synonym) | 충돌이 발생한 **키들의 집합** |
-| **오버플로**(Overflow) | 버킷에 **더 이상 빈 슬롯이 없는** 상태 |
+| **데이터 품질 분석** | 원천·목적 시스템 데이터의 **품질을 확인**해 오류 데이터를 찾는 작업 |
+| **오류 관리 목록** | 오류 위치, 유형, 심각도 등을 기록한 목록 |
+| **오류 데이터 측정** | 오류 관리 목록을 기준으로 **오류 데이터를 세는** 작업 |
 
-**해시 함수의 종류** — 제산법(Division), 제곱법(Mid-Square), 폴딩법(Folding),
-기수 변환법(Radix), 대수적 코딩법, 계수 분석법(Digit Analysis), 무작위법(Random)
+### 오류 상태별 분류 ⭐
+
+| 상태 | 의미 |
+|---|---|
+| **Open** | 오류가 **보고만 되고** 분석되지 않은 상태 |
+| **Assigned** | 오류의 영향 분석 및 수정을 위해 **개발자에게 할당**된 상태 |
+| **Fixed** | 개발자가 **오류를 수정한** 상태 |
+| **Closed** | 수정된 오류에 대해 **재검사를 마쳐 종료**된 상태 |
+| **Deferred** | 오류 수정을 **연기**한 상태 |
+| **Classified** | 보고된 오류를 **테스트 팀이 검토한 결과 오류가 아니라고 분류**한 상태 |
+
+### 오류 심각도별 분류
+
+**높음 · 보통 · 낮음** 또는 **상 · 중 · 하** 로 나눔.
+
+### 데이터 정제
+
+오류 데이터를 **분석해 원인을 찾고 수정**하는 작업.
+
+- **정제 요청서** : 오류 원인 분석 결과와 정제 방안을 기록한 문서
+- **정제 보고서** : 정제 요청서를 근거로 정제 작업을 수행한 결과를 기록한 문서
 
 ---
 
