@@ -27,6 +27,8 @@
   var S = (window.EIP && window.EIP.store) || null;
 
   var SWIPE_MIN = 55;      /* 이만큼 밀어야 넘김으로 친다 (px) */
+  var LOCK_MIN = 10;       /* 이만큼 움직이면 가로·세로 중 하나로 못 박는다 */
+  var Y_BIAS = 1.3;        /* 세로가 가로보다 이 배 이상이어야 스크롤로 넘긴다 */
   var ZONE = 0.34;         /* 카드 좌·우 끝 34% 가 넘김 구역, 가운데 32% 가 뒤집기 */
   var OUT_MS = 190;        /* 날아가는 동안 */
 
@@ -264,7 +266,6 @@
     var spec = STAGES[stage];
     hintEl.innerHTML = '';
     hintEl.appendChild(el('span', 'chint__side', spec.left.hint));
-    hintEl.appendChild(el('span', 'chint__mid', flipped ? '앞면으로' : '뒤집기'));
     hintEl.appendChild(el('span', 'chint__side', spec.right.hint));
 
     var chapter = TOC[card.ch];
@@ -293,6 +294,7 @@
 
   function bindInput() {
     var startX = 0, startY = 0, dragging = false, swiped = false;
+    var axis = '';        /* '' 아직 판단 안 함 · 'x' 카드 넘기기 · 'y' 페이지 스크롤 */
 
     /* --- 마우스: 카드를 좌·가운데·우 세 구역으로 나눠 누른 위치로 구분 --- */
     cardEl.addEventListener('click', function (e) {
@@ -301,13 +303,26 @@
       if (z === 'mid') flip(); else act(z);
     });
 
-    /* --- 터치: 좌우로 밀기 --- */
+    /* --- 터치: 좌우로 밀기 ---
+       손가락이 처음 LOCK_MIN 만큼 움직인 순간 방향을 하나로 못 박는다.
+       가로로 잠기면 preventDefault 로 브라우저의 세로 스크롤을 끊는다 —
+       안 그러면 비스듬히 밀 때 카드는 옆으로 가면서 페이지가 같이 위아래로 흔들린다.
+       ⚠️ 그래서 touchmove 는 반드시 passive: false 여야 한다. passive 면 막을 수 없다.
+          CSS 의 touch-action: pan-y 는 그대로 둔다 — 세로로 잠겼을 때 쓸 스크롤이다. */
+    function endDrag() {
+      dragging = false;
+      axis = '';
+      cardEl.classList.remove('is-dragging');
+      cardEl.style.transform = '';
+    }
+
     cardEl.addEventListener('touchstart', function (e) {
       if (busy || e.touches.length !== 1) return;
       startX = e.touches[0].clientX;
       startY = e.touches[0].clientY;
       dragging = true;
       swiped = false;
+      axis = '';
       cardEl.classList.add('is-dragging');
     }, { passive: true });
 
@@ -315,26 +330,33 @@
       if (!dragging) return;
       var dx = e.touches[0].clientX - startX;
       var dy = e.touches[0].clientY - startY;
-      /* 세로로 더 많이 움직였으면 페이지 스크롤이다 — 손을 뗀다 */
-      if (Math.abs(dy) > Math.abs(dx)) {
-        dragging = false;
-        cardEl.classList.remove('is-dragging');
-        cardEl.style.transform = '';
-        return;
+
+      if (!axis) {
+        /* 아직 어느 쪽인지 모를 만큼 조금 움직였다 — 판단을 미룬다 */
+        if (Math.abs(dx) < LOCK_MIN && Math.abs(dy) < LOCK_MIN) return;
+        /* 카드는 좌우로 넘기는 물건이라 세로로 확실히 기울어야 세로로 친다 */
+        axis = Math.abs(dy) > Math.abs(dx) * Y_BIAS ? 'y' : 'x';
+        if (axis === 'y') { endDrag(); return; }   /* 페이지 스크롤에 넘긴다 */
       }
+
+      if (e.cancelable) e.preventDefault();
       cardEl.style.transform = 'translateX(' + dx + 'px) rotate(' + (dx / 28) + 'deg)';
-    }, { passive: true });
+    }, { passive: false });
 
     cardEl.addEventListener('touchend', function (e) {
       if (!dragging) return;
-      dragging = false;
-      cardEl.classList.remove('is-dragging');
-      cardEl.style.transform = '';
+      var lockedX = axis === 'x';
+      endDrag();
+      if (!lockedX) return;
       var dx = (e.changedTouches[0] || {}).clientX - startX;
       if (Math.abs(dx) >= SWIPE_MIN) {
         swiped = true;
         act(dx < 0 ? 'left' : 'right');
       }
+    });
+
+    cardEl.addEventListener('touchcancel', function () {
+      if (dragging) endDrag();
     });
 
     /* --- 키보드 --- */
@@ -395,8 +417,10 @@
     cardEl.appendChild(inner);
     deckEl.appendChild(cardEl);
 
+    /* 뒤집기 안내를 카드 위 힌트 줄에서 뺐으므로 여기서만 알려 준다 */
     deckEl.appendChild(el('p', 'ckeys',
-      '스페이스 뒤집기 · ← → 넘기기 · Backspace 되돌리기 · 폰에서는 좌우로 밀기'));
+      '가운데를 눌러 뒤집기 · 좌우 끝을 눌러 넘기기 · 폰에서는 좌우로 밀기' +
+      '  |  Space 뒤집기 · ← → 넘기기 · Backspace 되돌리기'));
 
     root.appendChild(deckEl);
 
