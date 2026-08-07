@@ -111,11 +111,25 @@
   text-align: center; line-height: 1.7;
   overflow-y: auto;
 }
+/* 글은 면의 자식 하나에 담는다 — cards.js 주석 참고.
+   ⚠️ word-break: keep-all 이 없으면 한글이 낱말 한가운데서 끊긴다 ("언 / 어)").
+      body 의 overflow-wrap: break-word 를 여기서 되돌리는 것이다.
+      대신 overflow-wrap: anywhere 를 남겨 아주 긴 덩어리는 마지막 수단으로 끊는다. */
+.ccard__text {
+  width: 100%;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+/* 긴 글은 가운데 정렬이면 줄마다 시작점이 달라 눈이 헤맨다 */
+.ccard__text.is-long { text-align: left; }
+
 .ccard__face--front { font-size: 20px; font-weight: 700; letter-spacing: -.01em; }
+.ccard__face--front .ccard__text.is-long { font-size: 17px; }
 .ccard__face--back {
   transform: rotateY(180deg);
   font-size: 16px; color: var(--fg-muted);
 }
+.ccard__face--back .ccard__text.is-long { font-size: 14.5px; line-height: 1.85; }
 .ccard__face--back b { color: var(--fg); font-weight: 800; }
 .ccard__face code {
   padding: 1px 5px;

@@ -14,7 +14,7 @@ window.EIP_CARDS = [
 ,{id:"ch01-card-자료사전기호6가지",ch:"ch01",s:30,f:"<b>자료 사전 기호 6가지</b>",b:"<code>=</code> 정의, <code>+</code> 연결, <code>()</code> 생략, <code>[]</code> 선택, <code>{}</code> 반복, <code>**</code> 주석"}
 ,{id:"ch01-card-정형명세기법4가지",ch:"ch01",s:30,f:"<b>정형 명세 기법 4가지</b>",b:"<b>VDM</b>(비엔나 개발 기법) · <b>Z</b>(Z 표기법) · <b>Petri-net</b>(페트리 넷) · <b>CSP</b>(통신 순차 프로세스)"}
 ,{id:"ch01-card-비정형명세기법4가지",ch:"ch01",s:30,f:"<b>비정형 명세 기법 4가지</b>",b:"<b>FSM</b>(유한 상태 기계) · <b>Decision Table</b>(결정표) · <b>ER 모델링</b> · <b>State Chart</b>(상태 차트)"}
-,{id:"ch01-card-요구사항분석CASE기술언어와분석기짝",ch:"ch01",s:30,f:"<b>요구사항 분석 CASE — 기술 언어와 분석기 짝</b>",b:"<b>RSL</b>(요구사항 기술 언어) ↔ <b>REVS</b>(분석기) — SREM, TRW 사 · <b>PSL</b>(문제 기술 언어) ↔ <b>PSA</b>(분석기) — 미시간 대학 · <b>SADT</b> — SoftTech 사"}
+,{id:"ch01-card-요구사항분석CASE기술언어와분석기짝",ch:"ch01",s:30,f:"<b>요구사항 분석 CASE — 기술 언어와 분석기 짝</b>",b:"<b>RSL</b>(요구사항 기술 언어) ↔ <b>REVS</b>(분석기) — SREM, TRW 사<br><b>PSL</b>(문제 기술 언어) ↔ <b>PSA</b>(분석기) — 미시간 대학<br><b>SADT</b> — SoftTech 사"}
 ,{id:"ch01-card-HIPO3종",ch:"ch01",s:30,f:"<b>HIPO 3종</b>",b:"가시적 도표 · 총체적 도표 · 세부적 도표"}
 ,{id:"ch01-card-UML구성3요소",ch:"ch01",s:30,f:"<b>UML 구성 3요소</b>",b:"사물(Things) · 관계(Relationships) · 다이어그램(Diagram)"}
 ,{id:"ch01-card-UML관계6종",ch:"ch01",s:30,f:"<b>UML 관계 6종</b>",b:"연관 · 집합(빈 마름모) · 포함(찬 마름모) · 일반화(빈 화살표) · 의존(점선) · 실체화(점선+빈 화살표)"}
