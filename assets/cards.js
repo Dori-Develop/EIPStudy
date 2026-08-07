@@ -339,9 +339,14 @@
     });
 
     /* --- 터치: 위아래로 밀기 ---
-       CSS 의 touch-action: none 이 카드 위 제스처를 통째로 우리에게 준다.
-       브라우저가 스크롤을 시작할 일이 없으므로 preventDefault 도, 방향 잠금도 필요 없다.
-       좌우로 밀 때 페이지가 같이 흔들리던 문제를 축을 옮겨 근본에서 없앤 것이다.
+       카드 위 제스처는 통째로 우리가 받는다. 좌우로 밀 때 페이지가 같이 흔들리던
+       문제를 축을 옮겨 근본에서 없앴다.
+
+       🚨 CSS 의 touch-action: none 만 믿으면 안 된다. 실제로 바깥 스크롤이 따라왔다.
+          .ccard__face 가 overflow-y: auto 라 스크롤 컨테이너가 되고, 브라우저마다
+          어느 조상의 touch-action 을 볼지가 갈린다.
+          touchmove 를 passive: false 로 열어 두고 직접 preventDefault 로 끊는다.
+          passive 로 두면 막을 수단 자체가 없다.
 
        ⚠️ 대신 카드 위에서는 페이지가 스크롤되지 않는다. 카드 위아래 여백으로 스크롤한다. */
     function endDrag() {
@@ -362,9 +367,10 @@
 
     cardEl.addEventListener('touchmove', function (e) {
       if (!dragging) return;
+      if (e.cancelable) e.preventDefault();   /* 바깥 스크롤을 끊는다 */
       var dy = e.touches[0].clientY - startY;
       cardEl.style.transform = 'translateY(' + dy + 'px)';
-    }, { passive: true });
+    }, { passive: false });
 
     cardEl.addEventListener('touchend', function (e) {
       if (!dragging) return;

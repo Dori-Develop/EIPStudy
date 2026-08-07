@@ -127,7 +127,11 @@ a.cmeta__where:hover { color: var(--accent); text-decoration: underline; }
   box-shadow: var(--shadow);
   backface-visibility: hidden; -webkit-backface-visibility: hidden;
   text-align: center; line-height: 1.7;
+  /* 글이 카드보다 길어지는 드문 경우의 안전판.
+     스크롤 컨테이너가 되므로 여기서 스크롤이 바깥으로 번지지 않게 막아 둔다 —
+     실제로 끊는 것은 cards.js 의 preventDefault 지만 그것이 안 먹는 경우의 보험이다. */
   overflow-y: auto;
+  overscroll-behavior: contain;
 }
 /* 글은 면의 자식 하나에 담는다 — cards.js 주석 참고.
    ⚠️ word-break: keep-all 이 없으면 한글이 낱말 한가운데서 끊긴다 ("언 / 어)").
