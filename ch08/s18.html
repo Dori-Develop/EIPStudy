@@ -57,37 +57,37 @@ window.EIP_CHAPTER = {id:"ch08",title:"정보처리기사 실기 — 08. SQL 응
 
 | 구분 | 암기 포인트 |
 |---|---|
-| **DDL** | **CREATE · ALTER · DROP** — 구조 정의 |
-| **DML** | **SELECT · INSERT · DELETE · UPDATE** — 데이터 조작 |
-| **DCL** | **GRANT · REVOKE · COMMIT · ROLLBACK** — 보안·무결성·회복 |
-| **참조 무결성 옵션** | NO ACTION · **CASCADE** · SET NULL · SET DEFAULT |
+| **DDL 명령어 3가지** | **CREATE · ALTER · DROP** — 구조 정의 |
+| **DML 명령어 4가지** | **SELECT · INSERT · DELETE · UPDATE** — 데이터 조작 |
+| **DCL 명령어 4가지** | **GRANT · REVOKE · COMMIT · ROLLBACK** — 보안·무결성·회복 |
+| **참조 무결성 옵션 4가지** | NO ACTION · **CASCADE** · SET NULL · SET DEFAULT |
 | **DROP 옵션** | **CASCADE**(같이 삭제) · **RESTRICT**(참조 중이면 취소) |
 | **DROP/TRUNCATE/DELETE** | DROP=구조+데이터 / TRUNCATE=데이터만(롤백X) / DELETE=행 단위(롤백O) |
-| **사용자 등급** | **DBA · RESOURCE · CONNECT** |
+| **사용자 등급 3가지** | **DBA · RESOURCE · CONNECT** |
 | **GRANT 옵션** | **WITH GRANT OPTION**(재부여 권한까지) |
-| **TCL** | **COMMIT · ROLLBACK · SAVEPOINT** |
+| **TCL 명령어 3가지** | **COMMIT · ROLLBACK · SAVEPOINT** |
 | **SELECT 절 순서** | SELECT → FROM → WHERE → GROUP BY → HAVING → ORDER BY |
 | **SELECT 실행 순서** | **FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY** |
-| **PREDICATE** | ALL(기본) · **DISTINCT**(중복 제거) |
-| **기타 연산자** | BETWEEN · IN · **LIKE(`%` 문자열, `_` 한 문자)** · **IS NULL** |
-| **그룹 함수** | COUNT · SUM · AVG · MAX · MIN · STDDEV · VARIANCE |
+| **SELECT 중복 처리 PREDICATE 2가지** | ALL(기본) · **DISTINCT**(중복 제거) |
+| **WHERE 기타 연산자 4가지** | BETWEEN · IN · **LIKE(`%` 문자열, `_` 한 문자)** · **IS NULL** |
+| **그룹 함수 7가지** | COUNT · SUM · AVG · MAX · MIN · STDDEV · VARIANCE |
 | **WHERE vs HAVING** | WHERE = **그룹 전(행)**, HAVING = **그룹 후(그룹)** |
-| **집합 연산자** | **UNION**(중복 제거) · **UNION ALL**(중복 포함) · INTERSECT · EXCEPT |
-| **JOIN 분류** | INNER(EQUI·NON-EQUI) / OUTER(LEFT·RIGHT·FULL) / SELF / CROSS |
+| **집합 연산자 4가지** | **UNION**(중복 제거) · **UNION ALL**(중복 포함) · INTERSECT · EXCEPT |
+| **JOIN 분류 4가지** | INNER(EQUI·NON-EQUI) / OUTER(LEFT·RIGHT·FULL) / SELF / CROSS |
 | **자연 조인** | EQUI JOIN 에서 **중복 속성을 한 번만** 표기 |
-| **순위 함수** | ROW_NUMBER(1,2,3,4) · **RANK(1,2,2,4)** · **DENSE_RANK(1,2,2,3)** |
-| **프로시저 구성** | DECLARE · BEGIN/END · CONTROL · SQL · EXCEPTION · **TRANSACTION** |
+| **순위 함수 3가지** | ROW_NUMBER(1,2,3,4) · **RANK(1,2,2,4)** · **DENSE_RANK(1,2,2,3)** |
+| **프로시저 구성 6부분** | DECLARE · BEGIN/END · CONTROL · SQL · EXCEPTION · **TRANSACTION** |
 | **함수 구성** | 프로시저와 같되 TRANSACTION 대신 **RETURN** |
 | **트리거** | 이벤트 발생 시 자동 실행. **DCL 사용 불가**. BEFORE/AFTER + NEW/OLD |
 | **프로시저 vs 함수** | 함수는 **반드시 RETURN**, SQL 문 내에서 직접 호출 |
 | **커서 순서** | **OPEN → FETCH → CLOSE** |
-| **커서 종류** | **묵시적**(DBMS 자동) · **명시적**(사용자 정의, 여러 행) |
-| **DBMS 접속 기술** | **JDBC**(Java) · **ODBC**(언어 무관, MS) · **MyBatis**(SQL Mapping) |
+| **커서 종류 2가지** | **묵시적**(DBMS 자동) · **명시적**(사용자 정의, 여러 행) |
+| **DBMS 접속 기술 3가지** | **JDBC**(Java) · **ODBC**(언어 무관, MS) · **MyBatis**(SQL Mapping) |
 | **동적 SQL** | 실행 시점에 구성. 유연하나 **느리고 SQL 삽입에 취약** |
 | **ORM** | 객체↔테이블 자동 매핑. Hibernate/JPA. 한계는 **성능·복잡 쿼리** |
-| **옵티마이저** | **RBO**(규칙 기반) · **CBO**(비용 기반, 통계 정보) |
+| **옵티마이저 2가지** | **RBO**(규칙 기반) · **CBO**(비용 기반, 통계 정보) |
 | **실행 계획 확인** | **EXPLAIN PLAN** |
-| **조인 기법** | Nested Loop(소량) · Sort Merge(정렬) · **Hash(대량)** |
+| **조인 기법 3가지** | Nested Loop(소량) · Sort Merge(정렬) · **Hash(대량)** |
 </script>
   </main>
 </div>
