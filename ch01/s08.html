@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 01. 요구사항 확인 — 도해와 표로 정리한 학습 노트">
+<title>요구사항 분석 · 01. 요구사항 확인</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch01",title:"정보처리기사 실기 — 01. 요구사항 확인",subtitle:"01. 요구사항 확인",total:31,base:"../",page:"section",index:7,sections:[{f:"s01.html",n:"1",t:"소프트웨어 생명 주기"},{f:"s02.html",n:"2",t:"스크럼(Scrum) 기법"},{f:"s03.html",n:"3",t:"XP(eXtreme Programming) 기법"},{f:"s04.html",n:"4",t:"현행 시스템 파악"},{f:"s05.html",n:"5",t:"개발 기술 환경 파악"},{f:"s06.html",n:"6",t:"요구사항 정의"},{f:"s07.html",n:"7",t:"요구사항 개발 프로세스"},{f:"s08.html",n:"8",t:"요구사항 분석"},{f:"s09.html",n:"9",t:"요구사항 분석 CASE와 HIPO"},{f:"s10.html",n:"10",t:"UML(Unified Modeling Language)의 개요"},{f:"s11.html",n:"11",t:"UML — 관계(Relationship)"},{f:"s12.html",n:"12",t:"UML — 다이어그램"},{f:"s13.html",n:"13",t:"유스케이스(Use Case) 다이어그램"},{f:"s14.html",n:"14",t:"활동(Activity) 다이어그램"},{f:"s15.html",n:"15",t:"클래스(Class) 다이어그램"},{f:"s16.html",n:"16",t:"시퀀스(Sequence) 다이어그램"},{f:"s17.html",n:"17",t:"커뮤니케이션(Communication) 다이어그램"},{f:"s18.html",n:"18",t:"상태(State) 다이어그램"},{f:"s19.html",n:"19",t:"패키지(Package) 다이어그램"},{f:"s20.html",n:"20",t:"소프트웨어 개발 방법론"},{f:"s21.html",n:"21",t:"S/W 공학의 발전적 추세"},{f:"s22.html",n:"22",t:"비용 산정 기법"},{f:"s23.html",n:"23",t:"비용 산정 기법 — 하향식"},{f:"s24.html",n:"24",t:"비용 산정 기법 — 상향식"},{f:"s25.html",n:"25",t:"수학적 산정 기법"},{f:"s26.html",n:"26",t:"프로젝트 일정 계획"},{f:"s27.html",n:"27",t:"소프트웨어 개발 방법론 결정과 프로젝트 관리"},{f:"s28.html",n:"28",t:"소프트웨어 개발 표준"},{f:"s29.html",n:"29",t:"소프트웨어 개발 방법론 테일러링"},{f:"s30.html",n:"30",t:"소프트웨어 개발 프레임워크"},{f:"s31.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>01. 요구사항 확인</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (8) 요구사항 분석
+
+### 요구사항 분석(Requirement Analysis)
+
+소프트웨어 개발의 **실제적인 첫 단계**로, 사용자의 요구를 이해하고 **문서화(명세화)** 하는 활동.
+
+- 사용자 요구의 **타당성**을 조사하고 비용·일정의 제약을 설정.
+- 사용자의 요구를 정확히 추출해 목표를 확정.
+
+### 구조적 분석 기법
+
+**자료의 흐름과 처리**를 중심에 놓는 요구사항 분석 방법.
+
+- **도형 중심**의 분석용 도구와 절차로 요구사항을 파악하고 문서화.
+- **하향식** 방법으로 시스템을 세분화할 수 있음.
+- 분석의 **중복을 배제**할 수 있음.
+
+**주요 도구** ⭐ — 자료 흐름도(DFD) · 자료 사전(DD) · 소단위 명세서(Mini-Spec.) ·
+개체 관계도(ERD) · 상태 전이도(STD) · 제어 명세서
+
+### 자료 흐름도(DFD; Data Flow Diagram)
+
+자료가 **어떻게 흘러가고 어떻게 변환되며 어떤 기능을 거치는지**를 **도형 중심**으로 기술하는 방법.
+
+- **자료 흐름 그래프**, **버블 차트**라고도 .
+- 자료 흐름과 처리를 중심으로 하는 **구조적 분석 기법**에 이용됨.
+
+#### 자료 흐름도 기본 기호 ⭐⭐
+
+기호는 4가지뿐이고, 표기법은 **Yourdon/DeMarco** 와 **Gane/Sarson** 두 갈래가 있음.
+
+| 기호 | 의미 | **Yourdon / DeMarco** | **Gane / Sarson** |
+|---|---|---|---|
+| **프로세스**<br>(Process) | 자료를 변환시키는 시스템의 한 부분(처리 과정).<br>**처리, 기능, 변환, 버블**이라고도 . | **원(타원)** 안에 처리명 기입<br>`( 대출 확인 )` | **모서리가 둥근 사각형** 안에 처리명 기입<br>`▢ 대출 확인 ▢` |
+| **자료 흐름**<br>(Data Flow) | 자료의 **이동(흐름)이나 연관관계**를 나타냄. | **화살표** 위에 자료명 기입<br>`──도서 코드──▶` | *(동일)* |
+| **자료 저장소**<br>(Data Store) | 시스템 안의 자료 저장소(**파일, 데이터베이스**)를 나타냄. | **위·아래 두 개의 평행선** 사이에 저장소명 기입<br>`═ 도서대장 ═` | **오른쪽이 열린 사각형** + 왼쪽에 **ID 칸**<br>`[ID│ 도서대장` |
+| **단말**<br>(Terminator) | 시스템과 교신하는 **외부 개체**.<br>입력 데이터를 만들고 출력 데이터를 받음. | **사각형** 안에 외부 개체명 기입<br>`[ 출판사 ]` | **그림자가 있는(겹쳐진) 사각형** |
+
+> ⚠️ **기본 기호 4가지**는 단답형으로 출제될 수 있음. **종류와 명칭을 영문까지** 암기할 것.
+> ⚠️ 실무·시험 모두 **Yourdon / DeMarco 표기법**이 주로 사용됨.
+
+### 자료 사전(DD; Data Dictionary)
+
+자료 흐름도에 등장하는 **자료를 더 자세히 정의하고 기록**한 것.
+데이터를 설명하는 데이터이므로 **메타 데이터(Meta Data)** 라고도 .
+
+#### 자료 사전 표기 기호 ⭐⭐
+
+| 기호 | 의미 |
+|:---:|---|
+| `=` | **자료의 정의** : ~로 구성되어 있다. (is composed of) |
+| `+` | **자료의 연결** : 그리고 (and) |
+| `( )` | **자료의 생략** : 생략 가능한 자료 (Optional) |
+| `[ ]` | **자료의 선택** : 또는 (or) |
+| `{ }` | **자료의 반복** : Iteration of<br>① `{ }ₙ` : **n번 이상** 반복<br>② `{ }ⁿ` : **최대 n번** 반복<br>③ `{ }ⁿₘ` : **m 이상 n 이하**로 반복 |
+| `* *` | **자료의 설명** : 주석 (Comment) |
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+<script src="../assets/bank-ch01.js"></script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

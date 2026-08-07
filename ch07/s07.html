@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 07. 애플리케이션 테스트 관리 — 도해와 표로 정리한 학습 노트">
+<title>통합 테스트의 종류 · 07. 애플리케이션 테스트 관리</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch07",title:"정보처리기사 실기 — 07. 애플리케이션 테스트 관리",subtitle:"07. 애플리케이션 테스트 관리",total:15,base:"../",page:"section",index:6,sections:[{f:"s01.html",n:"1",t:"애플리케이션 테스트의 개요"},{f:"s02.html",n:"2",t:"애플리케이션 테스트의 기본 원리 ⭐⭐"},{f:"s03.html",n:"3",t:"애플리케이션 테스트의 분류"},{f:"s04.html",n:"4",t:"화이트박스 테스트"},{f:"s05.html",n:"5",t:"블랙박스 테스트"},{f:"s06.html",n:"6",t:"개발 단계에 따른 애플리케이션 테스트"},{f:"s07.html",n:"7",t:"통합 테스트의 종류"},{f:"s08.html",n:"8",t:"애플리케이션 테스트 프로세스"},{f:"s09.html",n:"9",t:"테스트 케이스 · 시나리오 · 오라클"},{f:"s10.html",n:"10",t:"결함 관리"},{f:"s11.html",n:"11",t:"테스트 자동화 도구"},{f:"s12.html",n:"12",t:"애플리케이션 성능 분석"},{f:"s13.html",n:"13",t:"복잡도"},{f:"s14.html",n:"14",t:"애플리케이션 성능 개선"},{f:"s15.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>07. 애플리케이션 테스트 관리</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (7) 통합 테스트의 종류
+
+### 통합 테스트의 방식
+
+```mermaid
+flowchart TD
+    A[통합 테스트] --> B[비점진적 통합 방식]
+    A --> C[점진적 통합 방식]
+    B --> B1["빅뱅 통합 테스트<br/>(한꺼번에 결합)"]
+    C --> C1[하향식 통합 테스트]
+    C --> C2[상향식 통합 테스트]
+    C --> C3[혼합식 통합 테스트]
+```
+
+| 방식 | 설명 |
+|---|---|
+| **비점진적 통합 방식** | 단계적으로 통합하는 절차 없이 **모든 모듈이 결합된 프로그램 전체를 테스트**.<br>**빅뱅 통합 테스트 방식**이 대표적. 오류 발견 및 장애 위치 파악·수정이 **어려움** |
+| **점진적 통합 방식** | **모듈 단위로 단계적으로 통합**하면서 테스트.<br>오류 수정이 **쉽고**, 인터페이스와 연관된 오류를 **완전히 테스트**할 가능성이 높음.<br>**하향식, 상향식, 혼합식**이 있음 |
+
+### 하향식 통합 테스트(Top Down Integration Test) ⭐⭐
+
+프로그램의 **상위 모듈에서 하위 모듈 방향으로 통합**하면서 테스트.
+
+**절차**
+
+1. 주요 제어 모듈은 작성된 프로그램을 사용하고, 주요 제어 모듈의 종속 모듈들은 **스텁(Stub)** 으로 대체
+2. 깊이 우선 또는 넓이 우선 등의 통합 방식에 따라 하위 모듈인 스텁들이 **한 번에 하나씩 실제 모듈로 교체**
+3. 모듈이 통합될 때마다 **테스트 실시**
+4. 새로운 오류가 발생하지 않음을 보증하기 위해 **회귀 테스트 실시**
+
+**특징**
+
+- 상위 모듈에서는 **테스트 케이스를 사용하기 어려움**
+- **깊이 우선 통합법** 또는 **넓이 우선 통합법**을 사용함
+- 초기부터 **사용자에게 시스템 구조를 보여 줄 수** 있음
+- 상위 모듈에서 **테스트 케이스 작성이 어려움**
+
+> **스텁(Stub)** : 제어 모듈이 호출하는 **하위 모듈의 역할을 대신하는 시험용 모듈**.
+> 일시적으로 필요한 조건만을 가지고 있는 **테스트용 임시 모듈**.
+
+### 상향식 통합 테스트(Bottom Up Integration Test) ⭐⭐
+
+프로그램의 **하위 모듈에서 상위 모듈 방향으로 통합**하면서 테스트.
+
+**절차**
+
+1. 하위 모듈들을 **클러스터(Cluster)** 로 결합
+2. 상위 모듈에서 데이터의 입·출력을 확인하기 위해 **드라이버(Driver)** 를 작성
+3. 통합된 **클러스터 단위로 테스트**
+4. 테스트가 완료되면 클러스터는 프로그램 구조의 상위로 이동해 결합하고 **드라이버는 실제 모듈로 대체**
+
+> **드라이버(Driver)** : 테스트 대상의 **하위 모듈을 호출**하고, 파라미터를 전달하고,
+> 모듈 테스트 수행 후의 결과를 도출하는 **시험용 모듈**.
+
+> ⚠️ **스텁 vs 드라이버** — 매번 나오는 핵심 구분
+> - **하향식 → 스텁(Stub)** 필요 : 아직 없는 **하위** 모듈을 흉내
+> - **상향식 → 드라이버(Driver)** 필요 : 아직 없는 **상위** 모듈을 흉내
+
+### 혼합식 통합 테스트
+
+**하위 수준에서는 상향식 통합**, **상위 수준에서는 하향식 통합**을 사용해
+최적의 테스트를 지원하는 방식. **샌드위치(Sandwich)식 통합 테스트 방법**이라고도 함.
+
+### 회귀 테스트(Regression Test) ⭐
+
+통합 테스트로 인해 **변경된 모듈이나 컴포넌트에 새로운 오류가 있는지 확인**하는 테스트.
+
+- 이미 테스트된 프로그램의 테스팅을 **반복**하는 것.
+- 통합 테스트가 완료된 후 **변경된 모듈이나 컴포넌트가 있을 때** 수행함.
+
+**회귀 테스트의 테스트 케이스 선정 방법**
+
+- 모든 애플리케이션의 **기능을 수행할 수 있는 대표적인 테스트 케이스**를 선정
+- 애플리케이션 **주요 기능을 수행하는** 테스트 케이스를 선정
+- 프로그램에서 **오류가 자주 발생했던 부분**에 관한 테스트 케이스를 선정
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

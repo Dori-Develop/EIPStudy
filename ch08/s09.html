@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 08. SQL 응용 — 도해와 표로 정리한 학습 노트">
+<title>DML — JOIN · 08. SQL 응용</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch08",title:"정보처리기사 실기 — 08. SQL 응용",subtitle:"08. SQL 응용",total:18,base:"../",page:"section",index:8,sections:[{f:"s01.html",n:"1",t:"SQL의 분류"},{f:"s02.html",n:"2",t:"DDL — CREATE"},{f:"s03.html",n:"3",t:"DDL — ALTER, DROP"},{f:"s04.html",n:"4",t:"DCL"},{f:"s05.html",n:"5",t:"DML — INSERT, DELETE, UPDATE"},{f:"s06.html",n:"6",t:"DML — SELECT 기본"},{f:"s07.html",n:"7",t:"DML — 그룹 함수와 그룹 지정 검색"},{f:"s08.html",n:"8",t:"DML — 하위 질의와 집합 연산자"},{f:"s09.html",n:"9",t:"DML — JOIN"},{f:"s10.html",n:"10",t:"WINDOW 함수"},{f:"s11.html",n:"11",t:"절차형 SQL — 프로시저"},{f:"s12.html",n:"12",t:"절차형 SQL — 트리거"},{f:"s13.html",n:"13",t:"절차형 SQL — 사용자 정의 함수"},{f:"s14.html",n:"14",t:"제어문과 커서"},{f:"s15.html",n:"15",t:"DBMS 접속과 동적 SQL"},{f:"s16.html",n:"16",t:"SQL 테스트와 ORM"},{f:"s17.html",n:"17",t:"쿼리 성능 최적화"},{f:"s18.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>08. SQL 응용</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (9) DML — JOIN
+
+### JOIN ⭐⭐⭐
+
+**두 개 이상의 테이블을 연결해 데이터를 검색**하는 방법.
+
+```mermaid
+flowchart TD
+    J[JOIN] --> I["INNER JOIN<br/>(내부 조인)"]
+    J --> O["OUTER JOIN<br/>(외부 조인)"]
+    I --> I1["EQUI JOIN<br/>(동등 조인)"]
+    I --> I2["NON-EQUI JOIN<br/>(비동등 조인)"]
+    O --> O1[LEFT OUTER JOIN]
+    O --> O2[RIGHT OUTER JOIN]
+    O --> O3[FULL OUTER JOIN]
+```
+
+### INNER JOIN(내부 조인) ⭐⭐
+
+두 테이블에서 **조건에 맞는 행만** 검색함.
+
+| 종류 | 설명 |
+|---|---|
+| **EQUI JOIN**(동등 조인) | **공통 속성을 `=` 비교**해 같은 값을 갖는 행을 연결. 가장 일반적 |
+| **NON-EQUI JOIN**(비동등 조인) | `=` 이외의 비교 연산자(`>`, `<`, `BETWEEN` 등)를 사용해 조인 |
+
+**EQUI JOIN 표기법 — 두 가지**
+
+```
+-- WHERE 절 이용
+SELECT 회원.이름, 대출.대출일
+FROM 회원, 대출
+WHERE 회원.회원번호 = 대출.회원번호;
+
+-- NATURAL JOIN / INNER JOIN ~ ON 이용
+SELECT 회원.이름, 대출.대출일
+FROM 회원 NATURAL JOIN 대출;
+
+SELECT 회원.이름, 대출.대출일
+FROM 회원 INNER JOIN 대출 ON 회원.회원번호 = 대출.회원번호;
+
+SELECT 회원.이름, 대출.대출일
+FROM 회원 JOIN 대출 USING(회원번호);
+```
+
+> 💡 **자연 조인(NATURAL JOIN)** : EQUI JOIN 에서 **중복된 속성을 한 번만 표기**하는 방법.
+
+### OUTER JOIN(외부 조인) ⭐⭐
+
+INNER JOIN 의 결과에 더해, **조건에 맞지 않는 행까지 포함**해 검색함.
+
+| 종류 | 설명 |
+|---|---|
+| **LEFT OUTER JOIN** | **왼쪽 테이블의 모든 행**을 포함. 오른쪽에 짝이 없으면 **NULL** |
+| **RIGHT OUTER JOIN** | **오른쪽 테이블의 모든 행**을 포함. 왼쪽에 짝이 없으면 **NULL** |
+| **FULL OUTER JOIN** | **양쪽 테이블의 모든 행**을 포함 |
+
+```
+SELECT 회원.이름, 대출.대출일
+FROM 회원 LEFT OUTER JOIN 대출
+ON 회원.회원번호 = 대출.회원번호;
+```
+
+> 💡 **LEFT OUTER JOIN** 은 "대출 기록이 없는 회원도 보고 싶다"일 때 씀.
+
+### SELF JOIN(자체 조인)
+
+**같은 테이블끼리 조인**하는 방법. 별칭(Alias)을 반드시 사용해야 함.
+
+```
+SELECT A.이름, B.이름 AS 추천인
+FROM 회원 A, 회원 B
+WHERE A.추천인번호 = B.회원번호;
+```
+
+### CROSS JOIN(교차 조인)
+
+두 테이블의 **모든 행을 조합**. 결과 행 수는 **두 테이블 행 수의 곱**(교차곱, Cartesian Product).
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

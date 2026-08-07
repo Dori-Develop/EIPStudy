@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 04. 서버 프로그램 구현 — 도해와 표로 정리한 학습 노트">
+<title>소프트웨어 아키텍처 · 04. 서버 프로그램 구현</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch04",title:"정보처리기사 실기 — 04. 서버 프로그램 구현",subtitle:"04. 서버 프로그램 구현",total:15,base:"../",page:"section",index:1,sections:[{f:"s01.html",n:"1",t:"개발 환경 구축"},{f:"s02.html",n:"2",t:"소프트웨어 아키텍처"},{f:"s03.html",n:"3",t:"아키텍처 패턴"},{f:"s04.html",n:"4",t:"객체 지향(Object-Oriented)"},{f:"s05.html",n:"5",t:"객체 지향 분석 및 설계"},{f:"s06.html",n:"6",t:"모듈과 결합도·응집도"},{f:"s07.html",n:"7",t:"단위 모듈과 공통 모듈"},{f:"s08.html",n:"8",t:"코드(Code)"},{f:"s09.html",n:"9",t:"디자인 패턴"},{f:"s10.html",n:"10",t:"개발 지원 도구"},{f:"s11.html",n:"11",t:"서버 개발"},{f:"s12.html",n:"12",t:"보안 및 API"},{f:"s13.html",n:"13",t:"배치 프로그램"},{f:"s14.html",n:"14",t:"패키지 소프트웨어"},{f:"s15.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>04. 서버 프로그램 구현</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (2) 소프트웨어 아키텍처
+
+### 소프트웨어 아키텍처(Software Architecture)
+
+소프트웨어의 **골격이 되는 기본 구조**이자,
+소프트웨어를 구성하는 요소들 사이의 **관계를 표현하는 시스템의 구조 또는 구조체**.
+
+- 개발자와 이해관계자 사이의 **의사소통 도구**가 됨.
+- 시스템의 품질 요구사항을 만족시키는 데 결정적 역할을 함.
+
+### 소프트웨어 아키텍처 설계의 기본 원리 ⭐⭐
+
+| 원리 | 의미 |
+|---|---|
+| **모듈화**<br>(Modularity) | 시스템의 기능들을 **모듈 단위로 나누는 것**. 소프트웨어의 성능 향상, 시스템 수정 및 재사용, 유지 관리를 쉽게 함 |
+| **추상화**<br>(Abstraction) | 문제의 **전체적이고 포괄적인 개념을 설계한 후 차례로 세분화**해 구체화하는 것 |
+| **단계적 분해**<br>(Stepwise Refinement) | 문제를 상위의 중요 개념부터 하위의 개념으로 **분할하는 하향식 설계 전략** |
+| **정보 은닉**<br>(Information Hiding) | 한 모듈 내부에 포함된 절차와 자료들의 정보가 **감추어져 다른 모듈이 접근하거나 변경하지 못하도록** 하는 기법 |
+
+**추상화의 유형**
+
+| 유형 | 설명 |
+|---|---|
+| **과정 추상화** | 자세한 수행 과정을 정의하지 않고 **전반적인 흐름만** 파악할 수 있게 설계 |
+| **데이터 추상화** | 데이터의 **세부적인 속성이나 용도를 정의하지 않고** 데이터 구조를 대표할 수 있는 표현으로 설계 |
+| **제어 추상화** | 이벤트 발생의 **정확한 절차나 방법을 정의하지 않고** 대표할 수 있는 표현으로 설계 |
+
+### 소프트웨어 아키텍처의 품질 속성
+
+| 구분 | 속성 |
+|---|---|
+| **시스템 측면** | 성능, 보안, 가용성, 기능성, 사용성, 변경 용이성, 확장성 |
+| **비즈니스 측면** | 시장 적시성, 비용과 혜택, 예상 시스템 수명 |
+| **아키텍처 측면** | 개념적 무결성, 정확성, 완결성, 구축 가능성 |
+
+### 협약(Contract)에 의한 설계
+
+컴포넌트를 설계할 때 클래스에 대한 여러 가정을 **공유할 수 있도록 명세**한 것.
+
+| 조건 | 의미 |
+|---|---|
+| **선행 조건**(Precondition) | 오퍼레이션이 **호출되기 전에 참**이 되어야 할 조건 |
+| **결과 조건**(Postcondition) | 오퍼레이션이 **수행된 후 참**이 되어야 할 조건 |
+| **불변 조건**(Invariant) | 오퍼레이션이 실행되는 **동안 항상 참**이 되어야 할 조건 |
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

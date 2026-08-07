@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 04. 서버 프로그램 구현 — 도해와 표로 정리한 학습 노트">
+<title>아키텍처 패턴 · 04. 서버 프로그램 구현</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch04",title:"정보처리기사 실기 — 04. 서버 프로그램 구현",subtitle:"04. 서버 프로그램 구현",total:15,base:"../",page:"section",index:2,sections:[{f:"s01.html",n:"1",t:"개발 환경 구축"},{f:"s02.html",n:"2",t:"소프트웨어 아키텍처"},{f:"s03.html",n:"3",t:"아키텍처 패턴"},{f:"s04.html",n:"4",t:"객체 지향(Object-Oriented)"},{f:"s05.html",n:"5",t:"객체 지향 분석 및 설계"},{f:"s06.html",n:"6",t:"모듈과 결합도·응집도"},{f:"s07.html",n:"7",t:"단위 모듈과 공통 모듈"},{f:"s08.html",n:"8",t:"코드(Code)"},{f:"s09.html",n:"9",t:"디자인 패턴"},{f:"s10.html",n:"10",t:"개발 지원 도구"},{f:"s11.html",n:"11",t:"서버 개발"},{f:"s12.html",n:"12",t:"보안 및 API"},{f:"s13.html",n:"13",t:"배치 프로그램"},{f:"s14.html",n:"14",t:"패키지 소프트웨어"},{f:"s15.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>04. 서버 프로그램 구현</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (3) 아키텍처 패턴
+
+### 아키텍처 패턴(Architecture Pattern)
+
+아키텍처를 설계할 때 참조할 수 있는 **전형적인 해결 방식, 예제**.
+**아키텍처 스타일** 또는 **표준 아키텍처**라고도 함.
+
+### 주요 아키텍처 패턴 ⭐⭐
+
+| 패턴 | 설명 |
+|---|---|
+| **레이어 패턴**<br>(Layers Pattern) | 시스템을 계층으로 구분해 구성. 각 하위 모듈은 **특정 수준의 추상화를 제공**하고, 서로 마주보는 두 개의 계층 사이에서만 상호작용함. **OSI 참조 모델**이 대표적 |
+| **클라이언트-서버 패턴**<br>(Client-Server Pattern) | 하나의 **서버**와 다수의 **클라이언트**로 구성. 사용자는 클라이언트를 통해 서버에 요청하고 응답을 받아 사용자에게 보여 줌 |
+| **파이프-필터 패턴**<br>(Pipe-Filter Pattern) | 데이터 스트림 절차의 각 단계를 **필터**로 캡슐화하고 **파이프**를 통해 데이터를 전송. 재사용성이 좋고 유지보수가 쉬움. **UNIX 의 쉘(Shell)** 이 대표적 |
+| **모델-뷰-컨트롤러 패턴**<br>(MVC Pattern) | 서브시스템을 **모델·뷰·컨트롤러** 세 부분으로 구조화. 각 부분이 **독립적**이어서 서로 영향을 주지 않음 |
+| **마스터-슬레이브 패턴** | **마스터**가 동일한 구조의 **슬레이브**로 작업을 분할한 후 결과를 계산. 주로 **병렬 컴퓨팅** 시스템에서 사용 |
+| **브로커 패턴** | 사용자가 요청하면 **브로커 컴포넌트**가 요청에 맞는 컴포넌트와 사용자를 연결. **분산 환경 시스템**에서 사용 |
+| **피어-투-피어 패턴** | 각 컴포넌트가 **클라이언트가 될 수도, 서버가 될 수도** 있는 패턴 |
+| **이벤트-버스 패턴** | **소스**가 이벤트를 발행하면 해당 채널을 구독한 **리스너**가 이벤트를 받아 처리 |
+| **블랙보드 패턴** | 모든 컴포넌트가 **블랙보드(공유 저장소)** 에 접근. **음성 인식, 신호 해석** 등 확실한 해결 전략이 없을 때 유용 |
+| **인터프리터 패턴** | 프로그램 코드의 각 라인을 **수행하는 방법을 지정**하고 기호마다 클래스를 갖도록 구성 |
+
+### MVC 패턴 상세 ⭐
+
+```mermaid
+flowchart LR
+    U((사용자)) -->|입력| C[Controller<br/>컨트롤러]
+    C -->|조작| M[Model<br/>모델]
+    M -->|상태 변경 통보| V[View<br/>뷰]
+    V -->|화면 출력| U
+    C -->|선택| V
+```
+
+| 구성 | 역할 |
+|---|---|
+| **모델**(Model) | 서브시스템의 **핵심 기능과 데이터**를 보관 |
+| **뷰**(View) | 사용자에게 **정보를 표시** |
+| **컨트롤러**(Controller) | 사용자로부터 받은 **입력을 처리** |
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

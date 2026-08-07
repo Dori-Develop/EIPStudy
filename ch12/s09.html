@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 12. 제품 소프트웨어 패키징 — 도해와 표로 정리한 학습 노트">
+<title>빌드 자동화 도구 · 12. 제품 소프트웨어 패키징</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch12",title:"정보처리기사 실기 — 12. 제품 소프트웨어 패키징",subtitle:"12. 제품 소프트웨어 패키징",total:10,base:"../",page:"section",index:8,sections:[{f:"s01.html",n:"1",t:"소프트웨어 패키징"},{f:"s02.html",n:"2",t:"릴리즈 노트 작성"},{f:"s03.html",n:"3",t:"디지털 저작권 관리(DRM)"},{f:"s04.html",n:"4",t:"소프트웨어 설치 매뉴얼 작성"},{f:"s05.html",n:"5",t:"소프트웨어 사용자 매뉴얼 작성"},{f:"s06.html",n:"6",t:"소프트웨어 버전 등록"},{f:"s07.html",n:"7",t:"소프트웨어 버전 관리 도구"},{f:"s08.html",n:"8",t:"Git 명령어 활용"},{f:"s09.html",n:"9",t:"빌드 자동화 도구"},{f:"s10.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>12. 제품 소프트웨어 패키징</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (9) 빌드 자동화 도구
+
+### 빌드(Build)
+
+소스 코드 파일들을 **컴퓨터에서 실행할 수 있는 제품 소프트웨어로 변환**하는 과정 또는 결과물.
+
+### 빌드 자동화 도구 ⭐⭐
+
+빌드를 포함해 **테스트 및 배포를 자동화**하는 도구.
+
+- **애자일(Agile)** 환경에서 **지속적 통합(CI; Continuous Integration)** 이 중요해지면서
+  빌드 자동화 도구의 필요성이 커짐.
+
+| 도구 | 특징 |
+|---|---|
+| **Ant**(Another Neat Tool) | **아파치 소프트웨어 재단**에서 개발한 자바 기반의 빌드 도구.<br>**XML 기반**의 빌드 스크립트를 사용함. 정해진 규칙이나 표준이 없어 **개발자가 모든 것을 정의**해야 함 |
+| **Maven** | 아파치 소프트웨어 재단에서 개발. **의존성(Dependency)을 설정**해 라이브러리를 관리함.<br>**규칙이나 표준이 존재**해 예외 사항만 기록하면 됨. **pom.xml** 로 관리 |
+| **Gradle** | **안드로이드 앱 개발 환경**에서 사용되는 빌드 도구.<br>**Groovy 기반**의 빌드 스크립트를 사용하며, **Ant 와 Maven 의 장점을 결합**함.<br>실행할 처리 명령들을 모아 **테스크(Task)** 로 만든 후 태스크 단위로 실행 |
+| **Jenkins** | **JAVA 기반의 오픈 소스** 형태로, 가장 많이 사용되는 **CI(지속적 통합) 도구**.<br>**서블릿 컨테이너**에서 실행되는 서버 기반 도구.<br>**SVN, Git 등 대부분의 형상 관리 도구와 연동**이 가능함.<br>**웹 기반 GUI** 를 제공해 사용이 쉬움. 친구를 뜻하는 이름에서 유래 |
+
+> 📌 **XML = Ant/Maven**, **Groovy = Gradle**, **CI 서버 = Jenkins**.
+> 이 대응만 잡으면 이 항목은 끝남.
+
+### CI / CD ⭐
+
+| 용어 | 의미 |
+|---|---|
+| **CI**(Continuous Integration, 지속적 통합) | 개발자들이 작성한 코드를 **자주(주로 매일) 통합 저장소에 병합**하고 **자동으로 빌드·테스트**하는 것 |
+| **CD**(Continuous Delivery/Deployment, 지속적 제공/배포) | 통합된 코드를 **자동으로 릴리즈 및 배포**하는 것 |
+
+**CI 의 장점**
+
+- 통합 시 발생하는 **오류를 조기에 발견**할 수 있음
+- 빌드와 테스트가 자동화되어 **개발 생산성이 향상**됨
+- 배포 가능한 상태를 **항상 유지**할 수 있음
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

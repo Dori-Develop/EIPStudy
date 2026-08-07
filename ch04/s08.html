@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 04. 서버 프로그램 구현 — 도해와 표로 정리한 학습 노트">
+<title>코드(Code) · 04. 서버 프로그램 구현</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch04",title:"정보처리기사 실기 — 04. 서버 프로그램 구현",subtitle:"04. 서버 프로그램 구현",total:15,base:"../",page:"section",index:7,sections:[{f:"s01.html",n:"1",t:"개발 환경 구축"},{f:"s02.html",n:"2",t:"소프트웨어 아키텍처"},{f:"s03.html",n:"3",t:"아키텍처 패턴"},{f:"s04.html",n:"4",t:"객체 지향(Object-Oriented)"},{f:"s05.html",n:"5",t:"객체 지향 분석 및 설계"},{f:"s06.html",n:"6",t:"모듈과 결합도·응집도"},{f:"s07.html",n:"7",t:"단위 모듈과 공통 모듈"},{f:"s08.html",n:"8",t:"코드(Code)"},{f:"s09.html",n:"9",t:"디자인 패턴"},{f:"s10.html",n:"10",t:"개발 지원 도구"},{f:"s11.html",n:"11",t:"서버 개발"},{f:"s12.html",n:"12",t:"보안 및 API"},{f:"s13.html",n:"13",t:"배치 프로그램"},{f:"s14.html",n:"14",t:"패키지 소프트웨어"},{f:"s15.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>04. 서버 프로그램 구현</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (8) 코드(Code)
+
+### 코드
+
+컴퓨터를 이용해 자료를 처리하는 과정에서 **분류·조합 및 집계를 용이하게 하고**,
+특정 자료의 **추출을 쉽게 하기 위해 사용하는 기호**.
+
+**코드의 주요 기능**
+
+- **식별 기능** : 데이터 간의 성격에 따라 구분이 가능함
+- **분류 기능** : 특정 기준이나 동일한 성격의 데이터를 그룹화할 수 있음
+- **배열 기능** : 의미를 부여해 나열할 수 있음
+- **표준화 기능** : 다양한 데이터를 기준에 맞추어 표현할 수 있음
+- **간소화 기능** : 복잡한 데이터를 간소화할 수 있음
+
+### 코드의 종류 ⭐⭐
+
+| 코드 | 설명 | 예 |
+|---|---|---|
+| **순차 코드**<br>(Sequence Code) | 자료의 발생 순서나 크기 순서에 따라 **일련번호를 부여**. **순서 코드, 일련번호 코드**라고도 함 | 1, 2, 3, 4 … |
+| **블록 코드**<br>(Block Code) | 공통성 있는 것끼리 **블록으로 구분**하고 각 블록 내에서 일련번호 부여. **구분 코드**라고도 함 | 1001~1100(총무부), 1101~1200(영업부) |
+| **10진 코드**<br>(Decimal Code) | 큰 분류부터 시작해 **10진 분할을 반복**. **도서 분류식 코드**라고도 함 | 1000: 공학, 1100: 컴퓨터공학 |
+| **그룹 분류 코드**<br>(Group Classification Code) | 대분류·중분류·소분류로 나눈 후 **각 그룹 안에서 일련번호** 부여 | 1-01-001 |
+| **연상 코드**<br>(Mnemonic Code) | 명칭이나 규격의 **일부를 코드에 넣어 대상을 쉽게 연상**할 수 있게 함 | TV-40(40인치 TV) |
+| **표의 숫자 코드**<br>(Significant Digit Code) | 대상 자료의 **길이, 넓이, 부피, 지름 등 물리적 수치**를 그대로 코드에 적용. **유효 숫자 코드**라고도 함 | 120-70-500(가로-세로-높이) |
+| **합성 코드**<br>(Combined Code) | 필요한 **둘 이상의 코드를 조합**해 만듦 | KE-711(연상 + 순차) |
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

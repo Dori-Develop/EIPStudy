@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 11. 응용 SW 기초 기술 활용 — 도해와 표로 정리한 학습 노트">
+<title>기억장치 관리 · 11. 응용 SW 기초 기술 활용</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch11",title:"정보처리기사 실기 — 11. 응용 SW 기초 기술 활용",subtitle:"11. 응용 SW 기초 기술 활용",total:16,base:"../",page:"section",index:1,sections:[{f:"s01.html",n:"1",t:"운영체제의 개념과 종류"},{f:"s02.html",n:"2",t:"기억장치 관리"},{f:"s03.html",n:"3",t:"가상기억장치"},{f:"s04.html",n:"4",t:"프로세스와 스케줄링"},{f:"s05.html",n:"5",t:"환경 변수와 기본 명령어"},{f:"s06.html",n:"6",t:"인터넷과 IP 주소"},{f:"s07.html",n:"7",t:"OSI 참조 모델"},{f:"s08.html",n:"8",t:"네트워크 장비"},{f:"s09.html",n:"9",t:"TCP/IP"},{f:"s10.html",n:"10",t:"경로 제어와 트래픽 제어"},{f:"s11.html",n:"11",t:"소프트웨어·하드웨어·네트워크 신기술"},{f:"s12.html",n:"12",t:"소프트웨어 개발 보안과 관련 법령"},{f:"s13.html",n:"13",t:"회복과 병행 제어"},{f:"s14.html",n:"14",t:"교착 상태"},{f:"s15.html",n:"15",t:"데이터 표준화"},{f:"s16.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>11. 응용 SW 기초 기술 활용</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (2) 기억장치 관리
+
+### 기억장치 관리 전략 ⭐⭐
+
+보조기억장치의 프로그램이나 데이터를 **주기억장치에 적재시키는 시기, 위치 등을 지정**해
+효율적으로 사용하기 위한 전략.
+
+| 전략 | 의미 |
+|---|---|
+| **반입(Fetch) 전략** | 보조기억장치의 프로그램이나 데이터를 **언제 주기억장치로 적재할 것인지** 결정.<br>**요구 반입**(요구가 있을 때) / **예상 반입**(미리 예상해서) |
+| **배치(Placement) 전략** | 새로 반입되는 프로그램이나 데이터를 주기억장치의 **어디에 위치시킬 것인지** 결정.<br>**최초 적합, 최적 적합, 최악 적합** |
+| **교체(Replacement) 전략** | 주기억장치의 모든 영역이 사용 중이면 **어느 영역을 교체할 것인지** 결정.<br>**FIFO, LRU, LFU, NUR, OPT, SCR** |
+
+### 배치 전략 ⭐⭐⭐
+
+| 전략 | 의미 |
+|---|---|
+| **최초 적합**(First Fit) | 프로그램이 들어갈 수 있는 **첫 번째 분할 영역**에 배치 |
+| **최적 적합**(Best Fit) | 단편화를 **가장 적게** 남기는 분할 영역에 배치 |
+| **최악 적합**(Worst Fit) | 단편화를 **가장 많이** 남기는 분할 영역에 배치 |
+
+**예제** — 빈 영역이 순서대로 **20K, 8K, 30K, 15K** 이고 **12K** 프로그램을 적재할 때
+
+| 전략 | 선택 영역 | 이유 |
+|---|---|---|
+| **최초 적합** | **20K** | 들어갈 수 있는 첫 번째 영역 |
+| **최적 적합** | **15K** | 남는 공간이 3K 로 가장 작음 |
+| **최악 적합** | **30K** | 남는 공간이 18K 로 가장 큼 |
+
+### 단편화(Fragmentation) ⭐
+
+| 종류 | 의미 |
+|---|---|
+| **내부 단편화**(Internal) | 분할된 영역이 프로그램보다 **커서 프로그램 배치 후 남는** 공간 |
+| **외부 단편화**(External) | 분할된 영역이 프로그램보다 **작아서 아예 배치될 수 없어 사용되지 못하는** 공간 |
+
+**단편화 해결 방법**
+
+| 방법 | 의미 |
+|---|---|
+| **통합**(Coalescing) | 인접해 있는 **단편화된 공간을 하나로 합치는** 작업 |
+| **압축**(Compaction) | 주기억장치 내에 **분산된 단편화 공간을 모아 하나의 큰 가용 공간을 만드는** 작업. **쓰레기 수집(Garbage Collection)** 이라고도 함 |
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 08. SQL 응용 — 도해와 표로 정리한 학습 노트">
+<title>절차형 SQL — 트리거 · 08. SQL 응용</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch08",title:"정보처리기사 실기 — 08. SQL 응용",subtitle:"08. SQL 응용",total:18,base:"../",page:"section",index:11,sections:[{f:"s01.html",n:"1",t:"SQL의 분류"},{f:"s02.html",n:"2",t:"DDL — CREATE"},{f:"s03.html",n:"3",t:"DDL — ALTER, DROP"},{f:"s04.html",n:"4",t:"DCL"},{f:"s05.html",n:"5",t:"DML — INSERT, DELETE, UPDATE"},{f:"s06.html",n:"6",t:"DML — SELECT 기본"},{f:"s07.html",n:"7",t:"DML — 그룹 함수와 그룹 지정 검색"},{f:"s08.html",n:"8",t:"DML — 하위 질의와 집합 연산자"},{f:"s09.html",n:"9",t:"DML — JOIN"},{f:"s10.html",n:"10",t:"WINDOW 함수"},{f:"s11.html",n:"11",t:"절차형 SQL — 프로시저"},{f:"s12.html",n:"12",t:"절차형 SQL — 트리거"},{f:"s13.html",n:"13",t:"절차형 SQL — 사용자 정의 함수"},{f:"s14.html",n:"14",t:"제어문과 커서"},{f:"s15.html",n:"15",t:"DBMS 접속과 동적 SQL"},{f:"s16.html",n:"16",t:"SQL 테스트와 ORM"},{f:"s17.html",n:"17",t:"쿼리 성능 최적화"},{f:"s18.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>08. SQL 응용</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (12) 절차형 SQL — 트리거
+
+### 트리거(Trigger) ⭐⭐⭐
+
+데이터베이스 시스템에서 데이터의 **삽입(INSERT), 갱신(UPDATE), 삭제(DELETE) 등의 이벤트가
+발생할 때마다 자동으로 수행**되는 사용자 정의 프로시저.
+
+- 데이터베이스에 저장되며, **데이터 변경 및 무결성 유지, 로그 메시지 출력** 등의 목적으로 사용됨.
+- ⚠️ 트리거의 구문에는 **DCL(COMMIT, ROLLBACK, GRANT, REVOKE)을 사용할 수 없음**.
+  DCL 이 포함된 프로시저나 함수를 호출하는 경우에도 오류가 발생함.
+
+### 트리거의 구성
+
+| 구성 | 내용 |
+|---|---|
+| **DECLARE** | 트리거의 **명칭, 변수, 상수, 데이터 타입을 정의**하는 선언부 |
+| **EVENT** | 트리거가 **실행되는 조건**을 명시 |
+| **BEGIN / END** | 트리거의 **시작과 종료** |
+| **CONTROL** | 조건문 또는 반복문 |
+| **SQL** | **DML** 을 삽입해 데이터 관리 |
+| **EXCEPTION** | 예외 처리 방법을 정의 |
+
+> ⚠️ 프로시저와 달리 **TRANSACTION 이 없음**(DCL 사용 불가).
+
+### 트리거의 생성 ⭐⭐
+
+```
+CREATE [OR REPLACE] TRIGGER 트리거명 [동작시기] [동작]
+ON 테이블명
+[REFERENCING NEW|OLD AS 테이블명]
+[FOR EACH ROW [WHEN 조건식]]
+BEGIN
+    트리거 BODY;
+END;
+```
+
+| 옵션 | 의미 |
+|---|---|
+| **동작시기** | **AFTER**(테이블 조작 후) 또는 **BEFORE**(테이블 조작 전) |
+| **동작** | **INSERT / DELETE / UPDATE** 중 어떤 조작에 반응할지 |
+| **NEW / OLD** | **변경에 참여할 테이블의 별칭**을 지정.<br>**NEW** = 새로 추가·변경될 데이터, **OLD** = 변경·삭제 전 데이터 |
+| **FOR EACH ROW** | **각 행마다** 트리거를 적용 |
+| **WHEN 조건식** | 트리거가 실행될 **추가 조건** |
+
+> 예 : 대출이 발생하면 회원의 누적대출수를 1 증가시키는 트리거
+> ```
+> CREATE OR REPLACE TRIGGER 대출증가 AFTER INSERT ON 대출
+> REFERENCING NEW AS 신규
+> FOR EACH ROW
+> BEGIN
+>     UPDATE 회원 SET 누적대출수 = 누적대출수 + 1
+>     WHERE 회원번호 = :신규.회원번호;
+> END;
+> ```
+
+### 트리거의 제거
+
+```
+DROP TRIGGER 트리거명;
+```
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

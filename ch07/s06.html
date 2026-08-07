@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 07. 애플리케이션 테스트 관리 — 도해와 표로 정리한 학습 노트">
+<title>개발 단계에 따른 애플리케이션 테스트 · 07. 애플리케이션 테스트 관리</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch07",title:"정보처리기사 실기 — 07. 애플리케이션 테스트 관리",subtitle:"07. 애플리케이션 테스트 관리",total:15,base:"../",page:"section",index:5,sections:[{f:"s01.html",n:"1",t:"애플리케이션 테스트의 개요"},{f:"s02.html",n:"2",t:"애플리케이션 테스트의 기본 원리 ⭐⭐"},{f:"s03.html",n:"3",t:"애플리케이션 테스트의 분류"},{f:"s04.html",n:"4",t:"화이트박스 테스트"},{f:"s05.html",n:"5",t:"블랙박스 테스트"},{f:"s06.html",n:"6",t:"개발 단계에 따른 애플리케이션 테스트"},{f:"s07.html",n:"7",t:"통합 테스트의 종류"},{f:"s08.html",n:"8",t:"애플리케이션 테스트 프로세스"},{f:"s09.html",n:"9",t:"테스트 케이스 · 시나리오 · 오라클"},{f:"s10.html",n:"10",t:"결함 관리"},{f:"s11.html",n:"11",t:"테스트 자동화 도구"},{f:"s12.html",n:"12",t:"애플리케이션 성능 분석"},{f:"s13.html",n:"13",t:"복잡도"},{f:"s14.html",n:"14",t:"애플리케이션 성능 개선"},{f:"s15.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>07. 애플리케이션 테스트 관리</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (6) 개발 단계에 따른 애플리케이션 테스트
+
+### V-모델 ⭐⭐
+
+소프트웨어 개발 단계에 따라 애플리케이션 테스트를 분류한 것.
+**단위 → 통합 → 시스템 → 인수** 순으로 진행됨.
+
+```mermaid
+flowchart LR
+    subgraph 개발["개발 단계"]
+        A[요구사항 분석] --> B[분석] --> C[설계] --> D[구현]
+    end
+    subgraph 테스트["테스트 단계"]
+        E[단위 테스트] --> F[통합 테스트] --> G[시스템 테스트] --> H[인수 테스트]
+    end
+    D --> E
+    C -.검증.- F
+    B -.검증.- G
+    A -.검증.- H
+```
+
+| 개발 단계 | 대응하는 테스트 |
+|---|---|
+| 요구사항 분석 | **인수 테스트** |
+| 분석(시스템 명세) | **시스템 테스트** |
+| 설계 | **통합 테스트** |
+| 구현 | **단위 테스트** |
+
+### 단위 테스트(Unit Test) ⭐
+
+**코딩 직후** 소프트웨어 설계의 최소 단위인 **모듈이나 컴포넌트에 초점**을 맞춰 테스트.
+
+- **인터페이스, 외부적 I/O, 자료 구조, 독립적 기초 경로, 오류 처리 경로, 경계 조건** 등을 검사함.
+- 사용자의 요구사항을 기반으로 한 **기능성 테스트를 최우선으로** 수행함.
+- **구조 기반 테스트(화이트박스)** 와 **명세 기반 테스트(블랙박스)** 로 나뉘지만
+  주로 **구조 기반 테스트**를 시행함.
+
+### 통합 테스트(Integration Test) ⭐
+
+**단위 테스트가 완료된 모듈들을 결합**해 하나의 시스템으로 완성시키는 과정에서의 테스트.
+모듈 간 또는 통합된 컴포넌트 간의 **상호작용 오류를 검사**함.
+
+### 시스템 테스트(System Test) ⭐
+
+개발된 소프트웨어가 해당 컴퓨터 시스템에서 **완벽하게 수행되는가를 점검**하는 테스트.
+
+- 실제 사용 환경과 유사하게 만든 **테스트 환경에서 수행**해야 함.
+- **기능적 요구사항**과 **비기능적 요구사항**으로 구분해 각각 수행함.
+
+| 구분 | 내용 |
+|---|---|
+| **기능적 요구사항** | 요구사항 명세서, 비즈니스 절차, 유스케이스 등 **명세서 기반의 블랙박스 테스트** |
+| **비기능적 요구사항** | 성능 테스트, 회복 테스트, 보안 테스트, 내부 시스템의 메뉴 구조, 웹 페이지의 네비게이션 등 **구조적 요소에 대한 화이트박스 테스트** |
+
+### 인수 테스트(Acceptance Test) ⭐⭐
+
+**사용자의 요구사항을 충족하는지에 중점**을 두고 테스트하는 방법.
+
+**인수 테스트의 종류**
+
+| 종류 | 설명 |
+|---|---|
+| **사용자 인수 테스트** | 사용자가 시스템 사용의 **적절성 여부**를 확인 |
+| **운영상의 인수 테스트** | 시스템 관리자가 시스템 인수 시 수행. **백업/복원 시스템, 재난 복구, 사용자 관리, 보안 점검** 등을 확인 |
+| **계약 인수 테스트** | 계약상의 **인수·검수 조건을 준수**하는지 여부를 확인 |
+| **규정 인수 테스트** | 소프트웨어가 정부 지침, 법규, 규정 등에 **맞게 개발되었는지** 확인 |
+| **알파 테스트**<br>(Alpha Test) | **개발자의 장소에서** 사용자가 개발자 앞에서 행하는 테스트. **통제된 환경**에서 진행되며 개발자는 오류와 사용상의 문제점을 기록 |
+| **베타 테스트**<br>(Beta Test) | **선정된 최종 사용자가 여러 명의 사용자 앞에서** 행하는 테스트. **실업무를 가지고 사용자가 직접** 테스트하며, **통제되지 않은 환경**에서 행해짐 |
+
+> ⚠️ **알파 = 개발자 장소(통제됨), 베타 = 사용자 장소(통제 안 됨).** 매번 나옴.
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

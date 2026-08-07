@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 01. 요구사항 확인 — 도해와 표로 정리한 학습 노트">
+<title>스크럼(Scrum) 기법 · 01. 요구사항 확인</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch01",title:"정보처리기사 실기 — 01. 요구사항 확인",subtitle:"01. 요구사항 확인",total:31,base:"../",page:"section",index:1,sections:[{f:"s01.html",n:"1",t:"소프트웨어 생명 주기"},{f:"s02.html",n:"2",t:"스크럼(Scrum) 기법"},{f:"s03.html",n:"3",t:"XP(eXtreme Programming) 기법"},{f:"s04.html",n:"4",t:"현행 시스템 파악"},{f:"s05.html",n:"5",t:"개발 기술 환경 파악"},{f:"s06.html",n:"6",t:"요구사항 정의"},{f:"s07.html",n:"7",t:"요구사항 개발 프로세스"},{f:"s08.html",n:"8",t:"요구사항 분석"},{f:"s09.html",n:"9",t:"요구사항 분석 CASE와 HIPO"},{f:"s10.html",n:"10",t:"UML(Unified Modeling Language)의 개요"},{f:"s11.html",n:"11",t:"UML — 관계(Relationship)"},{f:"s12.html",n:"12",t:"UML — 다이어그램"},{f:"s13.html",n:"13",t:"유스케이스(Use Case) 다이어그램"},{f:"s14.html",n:"14",t:"활동(Activity) 다이어그램"},{f:"s15.html",n:"15",t:"클래스(Class) 다이어그램"},{f:"s16.html",n:"16",t:"시퀀스(Sequence) 다이어그램"},{f:"s17.html",n:"17",t:"커뮤니케이션(Communication) 다이어그램"},{f:"s18.html",n:"18",t:"상태(State) 다이어그램"},{f:"s19.html",n:"19",t:"패키지(Package) 다이어그램"},{f:"s20.html",n:"20",t:"소프트웨어 개발 방법론"},{f:"s21.html",n:"21",t:"S/W 공학의 발전적 추세"},{f:"s22.html",n:"22",t:"비용 산정 기법"},{f:"s23.html",n:"23",t:"비용 산정 기법 — 하향식"},{f:"s24.html",n:"24",t:"비용 산정 기법 — 상향식"},{f:"s25.html",n:"25",t:"수학적 산정 기법"},{f:"s26.html",n:"26",t:"프로젝트 일정 계획"},{f:"s27.html",n:"27",t:"소프트웨어 개발 방법론 결정과 프로젝트 관리"},{f:"s28.html",n:"28",t:"소프트웨어 개발 표준"},{f:"s29.html",n:"29",t:"소프트웨어 개발 방법론 테일러링"},{f:"s30.html",n:"30",t:"소프트웨어 개발 프레임워크"},{f:"s31.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>01. 요구사항 확인</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (2) 스크럼(Scrum) 기법
+
+### 스크럼(Scrum)
+
+**팀을 중심에 놓고** 개발 효율을 끌어올리는 기법.
+팀 구성부터 개발 작업에 관한 판단까지 팀원들이 **스스로 해결**할 수 있어야 한다는 것이 전제.
+
+### 스크럼 팀
+
+| 구성원 | 역할 |
+|---|---|
+| **제품 책임자**<br>(PO; Product Owner) | - 요구사항을 모아 둔 **백로그(Backlog)를 작성하는 주체**<br>- 이해관계자 중 제품 이해도가 높고 요구사항에 대해 책임지고 결정을 내릴 수 있는 사람으로 선정. |
+| **스크럼 마스터**<br>(SM; Scrum Master) | - 팀이 스크럼을 제대로 수행하도록 돕는 **가이드 역할**을 맡음. |
+| **개발팀**<br>(DT; Development Team) | - 제품 책임자와 스크럼 마스터를 **제외한 나머지 팀원 전원**으로, 실제 제품 개발을 수행. |
+
+> **백로그(Backlog)** : 제품 개발에 필요한 요구사항을 전부 모아 우선순위를 매겨 놓은 목록
+> **이해관계자(Stakeholder)** : 개발 의뢰자, 개발자, 사용자 등 그 소프트웨어에 이해가 걸린 사람들
+
+### 스크럼 개발 프로세스
+
+```mermaid
+flowchart LR
+    PB[("Product Backlog<br/>사용자 스토리 목록")] --> SP["스프린트 계획 회의<br/>(스토리 → Task 분해)"]
+    SP --> SPR["스프린트 수행<br/>(2~4주)"]
+    SPR -->|매일 15분| DSM["일일 스크럼 회의"]
+    DSM --> SPR
+    SPR --> RV["스프린트 검토 회의"]
+    RV --> RT["스프린트 회고"]
+```
+
+| 프로세스 | 내용 |
+|---|---|
+| **스프린트 계획 회의**<br>(Sprint Planning Meeting) | 제품 백로그에서 이번 스프린트에 처리할 작업을 골라 **단기 일정을 수립**하는 회의 |
+| **스프린트**<br>(Sprint) | 실제 개발이 이뤄지는 구간. 보통 **2~4주** 안에서 잡음. |
+| **일일 스크럼 회의**<br>(Daily Scrum Meeting) | 팀원 전원이 매일 정해진 시각에 **약 15분**간 진행 상황을 점검하는 회의.<br>남은 작업 시간은 **소멸 차트(Burn-down Chart)** 로 표시. |
+| **스프린트 검토 회의**<br>(Sprint Review) | 부분 또는 전체 완성 제품이 요구사항에 맞는지 **테스팅**하는 회의 |
+| **스프린트 회고**<br>(Sprint Retrospective) | 정해 둔 **규칙을 지켰는지, 개선할 점은 무엇인지**를 확인하고 기록하는 활동 |
+
+> **제품 백로그(Product Backlog)** : 필요한 모든 요구사항(User Story)을 우선순위순으로 나열한 목록.
+> 개발 도중 새 요구사항이 나오면 계속 갱신됨. 여기 작성된 사용자 스토리는
+> 전체 일정 계획인 **릴리즈 계획(Release Plan)** 을 세울 때 근거가 됨.
+> **소멸 차트(Burn-down Chart)** : 시간이 갈수록 남은 작업 시간이 줄어드는(Burn-down) 모습을 그린 그래프
+
+> 📌 암기: **"계획하여 진행(스프린트)한 후 회의와 검토를 거쳐 회고한다."**
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+<script src="../assets/bank-ch01.js"></script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

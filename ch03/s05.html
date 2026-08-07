@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 03. 통합 구현 — 도해와 표로 정리한 학습 노트">
+<title>연계 장애 및 오류 처리 · 03. 통합 구현</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch03",title:"정보처리기사 실기 — 03. 통합 구현",subtitle:"03. 통합 구현",total:10,base:"../",page:"section",index:4,sections:[{f:"s01.html",n:"1",t:"통합 구현의 개요"},{f:"s02.html",n:"2",t:"연계 요구사항 분석"},{f:"s03.html",n:"3",t:"연계 데이터 식별 및 표준화"},{f:"s04.html",n:"4",t:"연계 메커니즘"},{f:"s05.html",n:"5",t:"연계 장애 및 오류 처리"},{f:"s06.html",n:"6",t:"연계 데이터 보안"},{f:"s07.html",n:"7",t:"XML"},{f:"s08.html",n:"8",t:"SOAP과 WSDL"},{f:"s09.html",n:"9",t:"연계 테스트"},{f:"s10.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>03. 통합 구현</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (5) 연계 장애 및 오류 처리
+
+### 장애 및 오류의 정의
+
+연계 과정에서 발생할 수 있는 **비정상적인 상황**을 정의하고,
+**유형별 대응 방안**을 마련해 두는 것.
+
+### 구간별 모니터링 현황 ⭐
+
+| 구간 | 장애 및 오류 모니터링 방법 |
+|---|---|
+| **송신 시스템** | 연계 데이터 **생성 및 추출** 시 발생한 오류를 **로그 테이블·파일**로 확인 |
+| **연계 서버** | 데이터 **송수신 및 오류 처리** 내역을 **연계 서버 로그**로 확인 |
+| **수신 시스템** | 수신한 데이터를 **운영 DB 에 반영**할 때 발생한 오류를 로그로 확인 |
+
+### 장애 및 오류 유형 ⭐
+
+| 유형 | 발생 원인 |
+|---|---|
+| **연계 시스템 오류** | 연계 서버의 **실행·중지·모니터링 기능** 자체의 문제, 서버 다운, 네트워크 장애 |
+| **연계 데이터 오류** | 연계 데이터 값이 **유효하지 않음**(길이 초과, 타입 불일치, 필수값 누락 등) |
+| **응용 애플리케이션 오류** | 데이터 **생성·추출·반영 로직**의 오류, 데이터 정합성 오류 |
+
+### 장애 및 오류 처리 절차 ⭐
+
+```mermaid
+flowchart LR
+    A[장애 및 오류 발생] --> B[로그·모니터링으로 인지] --> C[원인 분석] --> D[처리 방안 수립] --> E[조치 및 결과 등록] --> F[재발 방지 대책]
+```
+
+### 장애 및 오류 확인 방법
+
+| 방법 | 설명 |
+|---|---|
+| **로그 테이블·파일 확인** | 인터페이스 테이블이나 로그 파일의 **오류 코드와 메시지**를 확인 |
+| **모니터링 현황 확인** | 연계 서버가 제공하는 **모니터링 화면**에서 상태를 확인 |
+| **알림 확인** | 오류 발생 시 **메일·SMS 등으로 통보**되는 알림을 확인 |
+
+### 장애 및 오류 기록 항목
+
+- 오류 **코드**와 **메시지**
+- 발생 **일시**와 **구간**
+- 연계 **데이터 식별자**
+- 처리 **상태**와 **담당자**
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

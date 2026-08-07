@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 08. SQL 응용 — 도해와 표로 정리한 학습 노트">
+<title>DDL — CREATE · 08. SQL 응용</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch08",title:"정보처리기사 실기 — 08. SQL 응용",subtitle:"08. SQL 응용",total:18,base:"../",page:"section",index:1,sections:[{f:"s01.html",n:"1",t:"SQL의 분류"},{f:"s02.html",n:"2",t:"DDL — CREATE"},{f:"s03.html",n:"3",t:"DDL — ALTER, DROP"},{f:"s04.html",n:"4",t:"DCL"},{f:"s05.html",n:"5",t:"DML — INSERT, DELETE, UPDATE"},{f:"s06.html",n:"6",t:"DML — SELECT 기본"},{f:"s07.html",n:"7",t:"DML — 그룹 함수와 그룹 지정 검색"},{f:"s08.html",n:"8",t:"DML — 하위 질의와 집합 연산자"},{f:"s09.html",n:"9",t:"DML — JOIN"},{f:"s10.html",n:"10",t:"WINDOW 함수"},{f:"s11.html",n:"11",t:"절차형 SQL — 프로시저"},{f:"s12.html",n:"12",t:"절차형 SQL — 트리거"},{f:"s13.html",n:"13",t:"절차형 SQL — 사용자 정의 함수"},{f:"s14.html",n:"14",t:"제어문과 커서"},{f:"s15.html",n:"15",t:"DBMS 접속과 동적 SQL"},{f:"s16.html",n:"16",t:"SQL 테스트와 ORM"},{f:"s17.html",n:"17",t:"쿼리 성능 최적화"},{f:"s18.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>08. SQL 응용</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (2) DDL — CREATE
+
+### CREATE SCHEMA
+
+**스키마를 정의**하는 명령문.
+
+```
+CREATE SCHEMA 스키마명 AUTHORIZATION 사용자_id;
+```
+
+> 예 : 소유권자가 '홍길동'인 스키마 '도서관'을 정의
+> `CREATE SCHEMA 도서관 AUTHORIZATION 홍길동;`
+
+### CREATE DOMAIN
+
+**도메인을 정의**하는 명령문. 도메인은 하나의 속성이 취할 수 있는 값의 범위.
+
+```
+CREATE DOMAIN 도메인명 [AS] 데이터_타입
+    [DEFAULT 기본값]
+    [CONSTRAINT 제약조건명 CHECK (범위값)];
+```
+
+> 예 : '대출상태'를 문자 4자리로 정의하고, 기본값은 '대출가능', 값은 '대출가능' 또는 '대출중'만 허용
+> ```
+> CREATE DOMAIN 대출상태 CHAR(4)
+>     DEFAULT '대출가능'
+>     CONSTRAINT VALID-상태 CHECK(VALUE IN ('대출가능', '대출중'));
+> ```
+
+### CREATE TABLE ⭐⭐⭐
+
+**테이블을 정의**하는 명령문.
+
+```
+CREATE TABLE 테이블명
+    (속성명 데이터_타입 [NOT NULL] [DEFAULT 기본값] [, ...]
+    [, PRIMARY KEY(속성명, ...)]
+    [, UNIQUE(속성명, ...)]
+    [, FOREIGN KEY(속성명, ...) REFERENCES 참조테이블(기본키_속성명, ...)]
+        [ON DELETE 옵션]
+        [ON UPDATE 옵션]
+    [, CONSTRAINT 제약조건명] [CHECK (조건식)]);
+```
+
+| 절 | 의미 |
+|---|---|
+| **PRIMARY KEY** | **기본키**로 사용할 속성을 지정 |
+| **UNIQUE** | **대체키**로 사용할 속성을 지정. 중복된 값을 가질 수 없음 |
+| **FOREIGN KEY ~ REFERENCES ~** | **외래키**로 사용할 속성을 지정 |
+| **CONSTRAINT** | **제약 조건의 이름**을 지정 |
+| **CHECK** | 속성 값에 대한 **제약 조건**을 정의 |
+
+**참조 무결성 옵션(ON DELETE / ON UPDATE)** ⭐
+
+| 옵션 | 동작 |
+|---|---|
+| **NO ACTION** | 참조 테이블에 변화가 있어도 **조취를 취하지 않음** |
+| **CASCADE** | 참조 테이블의 튜플이 삭제·변경되면 **관련 튜플도 함께 삭제·변경** |
+| **SET NULL** | 참조 테이블에 변화가 있으면 관련 튜플의 속성 값을 **NULL 로 변경** |
+| **SET DEFAULT** | 참조 테이블에 변화가 있으면 관련 튜플의 속성 값을 **기본값으로 변경** |
+
+> **예제** — 회원 테이블 생성
+> ```
+> CREATE TABLE 회원
+>     (회원번호 VARCHAR(10) NOT NULL,
+>      이름     VARCHAR(20) NOT NULL,
+>      연락처   VARCHAR(20),
+>      등급     VARCHAR(10) DEFAULT '일반',
+>      PRIMARY KEY(회원번호),
+>      CHECK (등급 IN ('일반', '우수')));
+> ```
+
+**기존 테이블을 이용한 생성**
+
+```
+CREATE TABLE 신규테이블 AS SELECT 속성명 FROM 기존테이블;
+```
+
+### CREATE VIEW ⭐⭐
+
+**뷰(View)를 정의**하는 명령문.
+
+```
+CREATE VIEW 뷰명[(속성명, ...)]
+AS SELECT문;
+```
+
+- **AS 절에 SELECT 문을 서술**해 뷰를 정의함.
+- 서브 쿼리에 **UNION 이나 ORDER BY 절을 사용할 수 없음**.
+- 속성명을 기술하지 않으면 SELECT 문의 속성명이 그대로 사용됨.
+
+> 예 : 우수 회원만 보여 주는 뷰
+> ```
+> CREATE VIEW 우수회원(회원번호, 이름)
+> AS SELECT 회원번호, 이름
+>    FROM 회원
+>    WHERE 등급 = '우수';
+> ```
+
+### CREATE INDEX ⭐
+
+**인덱스를 정의**하는 명령문.
+
+```
+CREATE [UNIQUE] INDEX 인덱스명
+ON 테이블명(속성명 [ASC | DESC] [, ...])
+[CLUSTER];
+```
+
+| 옵션 | 의미 |
+|---|---|
+| **UNIQUE** | 생략하면 **중복 값을 허용**, 사용하면 **중복 값을 허용하지 않음** |
+| **ASC / DESC** | **오름차순 / 내림차순** 정렬. 생략 시 **오름차순** |
+| **CLUSTER** | 지정된 속성을 기준으로 **레코드를 묶음** |
+
+> 예 : `CREATE UNIQUE INDEX 회원_IDX ON 회원(회원번호 ASC);`
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

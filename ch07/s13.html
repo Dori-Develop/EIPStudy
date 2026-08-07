@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 07. 애플리케이션 테스트 관리 — 도해와 표로 정리한 학습 노트">
+<title>복잡도 · 07. 애플리케이션 테스트 관리</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch07",title:"정보처리기사 실기 — 07. 애플리케이션 테스트 관리",subtitle:"07. 애플리케이션 테스트 관리",total:15,base:"../",page:"section",index:12,sections:[{f:"s01.html",n:"1",t:"애플리케이션 테스트의 개요"},{f:"s02.html",n:"2",t:"애플리케이션 테스트의 기본 원리 ⭐⭐"},{f:"s03.html",n:"3",t:"애플리케이션 테스트의 분류"},{f:"s04.html",n:"4",t:"화이트박스 테스트"},{f:"s05.html",n:"5",t:"블랙박스 테스트"},{f:"s06.html",n:"6",t:"개발 단계에 따른 애플리케이션 테스트"},{f:"s07.html",n:"7",t:"통합 테스트의 종류"},{f:"s08.html",n:"8",t:"애플리케이션 테스트 프로세스"},{f:"s09.html",n:"9",t:"테스트 케이스 · 시나리오 · 오라클"},{f:"s10.html",n:"10",t:"결함 관리"},{f:"s11.html",n:"11",t:"테스트 자동화 도구"},{f:"s12.html",n:"12",t:"애플리케이션 성능 분석"},{f:"s13.html",n:"13",t:"복잡도"},{f:"s14.html",n:"14",t:"애플리케이션 성능 개선"},{f:"s15.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>07. 애플리케이션 테스트 관리</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (13) 복잡도
+
+### 복잡도(Complexity)
+
+시스템이나 시스템 구성 요소 또는 소프트웨어의 **복잡한 정도를 나타내는 말**.
+
+### 시간 복잡도 ⭐
+
+알고리즘의 **실행 시간**, 즉 **연산의 실행 횟수**를 수치화한 것.
+
+| 표기 | 의미 | 예 |
+|---|---|---|
+| **O(1)** | 상수형 복잡도. 입력값에 관계없이 **일정한 횟수** | 해시 함수 |
+| **O(log₂n)** | 로그형 복잡도. 문제를 해결하는 데 필요한 단계가 **로그적으로 증가** | 이진 검색 |
+| **O(n)** | 선형 복잡도. 입력값에 **비례해 증가** | 순차 검색 |
+| **O(n log₂n)** | 선형 로그형 복잡도 | 힙·합병·퀵(평균) 정렬 |
+| **O(n²)** | 제곱형 복잡도 | 삽입·선택·버블 정렬 |
+| **O(2ⁿ)** | 지수형 복잡도 | 피보나치 수열(재귀) |
+
+### 순환 복잡도(Cyclomatic Complexity) ⭐⭐⭐
+
+한 프로그램의 **논리적인 복잡도를 측정**하기 위한 소프트웨어의 척도.
+**맥케이브 순환도(McCabe's Cyclomatic)** 또는 **맥케이브 복잡도 메트릭(McCabe's Complexity Metrics)** 이라고도 함.
+
+**계산 방법 — 두 가지**
+
+<div class="formula"><span class="lhs">V(G) =</span><span class="cond">화살표 수(E) − 노드 수(N) + 2</span></div>
+
+<div class="formula"><span class="lhs">V(G) =</span><span class="cond">제어 흐름 그래프의 영역 수 = 조건문(분기점) 수 + 1</span></div>
+
+**예제**
+
+```mermaid
+flowchart TD
+    A((1)) --> B((2))
+    B --> C((3))
+    B --> D((4))
+    C --> E((5))
+    D --> E
+    E --> F((6))
+```
+
+- 화살표(간선) 수 **E = 6**, 노드 수 **N = 6**
+- V(G) = 6 − 6 + 2 = **2**
+
+> 💡 **분기점(조건문) 개수 + 1** 로 세는 것이 훨씬 빠름.
+> if 문 2개, while 1개가 있으면 V(G) = 3 + 1 = **4**.
+
+**순환 복잡도의 활용**
+
+- 값이 **낮을수록 코드가 단순**하고 이해하기 쉬움
+- 일반적으로 **10 이하**를 권장함
+- 값이 곧 **필요한 테스트 케이스의 최소 개수**가 됨
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

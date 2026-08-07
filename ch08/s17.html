@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 08. SQL 응용 — 도해와 표로 정리한 학습 노트">
+<title>쿼리 성능 최적화 · 08. SQL 응용</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch08",title:"정보처리기사 실기 — 08. SQL 응용",subtitle:"08. SQL 응용",total:18,base:"../",page:"section",index:16,sections:[{f:"s01.html",n:"1",t:"SQL의 분류"},{f:"s02.html",n:"2",t:"DDL — CREATE"},{f:"s03.html",n:"3",t:"DDL — ALTER, DROP"},{f:"s04.html",n:"4",t:"DCL"},{f:"s05.html",n:"5",t:"DML — INSERT, DELETE, UPDATE"},{f:"s06.html",n:"6",t:"DML — SELECT 기본"},{f:"s07.html",n:"7",t:"DML — 그룹 함수와 그룹 지정 검색"},{f:"s08.html",n:"8",t:"DML — 하위 질의와 집합 연산자"},{f:"s09.html",n:"9",t:"DML — JOIN"},{f:"s10.html",n:"10",t:"WINDOW 함수"},{f:"s11.html",n:"11",t:"절차형 SQL — 프로시저"},{f:"s12.html",n:"12",t:"절차형 SQL — 트리거"},{f:"s13.html",n:"13",t:"절차형 SQL — 사용자 정의 함수"},{f:"s14.html",n:"14",t:"제어문과 커서"},{f:"s15.html",n:"15",t:"DBMS 접속과 동적 SQL"},{f:"s16.html",n:"16",t:"SQL 테스트와 ORM"},{f:"s17.html",n:"17",t:"쿼리 성능 최적화"},{f:"s18.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>08. SQL 응용</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (17) 쿼리 성능 최적화
+
+### 쿼리 성능 최적화
+
+데이터 입출력 애플리케이션의 성능 향상을 위해
+**SQL 코드를 최적화**하는 것.
+
+**절차** — **성능 측정 도구(APM)로 쿼리 성능 확인 → 문제가 되는 SQL 을 개선**
+
+### 옵티마이저(Optimizer) ⭐⭐
+
+작성된 SQL 이 데이터를 처리하기 위해 **가장 효율적인 경로(실행 계획)를 선택**하도록 해 주는
+데이터베이스 엔진의 핵심 모듈.
+
+| 종류 | 설명 |
+|---|---|
+| **규칙 기반 옵티마이저**<br>(RBO; Rule Based Optimizer) | **미리 정해진 우선순위(규칙)** 에 따라 실행 계획을 생성. 사용자가 원하는 처리 경로로 유도하기 쉬움 |
+| **비용 기반 옵티마이저**<br>(CBO; Cost Based Optimizer) | **테이블·인덱스의 통계 정보를 바탕으로 비용을 계산**해 가장 낮은 비용의 실행 계획을 선택. **현대 DBMS 의 기본** |
+
+### 실행 계획(Execution Plan)
+
+DBMS 의 옵티마이저가 수립한 **SQL 코드의 실행 절차와 방법**을 표현한 것.
+
+- 옵티마이저는 파스 트리(Parse Tree)를 이용해 실행 계획을 생성함.
+- **`EXPLAIN PLAN`** 또는 **`EXPLAIN`** 명령어로 확인할 수 있음.
+- 실행 계획에는 **조인 순서, 조인 기법, 액세스 기법, 최적화 정보, 연산 등**이 표시됨.
+
+### 쿼리 성능 최적화 방법 ⭐
+
+| 방법 | 내용 |
+|---|---|
+| **적절한 인덱스 사용** | WHERE 절이나 JOIN 조건에 사용되는 컬럼에 인덱스를 생성 |
+| **인덱스 컬럼에 함수·연산 사용 금지** | `WHERE SUBSTR(회원번호,1,1)='M'` 처럼 쓰면 **인덱스를 타지 못함** |
+| **불필요한 컬럼 조회 지양** | `SELECT *` 대신 **필요한 컬럼만** 명시 |
+| **서브 쿼리를 조인으로 변경** | 중첩된 서브 쿼리보다 조인이 유리한 경우가 많음 |
+| **DISTINCT 남용 지양** | 정렬 비용이 발생하므로 꼭 필요할 때만 사용 |
+| **UNION 대신 UNION ALL** | 중복 제거가 필요 없으면 **UNION ALL** 이 빠름 |
+| **적절한 조인 기법 선택** | Nested Loop Join, Sort Merge Join, Hash Join 중 상황에 맞게 |
+
+### 주요 조인 기법
+
+| 기법 | 설명 |
+|---|---|
+| **Nested Loop Join** | 선행 테이블의 각 행마다 후행 테이블을 반복 탐색. **소량의 데이터**에 유리 |
+| **Sort Merge Join** | 두 테이블을 **정렬한 후 병합**. 조인 컬럼에 인덱스가 없을 때 유리 |
+| **Hash Join** | 조인 컬럼으로 **해시 테이블을 만들어** 조인. **대량의 데이터**에 유리 |
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

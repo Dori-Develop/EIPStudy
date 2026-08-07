@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 01. 요구사항 확인 — 도해와 표로 정리한 학습 노트">
+<title>수학적 산정 기법 · 01. 요구사항 확인</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch01",title:"정보처리기사 실기 — 01. 요구사항 확인",subtitle:"01. 요구사항 확인",total:31,base:"../",page:"section",index:24,sections:[{f:"s01.html",n:"1",t:"소프트웨어 생명 주기"},{f:"s02.html",n:"2",t:"스크럼(Scrum) 기법"},{f:"s03.html",n:"3",t:"XP(eXtreme Programming) 기법"},{f:"s04.html",n:"4",t:"현행 시스템 파악"},{f:"s05.html",n:"5",t:"개발 기술 환경 파악"},{f:"s06.html",n:"6",t:"요구사항 정의"},{f:"s07.html",n:"7",t:"요구사항 개발 프로세스"},{f:"s08.html",n:"8",t:"요구사항 분석"},{f:"s09.html",n:"9",t:"요구사항 분석 CASE와 HIPO"},{f:"s10.html",n:"10",t:"UML(Unified Modeling Language)의 개요"},{f:"s11.html",n:"11",t:"UML — 관계(Relationship)"},{f:"s12.html",n:"12",t:"UML — 다이어그램"},{f:"s13.html",n:"13",t:"유스케이스(Use Case) 다이어그램"},{f:"s14.html",n:"14",t:"활동(Activity) 다이어그램"},{f:"s15.html",n:"15",t:"클래스(Class) 다이어그램"},{f:"s16.html",n:"16",t:"시퀀스(Sequence) 다이어그램"},{f:"s17.html",n:"17",t:"커뮤니케이션(Communication) 다이어그램"},{f:"s18.html",n:"18",t:"상태(State) 다이어그램"},{f:"s19.html",n:"19",t:"패키지(Package) 다이어그램"},{f:"s20.html",n:"20",t:"소프트웨어 개발 방법론"},{f:"s21.html",n:"21",t:"S/W 공학의 발전적 추세"},{f:"s22.html",n:"22",t:"비용 산정 기법"},{f:"s23.html",n:"23",t:"비용 산정 기법 — 하향식"},{f:"s24.html",n:"24",t:"비용 산정 기법 — 상향식"},{f:"s25.html",n:"25",t:"수학적 산정 기법"},{f:"s26.html",n:"26",t:"프로젝트 일정 계획"},{f:"s27.html",n:"27",t:"소프트웨어 개발 방법론 결정과 프로젝트 관리"},{f:"s28.html",n:"28",t:"소프트웨어 개발 표준"},{f:"s29.html",n:"29",t:"소프트웨어 개발 방법론 테일러링"},{f:"s30.html",n:"30",t:"소프트웨어 개발 프레임워크"},{f:"s31.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>01. 요구사항 확인</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (25) 수학적 산정 기법
+
+- **상향식** 비용 산정 기법.
+- **경험적 추정 모형, 실험적 추정 모형**이라고 .
+- 개발 비용 산정의 **자동화**를 목표로 .
+- 비용 자동 산정에 사용되는 공식은 **과거의 유사한 프로젝트**를 기반으로 유도된 것.
+- **주요 기법** : COCOMO 모형 / Putnam 모형 / 기능 점수(FP) 모형
+
+### COCOMO(COnstructive COst MOdel) 모형
+
+- 원시 프로그램의 규모인 **LOC**에 의한 비용 산정 기법
+- 개발할 소프트웨어의 **규모(LOC)를 예측**한 후, 소프트웨어 종류에 따라 다르게 책정되는
+  **비용 산정 방정식**에 대입해 비용을 산정.
+- 비용 산정 결과는 프로젝트 완성에 필요한 **노력(Man-Month)** 으로 나타남.
+- **보헴(Boehm)** 이 제안.
+
+#### COCOMO의 소프트웨어 개발 유형 ⭐⭐
+
+| 유형 | 특징 |
+|---|---|
+| **조직형**<br>(Organic Mode) | - 기관 **내부**에서 개발된 **중소 규모**의 소프트웨어<br>- 일괄 자료 처리나 과학기술 계산용, 비즈니스 자료 처리용 등의 **5만(50 KDSI) 라인 이하**<br>- **사무 처리용, 업무용, 과학용** 응용 소프트웨어 개발에 적합함. |
+| **반분리형**<br>(Semi-Detached Mode) | - 조직형과 내장형의 **중간형**<br>- 트랜잭션 처리 시스템이나 운영체제, DBMS 등의 **30만(300 KDSI) 라인 이하**<br>- **컴파일러, 인터프리터**와 같은 유틸리티 개발에 적합함. |
+| **내장형**<br>(Embedded Mode) | - **초대형 규모**의 소프트웨어<br>- 트랜잭션 처리 시스템이나 운영체제 등의 **30만(300 KDSI) 라인 이상**<br>- **신호기 제어 시스템, 미사일 유도 시스템, 실시간 처리 시스템** 등 시스템 프로그램 개발에 적합함. |
+
+> **KDSI(Kilo Delivered Source Instruction)** : 전체 라인 수를 **1,000라인 단위**로 묶은 것으로,
+> **KLOC(Kilo LOC)** 과 같은 의미.
+
+#### COCOMO 모형의 종류
+
+| 유형 | 특징 |
+|---|---|
+| **기본형(Basic) COCOMO** | 소프트웨어의 **크기와 개발 유형만**을 이용해 비용을 산정. |
+| **중간형(Intermediate) COCOMO** | 기본형 COCOMO의 공식을 토대로 하되, 다음 **4가지 특성**을 반영해 비용을 산정.<br>① **제품**의 특성 ② **컴퓨터**의 특성 ③ **개발 요원**의 특성 ④ **프로젝트** 특성 |
+| **발전형(Detailed) COCOMO** | - 중간형 COCOMO를 **보완**해 만들어진 모형<br>- **개발 공정별**로 더 자세하고 정확하게 노력을 산출해 비용을 산정.<br>- 소프트웨어 환경과 구성 요소가 **사전에 정의**되어 있어야 하며, 개발 과정의 **후반부**에 주로 적용. |
+
+### Putnam 모형
+
+- 소프트웨어 생명 주기의 **전 과정 동안 사용될 노력의 분포**를 예상하는 모형
+- **푸트남(Putnam)** 이 제안한 것으로, **생명 주기 예측 모형**이라고도 .
+- 시간에 따른 함수로 표현되는 **Rayleigh-Norden 곡선**의 노력 분포도를 기초로 .
+- **대형 프로젝트**의 노력 분포 산정에 이용됨.
+- 개발 기간이 늘어날수록 프로젝트 적용 인원의 **노력이 감소**.
+
+### 기능 점수(FP; Function Point) 모형
+
+- 소프트웨어의 **기능을 증대시키는 요인별로 가중치를 부여**하고, 요인별 가중치를 합산해
+  **총 기능 점수**를 산출하며, 총 기능 점수와 **영향도**를 이용해 **기능 점수(FP)** 를 구한 후
+  이를 이용해 비용을 산정하는 기법
+- **총 기능 점수** : 소프트웨어 개발의 **규모, 복잡도, 난이도** 등을 하나의 수치로 집약시킨 것
+- **알브레히트(Albrecht)** 가 제안.
+
+**소프트웨어 기능 증대 요인** ⭐
+
+1. **자료 입력** (입력 양식)
+2. **정보 출력** (출력 보고서)
+3. **명령어** (사용자 질의수)
+4. **데이터 파일**
+5. 필요한 **외부 루틴과의 인터페이스**
+
+### 비용 산정 자동화 추정 도구
+
+| 도구 | 설명 |
+|---|---|
+| **SLIM** | **Rayleigh-Norden 곡선**과 **Putnam 예측 모델**을 기초로 개발된 자동화 추정 도구 |
+| **ESTIMACS** | 다양한 프로젝트와 개인별 요소를 수용하도록 **FP 모형**을 기초로 개발된 자동화 추정 도구 |
+
+> 💡 **SLIM은 Putnam, ESTIMACS는 FP.** 짝만 외우면 됨.
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+<script src="../assets/bank-ch01.js"></script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

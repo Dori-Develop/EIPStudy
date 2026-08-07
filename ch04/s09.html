@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 04. 서버 프로그램 구현 — 도해와 표로 정리한 학습 노트">
+<title>디자인 패턴 · 04. 서버 프로그램 구현</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch04",title:"정보처리기사 실기 — 04. 서버 프로그램 구현",subtitle:"04. 서버 프로그램 구현",total:15,base:"../",page:"section",index:8,sections:[{f:"s01.html",n:"1",t:"개발 환경 구축"},{f:"s02.html",n:"2",t:"소프트웨어 아키텍처"},{f:"s03.html",n:"3",t:"아키텍처 패턴"},{f:"s04.html",n:"4",t:"객체 지향(Object-Oriented)"},{f:"s05.html",n:"5",t:"객체 지향 분석 및 설계"},{f:"s06.html",n:"6",t:"모듈과 결합도·응집도"},{f:"s07.html",n:"7",t:"단위 모듈과 공통 모듈"},{f:"s08.html",n:"8",t:"코드(Code)"},{f:"s09.html",n:"9",t:"디자인 패턴"},{f:"s10.html",n:"10",t:"개발 지원 도구"},{f:"s11.html",n:"11",t:"서버 개발"},{f:"s12.html",n:"12",t:"보안 및 API"},{f:"s13.html",n:"13",t:"배치 프로그램"},{f:"s14.html",n:"14",t:"패키지 소프트웨어"},{f:"s15.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>04. 서버 프로그램 구현</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (9) 디자인 패턴
+
+### 디자인 패턴(Design Pattern)
+
+모듈 간의 관계 및 인터페이스를 설계할 때 참조할 수 있는
+**전형적인 해결 방식 또는 예제**.
+
+- 문제 및 배경, 실제 적용된 사례, 재사용이 가능한 샘플 코드 등으로 구성됨.
+- **GoF(Gang of Four)** 의 디자인 패턴이 가장 대표적임.
+- **23가지**를 **생성 · 구조 · 행위** 세 분류로 나눔.
+
+> 💡 **아키텍처 패턴 vs 디자인 패턴**
+> 아키텍처 패턴은 **시스템 전체 구조**, 디자인 패턴은 **서브시스템·클래스 단위 구조**에 관한 것임.
+
+### 생성 패턴(Creational Pattern) — 5가지 ⭐⭐
+
+**객체의 생성**과 관련된 패턴.
+
+| 패턴 | 설명 |
+|---|---|
+| **추상 팩토리**<br>(Abstract Factory) | 구체적인 클래스에 의존하지 않고 **서로 연관·의존하는 객체들의 그룹으로 생성**해 추상적으로 표현 |
+| **빌더**<br>(Builder) | 작게 분리된 인스턴스를 **건축하듯 조합**해 객체를 생성 |
+| **팩토리 메소드**<br>(Factory Method) | **객체 생성을 서브 클래스에서 처리**하도록 분리해 캡슐화. **가상 생성자 패턴**이라고도 함 |
+| **프로토타입**<br>(Prototype) | **원본 객체를 복제**하는 방법으로 객체를 생성 |
+| **싱글톤**<br>(Singleton) | **하나의 객체를 생성하면 어디서든 참조**할 수 있지만, **동시에 참조할 수는 없음** |
+
+### 구조 패턴(Structural Pattern) — 7가지 ⭐⭐
+
+클래스나 객체들을 **조합해 더 큰 구조로 만드는** 패턴.
+
+| 패턴 | 설명 |
+|---|---|
+| **어댑터**<br>(Adapter) | **호환성이 없는 클래스들의 인터페이스를 다른 클래스가 이용할 수 있도록 변환** |
+| **브리지**<br>(Bridge) | **구현부에서 추상층을 분리**해 서로가 독립적으로 확장할 수 있도록 구성 |
+| **컴포지트**<br>(Composite) | 여러 객체를 가진 복합 객체와 단일 객체를 **구분 없이 다루고자 할 때** 사용. **트리 구조** |
+| **데코레이터**<br>(Decorator) | 객체 간의 결합을 통해 **동적으로 기능을 확장**할 수 있게 함 |
+| **퍼사드**<br>(Facade) | 복잡한 서브 클래스들을 피해 **더 상위에 인터페이스를 구성**함으로써 서브 클래스들의 기능을 간편하게 사용 |
+| **플라이웨이트**<br>(Flyweight) | 인스턴스가 필요할 때마다 매번 생성하지 않고 **가능한 한 공유해서 사용**함으로써 메모리를 절약 |
+| **프록시**<br>(Proxy) | 접근이 어려운 객체와 여기에 연결하려는 객체 사이에서 **인터페이스 역할**을 수행 |
+
+### 행위 패턴(Behavioral Pattern) — 11가지 ⭐⭐
+
+클래스나 객체들이 서로 **상호작용하는 방법**이나 **책임 분배 방법**을 정의하는 패턴.
+
+| 패턴 | 설명 |
+|---|---|
+| **책임 연쇄**<br>(Chain of Responsibility) | 요청을 처리할 수 있는 객체가 둘 이상 존재해 **한 객체가 처리하지 못하면 다음 객체로 넘어감** |
+| **커맨드**<br>(Command) | 요청을 **객체의 형태로 캡슐화**해 재이용하거나 취소할 수 있도록 함 |
+| **인터프리터**<br>(Interpreter) | **언어에 문법 표현을 정의**하는 패턴 |
+| **반복자**<br>(Iterator) | 자료 구조와 같이 **접근이 잦은 객체에 대해 동일한 인터페이스를 사용**하도록 함 |
+| **중재자**<br>(Mediator) | 객체 간 **통제와 지시의 역할을 하는 중재자를 두어** 결합도를 낮춤 |
+| **메멘토**<br>(Memento) | 특정 시점에서의 **객체 내부 상태를 저장**했다가 이후 요구에 따라 **복원** |
+| **옵서버**<br>(Observer) | 한 객체의 **상태가 변화하면 객체에 상속된 다른 객체들에게 변화를 통지** |
+| **상태**<br>(State) | 객체의 **상태에 따라 동일한 동작을 다르게 처리**해야 할 때 사용 |
+| **전략**<br>(Strategy) | 동일한 계열의 **알고리즘을 개별적으로 캡슐화**해 상호 교환할 수 있게 정의 |
+| **템플릿 메소드**<br>(Template Method) | **상위 클래스에서 골격을 정의**하고 하위 클래스에서 세부 처리를 구체화 |
+| **방문자**<br>(Visitor) | **각 클래스의 데이터 구조에서 처리 기능을 분리**해 별도의 클래스로 구성 |
+
+> 📌 **분류 개수 암기: 생성 5 · 구조 7 · 행위 11 = 23**
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 07. 애플리케이션 테스트 관리 — 도해와 표로 정리한 학습 노트">
+<title>결함 관리 · 07. 애플리케이션 테스트 관리</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch07",title:"정보처리기사 실기 — 07. 애플리케이션 테스트 관리",subtitle:"07. 애플리케이션 테스트 관리",total:15,base:"../",page:"section",index:9,sections:[{f:"s01.html",n:"1",t:"애플리케이션 테스트의 개요"},{f:"s02.html",n:"2",t:"애플리케이션 테스트의 기본 원리 ⭐⭐"},{f:"s03.html",n:"3",t:"애플리케이션 테스트의 분류"},{f:"s04.html",n:"4",t:"화이트박스 테스트"},{f:"s05.html",n:"5",t:"블랙박스 테스트"},{f:"s06.html",n:"6",t:"개발 단계에 따른 애플리케이션 테스트"},{f:"s07.html",n:"7",t:"통합 테스트의 종류"},{f:"s08.html",n:"8",t:"애플리케이션 테스트 프로세스"},{f:"s09.html",n:"9",t:"테스트 케이스 · 시나리오 · 오라클"},{f:"s10.html",n:"10",t:"결함 관리"},{f:"s11.html",n:"11",t:"테스트 자동화 도구"},{f:"s12.html",n:"12",t:"애플리케이션 성능 분석"},{f:"s13.html",n:"13",t:"복잡도"},{f:"s14.html",n:"14",t:"애플리케이션 성능 개선"},{f:"s15.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>07. 애플리케이션 테스트 관리</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (10) 결함 관리
+
+### 결함(Fault)
+
+오류 발생, 작동 실패 등으로 인해 **현재 사용 중인 시스템에 문제가 생기게 하는 것**.
+
+| 용어 | 의미 |
+|---|---|
+| **에러 / 오류**(Error) | 결함의 원인이 되는 것으로, **개발자(사람)에 의해 발생**한 실수 |
+| **결함 / 결점 / 버그**(Fault, Bug) | 오류로 인해 **소프트웨어 제품에 발생한 결함** |
+| **실패 / 문제**(Failure, Problem) | 결함으로 인해 실행 시 **실제 결과가 기대 결과와 달라진 현상** |
+
+### 결함 관리 프로세스 ⭐
+
+```mermaid
+flowchart LR
+    A[결함 관리 계획] --> B[결함 기록] --> C[결함 검토] --> D[결함 수정] --> E[결함 재확인] --> F[결함 상태 추적 및 모니터링 활동] --> G[최종 결함 분석 및 보고서 작성]
+```
+
+### 결함 상태 추적 ⭐
+
+| 상태 | 의미 |
+|---|---|
+| **결함 등록**(Open) | 결함이 **처음 발견되어 등록**된 상태 |
+| **결함 검토**(Reviewed) | 등록된 결함을 **검토**하는 상태 |
+| **결함 할당**(Assigned) | 결함을 **수정하기 위해 담당자에게 할당**된 상태 |
+| **결함 수정**(Resolved) | 담당자가 결함 **수정을 완료**한 상태 |
+| **결함 조치 보류**(Deferred) | 결함의 수정이 **연기**된 상태 |
+| **결함 종료**(Closed) | 결함이 해결되어 **테스터가 확인 후 종료**한 상태 |
+| **결함 해제**(Clarified) | 등록된 결함이 **software 결함이 아니라고 판명**된 상태 |
+
+### 결함 분류
+
+| 분류 | 내용 |
+|---|---|
+| **시스템 결함** | 애플리케이션 환경이나 **데이터베이스 처리**에서 발생된 결함 |
+| **기능 결함** | 기획 의도와 다르게 **동작하거나 기능이 누락**된 경우 |
+| **GUI 결함** | 사용자 화면 설계에서 발생된 결함 |
+| **문서 결함** | 기획자, 사용자, 개발자 간의 **의사소통 및 기록이 원활하지 않아** 발생된 결함 |
+
+### 결함 심각도별 분류
+
+| 심각도 | 의미 |
+|---|---|
+| **치명적**(Critical) | 시스템 **전체가 마비**되는 결함 |
+| **주요**(Major) | 주요 기능이 **동작하지 않는** 결함 |
+| **보통**(Normal) | 일부 기능에 **불편함**을 주는 결함 |
+| **경미**(Minor) | **사소한 결함**(UI 오탈자 등) |
+| **단순**(Simple) | 개선 사항 수준의 결함 |
+
+### 결함 관리 측정 지표 ⭐
+
+| 지표 | 내용 |
+|---|---|
+| **결함 분포** | **모듈 또는 컴포넌트의 특정 속성**에 해당하는 결함 수 측정 |
+| **결함 추세** | **테스트 진행 시간에 따른** 결함 수의 추이 분석 |
+| **결함 에이징** | **특정 결함 상태로 지속되고 있는 시간**을 측정 |
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

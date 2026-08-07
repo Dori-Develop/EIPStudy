@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 06. 화면 설계 — 도해와 표로 정리한 학습 노트">
+<title>UI 요구사항 확인 · 06. 화면 설계</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch06",title:"정보처리기사 실기 — 06. 화면 설계",subtitle:"06. 화면 설계",total:8,base:"../",page:"section",index:3,sections:[{f:"s01.html",n:"1",t:"사용자 인터페이스(UI)"},{f:"s02.html",n:"2",t:"UI 표준 및 지침"},{f:"s03.html",n:"3",t:"UI 설계 도구"},{f:"s04.html",n:"4",t:"UI 요구사항 확인"},{f:"s05.html",n:"5",t:"품질 요구사항"},{f:"s06.html",n:"6",t:"UI 설계"},{f:"s07.html",n:"7",t:"HCI · UX · 감성공학"},{f:"s08.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>06. 화면 설계</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (4) UI 요구사항 확인
+
+### UI 요구사항 확인
+
+새로 개발할 시스템에 적용할 **UI 관련 요구사항을 조사해 작성**하는 단계.
+
+### 확인 순서
+
+```mermaid
+flowchart LR
+    A[목표 정의] --> B[활동 사항 정의] --> C[UI 요구사항 작성]
+```
+
+| 단계 | 내용 |
+|---|---|
+| **목표 정의** | 사용자를 대상으로 **인터뷰를 진행**해 사업적·기술적 요구사항을 정확히 이해함.<br>인터뷰 참여 인원이 많은 경우 **시간과 비용이 낭비**될 수 있음 |
+| **활동 사항 정의** | 조사한 요구사항을 토대로 **앞으로 해야 할 활동을 정의**함 |
+| **UI 요구사항 작성** | **요구사항 요소를 확인**하고, **정황 시나리오를 작성**한 후 **요구사항을 작성**함 |
+
+### UI 요구사항 작성 세부 단계 ⭐
+
+| 단계 | 내용 |
+|---|---|
+| **요구사항 요소 확인** | 데이터 요소, 기능 요소, 제품·서비스의 품질, 제약 사항을 확인 |
+| **정황 시나리오 작성** | 사용자의 **요구사항을 도출하기 위한 시나리오**. **가장 기초적인 시나리오**로, 사용자가 목표를 달성하기 위해 수행하는 방법을 순차적으로 표현 |
+| **요구사항 작성** | 정황 시나리오를 토대로 **요구사항을 작성** |
+
+**정황 시나리오 작성 원칙**
+
+- 사용자가 언제, 어떻게 제품이나 서비스를 **사용하는지 순서대로** 기술
+- 다양한 경우의 수를 고려해 **작성**
+- **육하원칙**에 따라 작성
+- 간결하고 명확하게 작성
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

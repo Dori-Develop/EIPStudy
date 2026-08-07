@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 06. 화면 설계 — 도해와 표로 정리한 학습 노트">
+<title>품질 요구사항 · 06. 화면 설계</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch06",title:"정보처리기사 실기 — 06. 화면 설계",subtitle:"06. 화면 설계",total:8,base:"../",page:"section",index:4,sections:[{f:"s01.html",n:"1",t:"사용자 인터페이스(UI)"},{f:"s02.html",n:"2",t:"UI 표준 및 지침"},{f:"s03.html",n:"3",t:"UI 설계 도구"},{f:"s04.html",n:"4",t:"UI 요구사항 확인"},{f:"s05.html",n:"5",t:"품질 요구사항"},{f:"s06.html",n:"6",t:"UI 설계"},{f:"s07.html",n:"7",t:"HCI · UX · 감성공학"},{f:"s08.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>06. 화면 설계</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (5) 품질 요구사항
+
+### 품질 요구사항
+
+소프트웨어의 **품질을 측정하는 기준이 되는 요구사항**.
+
+**국제 표준** : **ISO/IEC 9126** (현재는 **ISO/IEC 25010** 으로 개정됨)
+
+### ISO/IEC 9126 의 6가지 품질 특성 ⭐⭐⭐
+
+| 특성 | 의미 | 하위 특성 |
+|---|---|---|
+| **기능성**<br>(Functionality) | 소프트웨어가 **사용자의 요구사항을 정확하게 만족**하는 기능을 제공하는지 여부 | **적절성, 정밀성, 상호 운용성, 보안성, 준수성** |
+| **신뢰성**<br>(Reliability) | 소프트웨어가 요구된 기능을 **오류 없이 수행**하는 정도 | **성숙성, 고장 허용성, 회복성** |
+| **사용성**<br>(Usability) | 사용자가 소프트웨어를 **쉽게 배우고 사용**할 수 있는 정도 | **이해성, 학습성, 운용성, 친밀성** |
+| **효율성**<br>(Efficiency) | 할당된 시간 동안 **한정된 자원으로 얼마나 빨리 처리**하는지의 정도 | **시간 효율성, 자원 효율성** |
+| **유지 보수성**<br>(Maintainability) | 환경의 변화나 새로운 요구사항이 발생했을 때 **소프트웨어를 개선하거나 확장**할 수 있는 정도 | **분석성, 변경성, 안정성, 시험성** |
+| **이식성**<br>(Portability) | 소프트웨어가 **다른 환경에서도 얼마나 쉽게 적용**할 수 있는지의 정도 | **적용성, 설치성, 대체성, 공존성** |
+
+> 📌 암기: **"기신사효유이"** (기능성·신뢰성·사용성·효율성·유지보수성·이식성)
+
+**주요 하위 특성**
+
+| 특성 | 의미 |
+|---|---|
+| **상호 운용성**(Interoperability) | 다른 시스템과 **정보를 교환**할 수 있는 정도 |
+| **성숙성**(Maturity) | 결함으로 인한 **고장을 회피**할 수 있는 정도 |
+| **고장 허용성**(Fault Tolerance) | 결함이 발생해도 **성능 수준을 유지**할 수 있는 정도 |
+| **회복성**(Recoverability) | 고장 후 성능 수준을 **다시 회복**할 수 있는 정도 |
+| **친밀성**(Attractiveness) | 사용자가 **다시 사용하고 싶은 정도** |
+| **공존성**(Co-existence) | 다른 소프트웨어와 **자원을 공유하며 공존**할 수 있는 정도 |
+
+### 기타 품질 관련 표준 ⭐
+
+| 표준 | 내용 |
+|---|---|
+| **ISO/IEC 12119** | **패키지 소프트웨어의 품질 요구사항 및 테스트**에 대한 국제 표준 |
+| **ISO/IEC 14598** | 소프트웨어 **품질의 측정과 평가에 필요한 절차**를 규정한 표준. **개발자, 구매자, 평가자별로** 다른 절차를 규정 |
+| **ISO/IEC 25000** | 소프트웨어의 **품질 평가 통합 모델** 표준. **9126, 14598, 12119** 를 통합함. **SQuaRE** 라고도 함 |
+
+**ISO/IEC 14598 의 특성**
+
+| 특성 | 의미 |
+|---|---|
+| **반복성**(Repeatability) | 같은 제품을 같은 사양으로 **반복 측정하면 같은 결과**가 나와야 함 |
+| **재현성**(Reproducibility) | 다른 평가자가 **같은 사양으로 측정해도 유사한 결과**가 나와야 함 |
+| **공정성**(Impartiality) | 평가가 **특정 결과에 편향되지 않아야** 함 |
+| **객관성**(Objectivity) | 평가 결과는 **객관적 사실에 근거**해야 함 |
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

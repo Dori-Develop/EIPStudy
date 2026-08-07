@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 09. 소프트웨어 개발 보안 구축 — 도해와 표로 정리한 학습 노트">
+<title>암호화 알고리즘 · 09. 소프트웨어 개발 보안 구축</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch09",title:"정보처리기사 실기 — 09. 소프트웨어 개발 보안 구축",subtitle:"09. 소프트웨어 개발 보안 구축",total:16,base:"../",page:"section",index:8,sections:[{f:"s01.html",n:"1",t:"Secure SDLC"},{f:"s02.html",n:"2",t:"입력 데이터 검증 및 표현"},{f:"s03.html",n:"3",t:"보안 기능"},{f:"s04.html",n:"4",t:"시간 및 상태"},{f:"s05.html",n:"5",t:"에러 처리"},{f:"s06.html",n:"6",t:"코드 오류"},{f:"s07.html",n:"7",t:"캡슐화"},{f:"s08.html",n:"8",t:"API 오용"},{f:"s09.html",n:"9",t:"암호화 알고리즘"},{f:"s10.html",n:"10",t:"서비스 공격 유형"},{f:"s11.html",n:"11",t:"서버 인증"},{f:"s12.html",n:"12",t:"보안 아키텍처와 보안 프레임워크"},{f:"s13.html",n:"13",t:"로그 분석"},{f:"s14.html",n:"14",t:"보안 솔루션"},{f:"s15.html",n:"15",t:"취약점 분석과 평가"},{f:"s16.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>09. 소프트웨어 개발 보안 구축</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (9) 암호화 알고리즘
+
+### 암호화(Encryption)
+
+데이터를 **다른 사람이 알아볼 수 없는 형태로 변환**하는 것.
+
+| 용어 | 의미 |
+|---|---|
+| **평문**(Plaintext) | 암호화 전의 원본 데이터 |
+| **암호문**(Ciphertext) | 암호화된 데이터 |
+| **암호화**(Encryption) | 평문 → 암호문 |
+| **복호화**(Decryption) | 암호문 → 평문 |
+
+### 암호화 알고리즘의 분류 ⭐⭐⭐
+
+```mermaid
+flowchart TD
+    A[암호화 알고리즘] --> B["양방향<br/>(복호화 가능)"]
+    A --> C["단방향<br/>(복호화 불가 = 해시)"]
+    B --> B1["대칭키(개인키)<br/>암호화 = 복호화 키 동일"]
+    B --> B2["비대칭키(공개키)<br/>암호화 ≠ 복호화 키"]
+    B1 --> B11["블록: DES, AES, SEED, ARIA, IDEA"]
+    B1 --> B12["스트림: RC4, LFSR"]
+    B2 --> B21["RSA, ECC, Rabin, Diffie-Hellman"]
+    C --> C1["MD5, SHA 시리즈, HAS-160, N-NASH, SNEFRU"]
+```
+
+### 개인키(대칭키) 암호화 기법 ⭐⭐
+
+**암호화 키와 복호화 키가 같은** 방식. **비밀키 암호화 기법**이라고도 함.
+
+- **속도가 빠름**. 대용량 데이터 암호화에 적합.
+- ⚠️ **키를 안전하게 전달하는 것이 어렵고**, 사용자가 많아지면 **관리해야 할 키의 개수가 많아짐**.
+- N명이 통신하려면 **N(N−1)/2 개**의 키가 필요함.
+
+| 종류 | 방식 | 알고리즘 |
+|---|---|---|
+| **블록 암호화 방식** | 한 번에 **하나의 데이터 블록**을 암호화 | **DES, AES, SEED, ARIA, IDEA, SKIPJACK** |
+| **스트림 암호화 방식** | 평문과 같은 길이의 키를 생성해 **비트 단위**로 암호화 | **RC4, LFSR** |
+
+**주요 대칭키 알고리즘** ⭐
+
+| 알고리즘 | 특징 |
+|---|---|
+| **DES**(Data Encryption Standard) | **1975년 미국 NBS**에서 발표한 대칭키 암호화 알고리즘.<br>**블록 크기 64비트, 키 길이 56비트**. 키 길이가 짧아 **현재는 안전하지 않음** |
+| **AES**(Advanced Encryption Standard) | **2001년 미국 NIST**에서 발표. DES 의 한계를 극복하기 위해 개발.<br>**블록 크기 128비트**, 키 길이에 따라 **AES-128, AES-192, AES-256** 으로 구분 |
+| **SEED** | **1999년 한국인터넷진흥원(KISA)** 에서 개발한 블록 암호화 알고리즘. **블록 크기 128비트**, 키 길이에 따라 128, 256으로 구분 |
+| **ARIA**(Academy, Research Institute, Agency) | **2004년 국가정보원과 산학연협회**가 개발한 블록 암호화 알고리즘.<br>**블록 크기 128비트**, 키 길이에 따라 **128, 192, 256** |
+| **IDEA**(International Data Encryption Algorithm) | **스위스**에서 DES 를 대체하기 위해 개발. **블록 크기 64비트, 키 길이 128비트** |
+
+> 💡 **국산 알고리즘 둘** — **SEED(KISA)** 와 **ARIA(국가정보원)**. 자주 나옴.
+
+### 공개키(비대칭키) 암호화 기법 ⭐⭐
+
+**암호화 키(공개키)와 복호화 키(비밀키)가 서로 다른** 방식.
+
+- 공개키는 **누구나 알 수 있지만**, 비밀키는 **소유자만** 알고 있음.
+- 키 분배가 쉽고 **관리할 키의 개수가 적음**(N명이면 **2N 개**).
+- ⚠️ **암호화·복호화 속도가 느림**.
+
+| 알고리즘 | 특징 |
+|---|---|
+| **RSA**(Rivest Shamir Adleman) | **1978년 MIT**의 세 사람이 제안. **큰 숫자의 소인수분해가 어렵다**는 점을 이용. 가장 널리 사용됨 |
+| **ECC**(Elliptic Curve Cryptography) | **타원 곡선 이론**에 기반. RSA 보다 **짧은 키로 동일한 보안 강도**를 제공 |
+| **Diffie-Hellman** | **키 교환**을 위한 알고리즘. 이산대수 문제를 이용 |
+| **Rabin** | 소인수분해의 어려움에 기반 |
+| **DSA**(Digital Signature Algorithm) | **전자 서명** 전용 알고리즘 |
+
+### 해시(Hash) — 단방향 암호화 ⭐⭐
+
+임의의 길이의 입력 데이터를 받아 **고정된 길이의 출력값(해시값)으로 변환**하는 것.
+
+- **복호화가 불가능**한 단방향 암호화임.
+- 주로 **비밀번호 저장, 무결성 검증, 전자 서명**에 사용됨.
+
+| 알고리즘 | 특징 |
+|---|---|
+| **MD5**(Message Digest 5) | **1991년 론 리베스트**가 개발. **128비트** 해시값 생성. **현재는 취약**해 권장하지 않음 |
+| **SHA 시리즈** | **1993년 미국 NIST**에서 발표. **SHA-1(160비트)**, **SHA-256/384/512** 등. SHA-1 은 취약 |
+| **HAS-160** | **국내 표준 서명 알고리즘(KCDSA)** 을 위해 개발된 해시 함수. **160비트** |
+| **N-NASH** | 1989년 일본 전신전화주식회사에서 발표. **128비트** |
+| **SNEFRU** | 1990년 랄프 머클이 발표. **128비트 또는 256비트** |
+
+**해시 관련 용어**
+
+| 용어 | 의미 |
+|---|---|
+| **솔트**(Salt) | 해시 함수에 입력하기 전에 **덧붙이는 무작위 문자열**. **레인보우 테이블 공격을 방지** |
+| **레인보우 테이블** | 해시값과 평문의 대응표를 미리 만들어 두고 **역추적**하는 공격 기법 |
+
+> ⚠️ **비밀번호는 반드시 해시 + 솔트로 저장.** 평문 저장이나 양방향 암호화는 안 됨.
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 10. 프로그래밍 언어 활용 — 도해와 표로 정리한 학습 노트">
+<title>사용자 정의 함수 · 10. 프로그래밍 언어 활용</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch10",title:"정보처리기사 실기 — 10. 프로그래밍 언어 활용",subtitle:"10. 프로그래밍 언어 활용",total:14,base:"../",page:"section",index:6,sections:[{f:"s01.html",n:"1",t:"데이터 타입과 변수"},{f:"s02.html",n:"2",t:"연산자"},{f:"s03.html",n:"3",t:"제어문"},{f:"s04.html",n:"4",t:"배열과 문자열"},{f:"s05.html",n:"5",t:"포인터"},{f:"s06.html",n:"6",t:"구조체"},{f:"s07.html",n:"7",t:"사용자 정의 함수"},{f:"s08.html",n:"8",t:"Java의 클래스"},{f:"s09.html",n:"9",t:"Java의 상속과 다형성"},{f:"s10.html",n:"10",t:"Python의 활용"},{f:"s11.html",n:"11",t:"프로그래밍 언어의 분류"},{f:"s12.html",n:"12",t:"라이브러리"},{f:"s13.html",n:"13",t:"예외 처리"},{f:"s14.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>10. 프로그래밍 언어 활용</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (7) 사용자 정의 함수
+
+### 함수(Function)
+
+특정 기능을 수행하는 코드의 묶음.
+
+```c
+반환형 함수명(매개변수 목록) {
+    실행문;
+    return 반환값;
+}
+```
+
+```c
+int add(int a, int b) {
+    return a + b;
+}
+
+int main() {
+    printf("%d", add(3, 5));   // 8
+    return 0;
+}
+```
+
+### 매개변수 전달 방식 ⭐⭐
+
+| 방식 | 설명 |
+|---|---|
+| **값에 의한 호출**<br>(Call by Value) | 매개변수에 **값을 복사해서 전달**. 원본 값이 **변경되지 않음** |
+| **주소에 의한 호출**<br>(Call by Reference) | 매개변수에 **주소를 전달**. 원본 값이 **변경됨** |
+
+```c
+void swapValue(int a, int b) {       // 값에 의한 호출
+    int t = a; a = b; b = t;
+}
+void swapRef(int *a, int *b) {       // 주소에 의한 호출
+    int t = *a; *a = *b; *b = t;
+}
+
+int x = 1, y = 2;
+swapValue(x, y);      // x=1, y=2   (변화 없음)
+swapRef(&x, &y);      // x=2, y=1   (교환됨)
+```
+
+### 재귀 함수(Recursive Function) ⭐
+
+**자기 자신을 다시 호출**하는 함수.
+
+```c
+int factorial(int n) {
+    if (n <= 1) return 1;
+    return n * factorial(n - 1);
+}
+// factorial(5) = 5*4*3*2*1 = 120
+```
+
+> ⚠️ 재귀 함수는 반드시 **종료 조건**이 있어야 함. 없으면 **스택 오버플로**가 발생함.
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

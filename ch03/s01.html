@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 03. 통합 구현 — 도해와 표로 정리한 학습 노트">
+<title>통합 구현의 개요 · 03. 통합 구현</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch03",title:"정보처리기사 실기 — 03. 통합 구현",subtitle:"03. 통합 구현",total:10,base:"../",page:"section",index:0,sections:[{f:"s01.html",n:"1",t:"통합 구현의 개요"},{f:"s02.html",n:"2",t:"연계 요구사항 분석"},{f:"s03.html",n:"3",t:"연계 데이터 식별 및 표준화"},{f:"s04.html",n:"4",t:"연계 메커니즘"},{f:"s05.html",n:"5",t:"연계 장애 및 오류 처리"},{f:"s06.html",n:"6",t:"연계 데이터 보안"},{f:"s07.html",n:"7",t:"XML"},{f:"s08.html",n:"8",t:"SOAP과 WSDL"},{f:"s09.html",n:"9",t:"연계 테스트"},{f:"s10.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>03. 통합 구현</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (1) 통합 구현의 개요
+
+### 통합 구현(Integrated Implementation)
+
+사용자의 요구사항에 맞춰 송·수신 모듈과 중계 모듈 간의 데이터 관계를 분석하고,
+이를 기반으로 **연계 방법과 절차를 설계·구현**하는 과정.
+
+- 시스템과 환경, 사용자 요구사항에 따라 구축 방법이 다양하므로 **정해진 표준은 없음**.
+- 일반적으로 **송신 시스템, 수신 시스템, 중계 시스템, 연계 데이터, 네트워크**로 구성됨.
+
+### 통합 구현의 구성 요소
+
+```mermaid
+flowchart LR
+    A["송신 시스템<br/>(연계 데이터 생성·추출)"] --> M["중계 시스템<br/>(변환·매핑·중계)"]
+    M --> B["수신 시스템<br/>(수신 데이터 반영)"]
+    A -. 네트워크 .- M
+    M -. 네트워크 .- B
+```
+
+| 구성 요소 | 역할 |
+|---|---|
+| **송신 시스템** | 연계할 데이터를 **DB 와 애플리케이션으로부터 추출·변환**해 전송함 |
+| **수신 시스템** | 송신된 데이터를 **수신 시스템의 형식에 맞게 변환해 반영**함 |
+| **중계 시스템** | 송신 시스템과 수신 시스템 **사이에서 데이터를 중계**함. 내·외부 시스템 간 통합 시 사용 |
+| **연계 데이터** | 송·수신 시스템 간에 **주고받는 데이터**. 속성, 길이, 타입 등이 표준화되어야 함 |
+| **네트워크** | 송신·수신·중계 시스템을 **연결하는 통신 환경** |
+
+> 💡 **중계 시스템은 필수가 아님.** 내부 시스템끼리 직접 연계하면 없어도 되고,
+> 외부 시스템과 연계하거나 보안·변환이 필요할 때 둠.
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

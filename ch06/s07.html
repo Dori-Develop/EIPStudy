@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 06. 화면 설계 — 도해와 표로 정리한 학습 노트">
+<title>HCI · UX · 감성공학 · 06. 화면 설계</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch06",title:"정보처리기사 실기 — 06. 화면 설계",subtitle:"06. 화면 설계",total:8,base:"../",page:"section",index:6,sections:[{f:"s01.html",n:"1",t:"사용자 인터페이스(UI)"},{f:"s02.html",n:"2",t:"UI 표준 및 지침"},{f:"s03.html",n:"3",t:"UI 설계 도구"},{f:"s04.html",n:"4",t:"UI 요구사항 확인"},{f:"s05.html",n:"5",t:"품질 요구사항"},{f:"s06.html",n:"6",t:"UI 설계"},{f:"s07.html",n:"7",t:"HCI · UX · 감성공학"},{f:"s08.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>06. 화면 설계</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (7) HCI · UX · 감성공학
+
+### HCI(Human Computer Interaction or Interface) ⭐
+
+사람이 **시스템을 보다 편리하고 안전하게 사용**할 수 있도록
+**연구하고 개발하는 학문**.
+
+- 최종 목표는 **시스템을 사용하는 데 있어 최적의 사용자 경험(UX)을 만드는 것**임.
+- 인간과 컴퓨터의 **상호작용**에 관한 학문.
+
+### UX(User Experience) ⭐⭐
+
+사용자가 시스템이나 서비스를 이용하면서 **느끼고 생각하는 총체적인 경험**.
+
+- 단순히 기능이나 절차상의 만족뿐 아니라 **사용자가 참여, 사용, 관찰하고 상호 교감을 통해서 알 수 있는
+  가치 있는 경험**을 말함.
+- 기술을 **효용성 측면**에서만 보는 것이 아니라, 사용자의 삶의 **질을 향상시키는 하나의 방향**으로 보는 것.
+
+**UX 의 특징**
+
+| 특징 | 의미 |
+|---|---|
+| **주관성**(Subjectivity) | 사람들의 **개인적, 신체적, 인지적 특성에 따라 다름** |
+| **정황성**(Contextuality) | 경험이 일어나는 **상황 또는 주변 환경에 영향**을 받음 |
+| **총체성**(Holistic) | 개인이 느끼는 **총체적인 심리적, 감성적** 결과 |
+
+> ⚠️ **UI vs UX** — **UI 는 사람과 시스템 사이의 상호작용을 돕는 장치나 소프트웨어(수단)**,
+> **UX 는 그 UI 를 통해 사용자가 느끼는 총체적 경험(결과)** 임.
+> **UI 는 UX 에 포함되는 개념**임.
+
+### 감성공학 ⭐
+
+인간의 **특성과 감성을 제품 설계에 최대한 반영**시키는 기술.
+
+- 인문사회과학, 공학, 의학 등 여러 분야의 학문이 공존하는 **종합 과학**.
+- 인간에 대한 **이해와 공학적인 접근 방법**을 통해 인간이 쉽고 편하며 안전하게 사물을 이용하도록 함.
+- **인간의 삶을 편리하고 안전하며 쾌적하게 만드는 데 목적**이 있음.
+- **HCI 를 설계에 반영**하기 위해 인간의 특성과 감성을 정량적으로 측정·평가함.
+
+**감성공학의 접근 방법** ⭐
+
+| 유형 | 설명 |
+|---|---|
+| **1류 접근 방법** | **관련 문화, 감성 어휘 등을 이용해 정성적으로 분석**하고, 이를 제품 설계에 반영하는 방법.<br>**의미 미분법(SD법)** 을 통해 정량화 |
+| **2류 접근 방법** | 개인의 **생활 및 인지 특성 등을 분석**해 이를 제품 설계에 반영하는 방법 |
+| **3류 접근 방법** | 인간의 **생리적 감각을 측정**해 정량적으로 분석하고, 이를 제품 설계에 반영하는 방법 |
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

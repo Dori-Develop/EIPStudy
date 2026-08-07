@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 12. 제품 소프트웨어 패키징 — 도해와 표로 정리한 학습 노트">
+<title>디지털 저작권 관리(DRM) · 12. 제품 소프트웨어 패키징</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch12",title:"정보처리기사 실기 — 12. 제품 소프트웨어 패키징",subtitle:"12. 제품 소프트웨어 패키징",total:10,base:"../",page:"section",index:2,sections:[{f:"s01.html",n:"1",t:"소프트웨어 패키징"},{f:"s02.html",n:"2",t:"릴리즈 노트 작성"},{f:"s03.html",n:"3",t:"디지털 저작권 관리(DRM)"},{f:"s04.html",n:"4",t:"소프트웨어 설치 매뉴얼 작성"},{f:"s05.html",n:"5",t:"소프트웨어 사용자 매뉴얼 작성"},{f:"s06.html",n:"6",t:"소프트웨어 버전 등록"},{f:"s07.html",n:"7",t:"소프트웨어 버전 관리 도구"},{f:"s08.html",n:"8",t:"Git 명령어 활용"},{f:"s09.html",n:"9",t:"빌드 자동화 도구"},{f:"s10.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>12. 제품 소프트웨어 패키징</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (3) 디지털 저작권 관리(DRM)
+
+### 저작권(Copyright)
+
+소설, 시, 논문, 강연, 연술, 도형, 음악, 영화, 춤, 그림, 조각, 건축물, 사진, 지도 등
+**창작물을 만든 사람이 자신의 창작물에 대해 가지는 배타적 법적 권리**로,
+타인의 침해를 받지 않을 고유한 권한임.
+
+### 디지털 저작권 관리(DRM; Digital Right Management) ⭐⭐
+
+**저작권자가 배포한 디지털 콘텐츠가 저작권자가 의도한 용도로만 사용되도록**
+**불법 복제 및 유통을 방지**하고 **저작권 관련 당사자의 권리 및 이익을 보호**해 주는 기술과 서비스.
+
+### DRM 의 흐름과 구성 요소 ⭐⭐⭐
+
+```mermaid
+flowchart LR
+    CP["콘텐츠 제공자<br/>(Contents Provider)"] --> PK["패키저<br/>(Packager)"]
+    PK --> CD["콘텐츠 분배자<br/>(Contents Distributor)"]
+    CD --> CS["클리어링 하우스<br/>(Clearing House)"]
+    CD --> U["사용자<br/>(DRM 컨트롤러 + 보안 컨테이너)"]
+    CS --> U
+```
+
+| 구성 요소 | 역할 |
+|---|---|
+| **클리어링 하우스**<br>(Clearing House) | **저작권에 대한 사용 권한, 라이선스 발급, 사용량에 따른 결제 관리** 등을 수행하는 곳 |
+| **콘텐츠 제공자**<br>(Contents Provider) | **콘텐츠를 제공하는** 저작권자 |
+| **패키저**<br>(Packager) | 콘텐츠를 **메타 데이터와 함께 배포 가능한 형태로 묶어** 암호화하는 프로그램 |
+| **콘텐츠 분배자**<br>(Contents Distributor) | **암호화된 콘텐츠를 유통**하는 곳이나 사람 |
+| **콘텐츠 소비자**<br>(Customer) | 콘텐츠를 **구매해서 사용하는** 주체 |
+| **DRM 컨트롤러**<br>(DRM Controller) | 배포된 콘텐츠의 **이용 권한을 통제**하는 프로그램 |
+| **보안 컨테이너**<br>(Security Container) | 콘텐츠 **원본을 안전하게 유통**하기 위한 전자적 보안 장치 |
+
+> 📌 가장 자주 나오는 둘 — **클리어링 하우스(라이선스·결제 관리)** 와 **패키저(콘텐츠 암호화·묶음)**.
+
+### DRM 의 기술 요소 ⭐⭐
+
+| 기술 요소 | 내용 |
+|---|---|
+| **암호화**(Encryption) | 콘텐츠 및 라이선스를 암호화하고 **전자 서명**을 할 수 있는 기술 |
+| **키 관리**(Key Management) | 콘텐츠를 **암호화한 키에 대한 저장 및 분배** 기술 |
+| **암호화 파일 생성**(Packager) | 콘텐츠를 **암호화된 콘텐츠로 생성**하기 위한 기술 |
+| **식별 기술**(Identification) | 콘텐츠에 대한 **식별 체계** 표현 기술 |
+| **저작권 표현**(Right Expression) | **라이선스의 내용 표현** 기술 |
+| **정책 관리**(Policy Management) | 라이선스 발급 및 사용에 대한 **정책 표현 및 관리** 기술 |
+| **크랙 방지**(Tamper Resistance) | 크랙에 의한 **콘텐츠 사용 방지** 기술 |
+| **인증**(Authentication) | 라이선스 발급 및 사용의 기준이 되는 **사용자 인증** 기술 |
+
+> 💡 **크랙(Crack)** : 소프트웨어에 적용된 **저작권 보호 기술을 무력화**시키는 행위나 프로그램.
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 12. 제품 소프트웨어 패키징 — 도해와 표로 정리한 학습 노트">
+<title>소프트웨어 패키징 · 12. 제품 소프트웨어 패키징</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch12",title:"정보처리기사 실기 — 12. 제품 소프트웨어 패키징",subtitle:"12. 제품 소프트웨어 패키징",total:10,base:"../",page:"section",index:0,sections:[{f:"s01.html",n:"1",t:"소프트웨어 패키징"},{f:"s02.html",n:"2",t:"릴리즈 노트 작성"},{f:"s03.html",n:"3",t:"디지털 저작권 관리(DRM)"},{f:"s04.html",n:"4",t:"소프트웨어 설치 매뉴얼 작성"},{f:"s05.html",n:"5",t:"소프트웨어 사용자 매뉴얼 작성"},{f:"s06.html",n:"6",t:"소프트웨어 버전 등록"},{f:"s07.html",n:"7",t:"소프트웨어 버전 관리 도구"},{f:"s08.html",n:"8",t:"Git 명령어 활용"},{f:"s09.html",n:"9",t:"빌드 자동화 도구"},{f:"s10.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>12. 제품 소프트웨어 패키징</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (1) 소프트웨어 패키징
+
+### 소프트웨어 패키징 ⭐
+
+모듈별로 생성한 실행 파일들을 묶어 **배포용 설치 파일을 만드는 것**.
+
+- ⚠️ **개발자가 아니라 사용자 중심**으로 진행함.
+- 소스 코드는 향후 **관리를 고려해 모듈화**하여 패키징함.
+- 사용자가 소프트웨어를 **직접 배포받아 설치할 것**을 전제로,
+  **사용자의 편의성 및 설치 파일의 형태**를 확인해 패키징을 진행함.
+
+### 패키징 시 고려사항 ⭐⭐
+
+| 고려사항 | 내용 |
+|---|---|
+| **사용자 시스템 환경** | 사용자의 **운영체제, CPU, 메모리** 등에 필요한 최소 환경을 정의함 |
+| **UI 제공** | 직관적인 UI 를 제공하고, **매뉴얼과 일치**시켜 패키징 작업을 수행함 |
+| **관리 서비스 형태 제공** | 하드웨어와 함께 관리될 수 있도록 **내부 콘텐츠에 대한 상세 정보**를 제공함 |
+| **다양한 배포 형태** | 다양한 사용자 요구사항을 반영하기 위해 **배포 형태를 다양하게** 제공함 |
+
+### 패키징 작업 순서 ⭐
+
+```mermaid
+flowchart LR
+    A[기능 식별] --> B[모듈화] --> C[빌드 진행] --> D[사용자 환경 분석] --> E[패키징 및 적용 시험] --> F[패키징 변경 개선] --> G[배포]
+```
+
+| 단계 | 내용 |
+|---|---|
+| **기능 식별** | 작성된 코드의 **기능을 확인** |
+| **모듈화** | 확인된 기능 단위로 **코드를 분류** |
+| **빌드 진행** | 모듈 단위별로 **실행 파일을 만듦** |
+| **사용자 환경 분석** | 웹, 모바일, PC 등 **소프트웨어가 사용될 환경이나 운영체제, CPU, RAM 등의 최소 운영 환경**을 정의 |
+| **패키징 및 적용 시험** | 빌드된 실행 파일들을 **정의된 환경에 맞게 배포용 파일 형식으로 패키징**하고, 사용자 환경과 같은 환경에서 **패키징 적용을 시험**함 |
+| **패키징 변경 개선** | 확인된 불편 사항을 반영하기 위한 **패키징의 변경 및 개선**을 진행 |
+| **배포** | 배포 수행 시 **오류가 발생하면 해당 개발자에게 전달**해 수정을 요청 |
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

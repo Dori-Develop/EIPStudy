@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 01. 요구사항 확인 — 도해와 표로 정리한 학습 노트">
+<title>UML — 관계(Relationship) · 01. 요구사항 확인</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch01",title:"정보처리기사 실기 — 01. 요구사항 확인",subtitle:"01. 요구사항 확인",total:31,base:"../",page:"section",index:10,sections:[{f:"s01.html",n:"1",t:"소프트웨어 생명 주기"},{f:"s02.html",n:"2",t:"스크럼(Scrum) 기법"},{f:"s03.html",n:"3",t:"XP(eXtreme Programming) 기법"},{f:"s04.html",n:"4",t:"현행 시스템 파악"},{f:"s05.html",n:"5",t:"개발 기술 환경 파악"},{f:"s06.html",n:"6",t:"요구사항 정의"},{f:"s07.html",n:"7",t:"요구사항 개발 프로세스"},{f:"s08.html",n:"8",t:"요구사항 분석"},{f:"s09.html",n:"9",t:"요구사항 분석 CASE와 HIPO"},{f:"s10.html",n:"10",t:"UML(Unified Modeling Language)의 개요"},{f:"s11.html",n:"11",t:"UML — 관계(Relationship)"},{f:"s12.html",n:"12",t:"UML — 다이어그램"},{f:"s13.html",n:"13",t:"유스케이스(Use Case) 다이어그램"},{f:"s14.html",n:"14",t:"활동(Activity) 다이어그램"},{f:"s15.html",n:"15",t:"클래스(Class) 다이어그램"},{f:"s16.html",n:"16",t:"시퀀스(Sequence) 다이어그램"},{f:"s17.html",n:"17",t:"커뮤니케이션(Communication) 다이어그램"},{f:"s18.html",n:"18",t:"상태(State) 다이어그램"},{f:"s19.html",n:"19",t:"패키지(Package) 다이어그램"},{f:"s20.html",n:"20",t:"소프트웨어 개발 방법론"},{f:"s21.html",n:"21",t:"S/W 공학의 발전적 추세"},{f:"s22.html",n:"22",t:"비용 산정 기법"},{f:"s23.html",n:"23",t:"비용 산정 기법 — 하향식"},{f:"s24.html",n:"24",t:"비용 산정 기법 — 상향식"},{f:"s25.html",n:"25",t:"수학적 산정 기법"},{f:"s26.html",n:"26",t:"프로젝트 일정 계획"},{f:"s27.html",n:"27",t:"소프트웨어 개발 방법론 결정과 프로젝트 관리"},{f:"s28.html",n:"28",t:"소프트웨어 개발 표준"},{f:"s29.html",n:"29",t:"소프트웨어 개발 방법론 테일러링"},{f:"s30.html",n:"30",t:"소프트웨어 개발 프레임워크"},{f:"s31.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>01. 요구사항 확인</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (11) UML — 관계(Relationship)
+
+**관계(Relationships)** 는 사물과 사물 사이의 **연관성**을 표현. 종류는 여섯 가지.
+
+> 📌 **연관 / 집합 / 포함 / 일반화 / 의존 / 실체화**
+> 표기법은 **선(실선·점선)** 과 **끝 모양(화살표·마름모·삼각형)** 의 조합으로 결정됨.
+> 이 두 축만 잡으면 6개가 한 번에 정리됨.
+
+### ① 연관(Association) 관계
+
+- **둘 이상의 사물이 서로 관련**되어 있는 관계
+- 사물 사이를 **실선**으로 연결하여 표현.
+- **방향성은 화살표**로 표현.
+- **양방향** 관계이면 화살표를 생략하고 실선으로만 연결.
+- 선 위에 **다중도**를 표기. (다중도 = 연관에 참여하는 객체의 개수)
+
+**다중도 표기법** ⭐
+
+| 다중도 | 의미 |
+|:---:|---|
+| `1` | 1개의 객체가 연관되어 있음 |
+| `n` | n개의 객체가 연관되어 있음 |
+| `0..1` | 연관된 객체가 **없거나 1개만** 존재함 |
+| `0..*` 또는 `*` | 연관된 객체가 **없거나 다수**일 수 있음 |
+| `1..*` | 연관된 객체가 **적어도 1개 이상**임 |
+| `n..*` | 연관된 객체가 **적어도 n개 이상**임 |
+| `n..m` | 연관된 객체가 **최소 n개에서 최대 m개**임 |
+
+**예제 1 — 단방향 연관**
+
+> 회원은 자신이 발급받은 대출카드를 알고 있지만, 대출카드는 자기 주인이 누구인지 모름.
+
+```
+┌────────┐ 1                    1 ┌──────────┐
+│  회원   │ ─────────────────────▶ │ 대출카드  │
+└────────┘                        └──────────┘
+```
+
+**해설**
+- '회원' 쪽 다중도가 `1` → 대출카드는 **한 회원에게만** 발급됨.
+- '대출카드' 쪽 다중도가 `1` → 회원은 **카드를 하나만** 가짐.
+
+**예제 2 — 다대다 연관**
+
+> 사서는 여러 회원의 업무를 처리하고, 회원도 여러 사서를 통해 도서를 빌림.
+
+```
+┌────────┐ 1..*              1..* ┌────────┐
+│  사서   │ ─────────────────────▶ │  회원   │
+└────────┘                        └────────┘
+```
+
+**해설**
+- '사서' 쪽 다중도가 `1..*` → 회원은 **한 명 이상의 사서**를 상대.
+- '회원' 쪽 다중도가 `1..*` → 사서는 **한 명 이상의 회원**을 담당.
+
+> 💡 사물(객체)은 유스케이스·클래스·컴포넌트처럼 **고유한 표현 형태가 정해진 경우를 제외하면**
+> 기본적으로 **사각형**으로 표현.
+
+### ② 집합(Aggregation) 관계
+
+- 한 사물이 다른 사물에 **포함**되어 있는 관계
+- 포함하는 쪽(**전체, Whole**)과 포함되는 쪽(**부분, Part**)이 서로 **독립적**.
+- 부분 → 전체 방향으로 **속이 빈 마름모(◇)** 를 연결하여 표현.
+
+**예제**
+
+> 도서는 특정 서가에 꽂혀 있지만, 다른 서가로 옮겨 꽂아도 도서 자체는 그대로 남음.
+
+```
+┌──────────┐◇──────────┌──────────┐
+│   서가    │           │   도서    │
+└──────────┘           └──────────┘
+   (전체)                  (부분)
+```
+*(빈 마름모 ◇ 가 '서가'(전체) 쪽에 붙음)*
+
+### ③ 포함(Composition) 관계
+
+- **집합 관계의 특수한 형태**로, 포함하는 쪽의 변화가 포함되는 쪽에 **영향을 미치는** 관계
+- 전체와 부분이 서로 **독립될 수 없고 생명주기를 함께함.**
+- 부분 → 전체 방향으로 **속이 채워진 마름모(◆)** 를 연결하여 표현.
+
+**예제**
+
+> 바코드 라벨은 특정 도서 한 권에만 붙음. 그 도서가 폐기되면 라벨도 함께 의미를 잃음.
+
+```
+┌──────────┐◆──────────┌────────────┐
+│   도서    │           │ 바코드 라벨  │
+└──────────┘           └────────────┘
+   (전체)                   (부분)
+```
+*(채워진 마름모 ◆ 가 '도서'(전체) 쪽에 붙음)*
+
+> 💡 **집합 vs 포함** — 부분을 떼어내도 살아남으면 집합(◇), 함께 사라지면 포함(◆).
+
+### ④ 일반화(Generalization) 관계
+
+- 한 사물이 다른 사물보다 더 **일반적**이거나 더 **구체적**인 관계
+- 일반적인 쪽이 **상위(부모)**, 구체적인 쪽이 **하위(자식)**
+- 구체적(하위) → 일반적(상위) 방향으로 **속이 빈 삼각 화살표(△)** 를 연결하여 표현.
+
+**예제**
+
+> 도서와 정기간행물은 모두 도서관이 보유한 자료.
+
+```mermaid
+classDiagram
+    자료 <|-- 도서
+    자료 <|-- 정기간행물
+```
+
+### ⑤ 의존(Dependency) 관계
+
+- 연관 관계처럼 서로 관련은 있으나, 필요에 의해 **짧은 시간 동안만 연관을 유지**하는 관계
+- **소유 관계는 아니지만** 한쪽의 변화가 다른 쪽에 영향을 미치는 관계
+- 영향을 주는 쪽(**이용자**) → 영향을 받는 쪽(**제공자**)으로 **점선 화살표**를 연결하여 표현.
+
+**예제**
+
+> 연체일수가 늘어나면 연체료가 올라가고, 연체일수가 0이면 연체료도 발생하지 않음.
+
+```
+┌──────────┐                     ┌──────────┐
+│  연체일수  │ - - - - - - - - -▶  │  연체료   │
+└──────────┘                     └──────────┘
+```
+
+### ⑥ 실체화(Realization) 관계
+
+- 사물이 **할 수 있거나 해야 하는 기능**을 기준으로 서로를 **그룹화**할 수 있는 관계
+- 사물 → 기능 방향으로 **속이 빈 삼각 화살표가 달린 점선**을 연결하여 표현.
+
+**예제**
+
+> 도서도 대출할 수 있고 DVD도 대출할 수 있음. 둘은 '대출할 수 있다'는 행위로 묶임.
+
+```mermaid
+classDiagram
+    class 대출가능하다 {
+        <<interface>>
+    }
+    대출가능하다 <|.. 도서
+    대출가능하다 <|.. DVD
+```
+
+### 📌 관계 표기법 요약 (암기표)
+
+| 관계 | 선 | 끝 모양 | 방향 |
+|---|---|---|---|
+| 연관(Association) | 실선 | 화살표(또는 없음) | 아는 쪽 → 알려지는 쪽 |
+| 집합(Aggregation) | 실선 | **속이 빈 마름모 ◇** | 부분 → **전체** |
+| 포함(Composition) | 실선 | **속이 찬 마름모 ◆** | 부분 → **전체** |
+| 일반화(Generalization) | 실선 | **속이 빈 삼각 화살표 △** | 하위(자식) → **상위(부모)** |
+| 의존(Dependency) | **점선** | 화살표 | 이용자 → 제공자 |
+| 실체화(Realization) | **점선** | **속이 빈 삼각 화살표 △** | 사물 → 기능 |
+
+> 💡 **점선은 둘뿐임** — 의존(화살표)과 실체화(빈 삼각형).
+> **마름모도 둘뿐임** — 집합(빈 것)과 포함(찬 것).
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+<script src="../assets/bank-ch01.js"></script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

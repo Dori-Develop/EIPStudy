@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 07. 애플리케이션 테스트 관리 — 도해와 표로 정리한 학습 노트">
+<title>테스트 자동화 도구 · 07. 애플리케이션 테스트 관리</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch07",title:"정보처리기사 실기 — 07. 애플리케이션 테스트 관리",subtitle:"07. 애플리케이션 테스트 관리",total:15,base:"../",page:"section",index:10,sections:[{f:"s01.html",n:"1",t:"애플리케이션 테스트의 개요"},{f:"s02.html",n:"2",t:"애플리케이션 테스트의 기본 원리 ⭐⭐"},{f:"s03.html",n:"3",t:"애플리케이션 테스트의 분류"},{f:"s04.html",n:"4",t:"화이트박스 테스트"},{f:"s05.html",n:"5",t:"블랙박스 테스트"},{f:"s06.html",n:"6",t:"개발 단계에 따른 애플리케이션 테스트"},{f:"s07.html",n:"7",t:"통합 테스트의 종류"},{f:"s08.html",n:"8",t:"애플리케이션 테스트 프로세스"},{f:"s09.html",n:"9",t:"테스트 케이스 · 시나리오 · 오라클"},{f:"s10.html",n:"10",t:"결함 관리"},{f:"s11.html",n:"11",t:"테스트 자동화 도구"},{f:"s12.html",n:"12",t:"애플리케이션 성능 분석"},{f:"s13.html",n:"13",t:"복잡도"},{f:"s14.html",n:"14",t:"애플리케이션 성능 개선"},{f:"s15.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>07. 애플리케이션 테스트 관리</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (11) 테스트 자동화 도구
+
+### 테스트 자동화
+
+사람이 반복적으로 수행하던 테스트 절차를 **스크립트 형태로 구현하는 자동화 도구**를 적용함으로써
+**시간 단축과 인력 투입 비용을 최소화**하는 것.
+
+**장점과 단점**
+
+| 장점 | 단점 |
+|---|---|
+| 휴먼 에러(Human Error)를 줄임 | 자동화 도구의 **사용법에 대한 교육 및 학습**이 필요 |
+| 향상된 **테스트 품질** 보장 | 자동화 도구를 프로세스 단계별로 **적용하기 위한 시간·비용·노력**이 필요 |
+| 사용자의 **요구사항을 명확히 파악** 가능 | 상용 도구의 경우 **고가**이며, 오픈 소스는 **제한적인 기능**만 제공 |
+| 테스트 **결과에 대한 객관적인 평가 기준** 제공 | |
+
+### 테스트 자동화 도구의 유형 ⭐⭐
+
+| 유형 | 설명 |
+|---|---|
+| **정적 분석 도구**<br>(Static Analysis Tools) | 만들어진 애플리케이션을 **실행하지 않고** 소스 코드에 대한 **코딩 표준, 코딩 스타일, 코드 복잡도, 남은 결함** 등을 발견하기 위해 사용 |
+| **테스트 실행 도구**<br>(Test Execution Tools) | 스크립트 언어를 사용해 **테스트를 실행**하는 도구. **데이터 주도 접근 방식**과 **키워드 주도 접근 방식**이 있음 |
+| **성능 테스트 도구**<br>(Performance Test Tools) | 애플리케이션의 **처리량, 응답 시간, 경과 시간, 자원 사용률**에 대해 가상의 사용자를 생성하고 테스트를 수행함으로써 성능 목표 달성 여부를 확인 |
+| **테스트 통제 도구**<br>(Test Control Tools) | **테스트 계획 및 관리, 테스트 수행, 결함 관리** 등을 수행하는 도구. **형상 관리 도구, 결함 추적/관리 도구** 등이 있음 |
+| **테스트 하네스 도구**<br>(Test Harness Tools) | 애플리케이션의 **컴포넌트 및 모듈을 테스트하는 환경의 일부분**으로, 테스트를 지원하기 위해 생성된 코드와 데이터 |
+
+### 테스트 실행 도구의 접근 방식
+
+| 방식 | 설명 |
+|---|---|
+| **데이터 주도 접근 방식** | 테스트 데이터를 **스프레드시트에 저장**하고, 이 데이터를 읽어 실행하는 방식.<br>다양한 테스트 데이터를 편리하게 사용할 수 있음 |
+| **키워드 주도 접근 방식** | 테스트를 수행할 **동작을 나타내는 키워드와 테스트 데이터를 스프레드시트에 저장**해 실행하는 방식.<br>키워드를 이용해 테스트를 정의할 수 있음 |
+
+### 테스트 하네스의 구성 요소 ⭐⭐
+
+| 구성 요소 | 내용 |
+|---|---|
+| **테스트 드라이버**<br>(Test Driver) | 테스트 대상의 **하위 모듈을 호출**하고, 파라미터를 전달하고, 모듈 테스트 수행 후의 **결과를 도출**하는 도구 |
+| **테스트 스텁**<br>(Test Stub) | 제어 모듈이 호출하는 **하위 모듈의 역할을 하는 도구**로, 일시적으로 필요한 조건만을 가지고 있는 테스트용 모듈 |
+| **테스트 슈트**<br>(Test Suites) | 테스트 대상 컴포넌트나 모듈, 시스템에 사용되는 **테스트 케이스의 집합** |
+| **테스트 케이스**<br>(Test Case) | 사용자의 요구사항을 정확하게 준수했는지 확인하기 위한 **입력값, 실행 조건, 기대 결과** 등으로 만들어진 테스트 항목의 명세서 |
+| **테스트 스크립트**<br>(Test Script) | **자동화된 테스트 실행 절차**에 대한 명세서 |
+| **목 오브젝트**<br>(Mock Object) | **사전에 사용자의 행위를 조건부로 입력**해 두면, 그 상황에 맞는 예정된 행위를 수행하는 객체 |
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 12. 제품 소프트웨어 패키징 — 도해와 표로 정리한 학습 노트">
+<title>소프트웨어 설치 매뉴얼 작성 · 12. 제품 소프트웨어 패키징</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch12",title:"정보처리기사 실기 — 12. 제품 소프트웨어 패키징",subtitle:"12. 제품 소프트웨어 패키징",total:10,base:"../",page:"section",index:3,sections:[{f:"s01.html",n:"1",t:"소프트웨어 패키징"},{f:"s02.html",n:"2",t:"릴리즈 노트 작성"},{f:"s03.html",n:"3",t:"디지털 저작권 관리(DRM)"},{f:"s04.html",n:"4",t:"소프트웨어 설치 매뉴얼 작성"},{f:"s05.html",n:"5",t:"소프트웨어 사용자 매뉴얼 작성"},{f:"s06.html",n:"6",t:"소프트웨어 버전 등록"},{f:"s07.html",n:"7",t:"소프트웨어 버전 관리 도구"},{f:"s08.html",n:"8",t:"Git 명령어 활용"},{f:"s09.html",n:"9",t:"빌드 자동화 도구"},{f:"s10.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>12. 제품 소프트웨어 패키징</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (4) 소프트웨어 설치 매뉴얼 작성
+
+### 소프트웨어 설치 매뉴얼 ⭐
+
+개발 초기에서부터 적용된 **기준이나 사용자가 소프트웨어를 설치하는 과정에 필요한 내용**을
+기록한 설명서와 안내서.
+
+- **설치 과정에 대해 확인할 수 있는 내용을 순차적으로** 설명함.
+- 설치 시 **문제가 발생할 경우**에 대한 대처 방법이 포함됨.
+- ⚠️ **사용자 기준**으로 작성함.
+
+### 설치 매뉴얼 작성 시 고려사항
+
+- 사용자가 이해하기 쉽도록 **설치 화면을 캡처**해 순서대로 설명함
+- 설치 과정에서 표시될 수 있는 **오류 메시지 및 예외 상황**에 대한 내용을 별도로 분류해 설명함
+- 소프트웨어 설치 매뉴얼에는 **목차 및 개요, 서문, 기본 사항** 등이 포함되어야 함
+
+### 설치 매뉴얼의 구성 요소 ⭐
+
+| 구성 | 내용 |
+|---|---|
+| **목차 및 개요** | 매뉴얼 전체 내용을 **순서대로 요약**. 설치 매뉴얼의 **주요 특징, 구성과 설치 방법, 순서** 등 기술 |
+| **서문** | **문서 이력, 설치 매뉴얼의 주석, 설치 도구의 구성, 설치 환경 체계** 등 기술 |
+| **기본 사항** | **소프트웨어 개요, 설치 관련 파일, 설치 아이콘, 프로그램 삭제, 관련 추가 정보** 등 기술 |
+
+**서문의 주석**
+
+| 주석 | 내용 |
+|---|---|
+| **주의 사항** | 사용자가 **설치 과정에서 반드시 알아야 할 사항** |
+| **참고 사항** | 설치 과정에서 알아 두면 좋은 사항. **하드웨어나 소프트웨어의 설치 및 배포 관련 내용** |
+
+### 설치 매뉴얼 작성 순서
+
+```mermaid
+flowchart LR
+    A[기능 식별] --> B[UI 분류] --> C[설치 파일·백업 파일 확인] --> D[Uninstall 절차 확인] --> E[이상 Case 확인] --> F[최종 매뉴얼 적용]
+```
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

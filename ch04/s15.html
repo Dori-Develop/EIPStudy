@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 04. 서버 프로그램 구현 — 도해와 표로 정리한 학습 노트">
+<title>부록 — 핵심 암기 요약 · 04. 서버 프로그램 구현</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch04",title:"정보처리기사 실기 — 04. 서버 프로그램 구현",subtitle:"04. 서버 프로그램 구현",total:15,base:"../",page:"section",index:14,sections:[{f:"s01.html",n:"1",t:"개발 환경 구축"},{f:"s02.html",n:"2",t:"소프트웨어 아키텍처"},{f:"s03.html",n:"3",t:"아키텍처 패턴"},{f:"s04.html",n:"4",t:"객체 지향(Object-Oriented)"},{f:"s05.html",n:"5",t:"객체 지향 분석 및 설계"},{f:"s06.html",n:"6",t:"모듈과 결합도·응집도"},{f:"s07.html",n:"7",t:"단위 모듈과 공통 모듈"},{f:"s08.html",n:"8",t:"코드(Code)"},{f:"s09.html",n:"9",t:"디자인 패턴"},{f:"s10.html",n:"10",t:"개발 지원 도구"},{f:"s11.html",n:"11",t:"서버 개발"},{f:"s12.html",n:"12",t:"보안 및 API"},{f:"s13.html",n:"13",t:"배치 프로그램"},{f:"s14.html",n:"14",t:"패키지 소프트웨어"},{f:"s15.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>04. 서버 프로그램 구현</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## 📌 부록 — 핵심 암기 요약
+
+| 구분 | 암기 포인트 |
+|---|---|
+| **개발 언어 선정 기준** | **적효이친범** (적정성·효율성·이식성·친밀성·범용성) |
+| **아키텍처 설계 원리** | **모듈화 · 추상화 · 단계적 분해 · 정보 은닉** |
+| **추상화 유형** | 과정 · 데이터 · 제어 |
+| **협약에 의한 설계** | 선행 조건 · 결과 조건 · 불변 조건 |
+| **아키텍처 패턴** | 레이어(OSI) · 클라이언트-서버 · **파이프-필터(UNIX 쉘)** · **MVC** · 마스터-슬레이브 · 브로커 · 피어투피어 · 이벤트버스 · 블랙보드 · 인터프리터 |
+| **객체 지향 구성 요소** | **객체 · 클래스 · 메시지** |
+| **객체 지향 5원칙** | 캡슐화 · 정보 은닉 · 추상화 · 상속성 · 다형성 |
+| **다형성 종류** | **오버로딩**(같은 이름·다른 매개변수) / **오버라이딩**(재정의) |
+| **설계 원칙** | **SOLID** — SRP·OCP·LSP·ISP·DIP |
+| **객체 지향 분석 방법론** | **럼바우(OMT)** · 부치(미시·거시) · **Jacobson(유스케이스)** · Coad&Yourdon(ERD) · Wirfs-Brock |
+| **럼바우 분석 절차** | **객동기** — 객체(객체 다이어그램) → 동적(상태 다이어그램) → 기능(**DFD**) |
+| **결합도(약→강)** | **자스제외공내** (자료·스탬프·제어·외부·공통·내용) |
+| **응집도(강→약)** | **기순교절시논우** (기능·순차·교환·절차·시간·논리·우연) |
+| **좋은 설계** | 결합도 **낮게**, 응집도 **높게**, 팬인 **높게**, 팬아웃 **낮게** |
+| **IPC** | 공유 메모리 · 소켓 · 세마포어 · 파이프 · 메시지 큐 |
+| **공통 모듈 명세 원칙** | **정명완일추** (정확성·명확성·완전성·일관성·추적성) |
+| **코드 종류** | 순차 · 블록 · 10진 · 그룹 분류 · **연상** · **표의 숫자** · 합성 |
+| **GoF 분류** | **생성 5 · 구조 7 · 행위 11 = 23** |
+| **생성 패턴 5** | 추상 팩토리 · 빌더 · 팩토리 메소드 · 프로토타입 · **싱글톤** |
+| **구조 패턴 7** | **어댑터** · 브리지 · 컴포지트 · 데코레이터 · **퍼사드** · 플라이웨이트 · **프록시** |
+| **행위 패턴 11** | 책임 연쇄 · 커맨드 · 인터프리터 · 반복자 · 중재자 · 메멘토 · **옵서버** · 상태 · **전략** · 템플릿 메소드 · 방문자 |
+| **빌드 도구** | **Ant(XML)** · **Maven(의존성)** · **Gradle(Groovy)** · **Jenkins(CI)** |
+| **서버 프레임워크** | Spring(JAVA) · Node.js(JS) · Django(Python) · Codeigniter(PHP) · Ruby on Rails(Ruby) |
+| **보안 취약점** | **SQL 삽입 · XSS · CSRF · 버퍼 오버플로** |
+| **배치 필수 요소** | **대자견안성** (대용량·자동화·견고성·안정성·성능) |
+| **배치 스케줄러** | 스프링 배치 · Quartz · **Cron(리눅스)** |
+| **Cron 순서** | **분 시 일 월 요일** |
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

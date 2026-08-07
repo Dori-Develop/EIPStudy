@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 11. 응용 SW 기초 기술 활용 — 도해와 표로 정리한 학습 노트">
+<title>소프트웨어·하드웨어·네트워크 신기술 · 11. 응용 SW 기초 기술 활용</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch11",title:"정보처리기사 실기 — 11. 응용 SW 기초 기술 활용",subtitle:"11. 응용 SW 기초 기술 활용",total:16,base:"../",page:"section",index:10,sections:[{f:"s01.html",n:"1",t:"운영체제의 개념과 종류"},{f:"s02.html",n:"2",t:"기억장치 관리"},{f:"s03.html",n:"3",t:"가상기억장치"},{f:"s04.html",n:"4",t:"프로세스와 스케줄링"},{f:"s05.html",n:"5",t:"환경 변수와 기본 명령어"},{f:"s06.html",n:"6",t:"인터넷과 IP 주소"},{f:"s07.html",n:"7",t:"OSI 참조 모델"},{f:"s08.html",n:"8",t:"네트워크 장비"},{f:"s09.html",n:"9",t:"TCP/IP"},{f:"s10.html",n:"10",t:"경로 제어와 트래픽 제어"},{f:"s11.html",n:"11",t:"소프트웨어·하드웨어·네트워크 신기술"},{f:"s12.html",n:"12",t:"소프트웨어 개발 보안과 관련 법령"},{f:"s13.html",n:"13",t:"회복과 병행 제어"},{f:"s14.html",n:"14",t:"교착 상태"},{f:"s15.html",n:"15",t:"데이터 표준화"},{f:"s16.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>11. 응용 SW 기초 기술 활용</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (11) 소프트웨어·하드웨어·네트워크 신기술
+
+### 네트워크 관련 신기술 ⭐⭐
+
+| 용어 | 설명 |
+|---|---|
+| **IoT**(Internet of Things, 사물 인터넷) | 정보 통신 기술을 기반으로 **실세계와 가상 세계의 다양한 사물들을 연결**해 진보된 서비스를 제공 |
+| **M2M**(Machine to Machine) | **기계와 기계 사이**에 이루어지는 통신 |
+| **메시 네트워크**(Mesh Network) | **기존 무선 랜의 한계 극복**을 위해 등장한 차세대 이동통신 네트워크. 대규모 디바이스의 네트워크 생성에 최적화 |
+| **애드혹 네트워크**(Ad-hoc Network) | 재난 현장과 같이 **고정된 인프라 없이** 이동 노드들만으로 자율적으로 구성되는 네트워크 |
+| **NFC**(Near Field Communication) | **10cm 이내의 가까운 거리**에서 무선 데이터를 주고받는 통신 기술 |
+| **Wi-SUN** | **스마트 그리드**와 같은 장거리 무선 통신을 위한 저전력 근거리 통신 기술 |
+| **NDN**(Named Data Networking) | 콘텐츠 자체의 **정보와 라우터 기능만으로 데이터 전송**을 수행하는 기술 |
+| **SDN**(Software Defined Networking) | 네트워크를 **제어부와 데이터 전달부로 분리**해 소프트웨어적으로 제어하는 기술 |
+| **NFV**(Network Functions Virtualization) | 네트워크 장비의 기능을 **가상화**해 범용 서버에서 소프트웨어로 구현 |
+| **UWB**(Ultra WideBand) | 짧은 시간에 **넓은 대역**으로 전송하는 초광대역 무선 기술 |
+| **피코넷**(PICONET) | **블루투스** 기술이나 UWB 를 사용해 무선으로 연결하는 개인 통신망 |
+| **파장 분할 다중화**(WDM) | 광섬유를 이용한 통신 기술로, **파장이 서로 다른 광선**을 이용해 여러 데이터를 동시에 전송 |
+| **BaaS**(Blockchain as a Service) | 블록체인 개발 환경을 클라우드 기반으로 제공하는 서비스 |
+| **SSO**(Single Sign On) | 한 번의 로그인으로 여러 시스템에 접근 |
+
+### 소프트웨어 관련 신기술 ⭐⭐
+
+| 용어 | 설명 |
+|---|---|
+| **인공지능**(AI) | 인간의 두뇌와 같이 **컴퓨터가 사고·학습·자기 개발**을 할 수 있도록 하는 기술 |
+| **딥 러닝**(Deep Learning) | 인간의 뉴런과 비슷한 **인공 신경망**을 이용해 정보를 처리하는 기계 학습 기술 |
+| **뉴럴링크**(Neuralink) | 뇌에 칩을 이식해 컴퓨터와 연결하는 기술 |
+| **블록체인**(Blockchain) | P2P 네트워크를 이용해 온라인 금융 거래 정보를 **분산해 저장**하는 기술 |
+| **매시업**(Mashup) | 웹에서 제공하는 정보 및 서비스를 이용해 **새로운 소프트웨어나 서비스를 만드는** 기술 |
+| **서비스 지향 아키텍처**(SOA) | 기업의 소프트웨어 인프라인 정보 시스템을 **서비스 단위**로 구축하는 아키텍처 |
+| **디지털 트윈**(Digital Twin) | 현실 속의 사물을 **소프트웨어로 가상화한 모델**. 시뮬레이션을 통해 검증 |
+| **증강 현실**(AR) | 실제 촬영한 화면에 **가상의 정보를 부가**해 보여 주는 기술 |
+| **가상 현실**(VR) | 컴퓨터로 만든 **가상 세계**를 체험하는 기술 |
+| **메타버스**(Metaverse) | 현실 세계와 같은 사회·경제·문화 활동이 이뤄지는 **3차원 가상 세계** |
+| **온톨로지**(Ontology) | 실세계에 존재하는 **모든 개념과 개념의 속성, 관계 정보를 컴퓨터가 이해할 수 있도록** 서술해 놓은 것 |
+| **시맨틱 웹**(Semantic Web) | 컴퓨터가 정보의 **의미를 이해**하고 처리할 수 있는 지능형 웹 |
+| **텐서플로**(TensorFlow) | **구글**에서 개발한 **머신러닝 오픈 소스 라이브러리** |
+| **도커**(Docker) | **컨테이너 기반**의 오픈 소스 가상화 플랫폼 |
+| **쿠버네티스**(Kubernetes) | **컨테이너 오케스트레이션** 도구. 컨테이너의 배포·확장·관리를 자동화 |
+| **RPA**(Robotic Process Automation) | 사람이 하던 **반복적인 업무를 소프트웨어 로봇이 자동화** |
+
+### 하드웨어 관련 신기술 ⭐
+
+| 용어 | 설명 |
+|---|---|
+| **고가용성**(HA; High Availability) | 긴 시간 동안 **안정적인 서비스 운영**을 위해 장애 발생 시 즉시 대체 가동 |
+| **3D Printing** | 3차원 모델링 파일을 출력 소스로 활용해 **물체를 만들어 내는** 기술 |
+| **RAID**(Redundant Array of Independent Disk) | 여러 개의 하드디스크로 **디스크 배열을 구성**해 파일을 분산 저장 |
+| **SSD**(Solid State Drive) | 반도체를 이용해 정보를 저장하는 장치. HDD 보다 **속도가 빠르고 발열·소음이 적음** |
+| **N-Screen** | **N 개의 서로 다른 단말기**에서 동일한 콘텐츠를 자유롭게 이용 |
+| **Thin Client PC** | 하드디스크나 주변 장치 없이 **서버와 통신해 프로그램을 수행**하는 PC |
+| **엔스크린 / 컴패니언 스크린** | TV 방송 시청 시 보조적으로 사용하는 스마트기기 |
+| **MEMS**(Micro-Electro Mechanical Systems) | 초정밀 반도체 제조 기술을 바탕으로 만들어진 **초미세 기계 구조물** |
+| **트러스트존**(TrustZone) | **하나의 프로세서 내에 일반 구역과 보안 구역을 분리**해 데이터를 보호하는 기술 |
+
+**RAID 의 주요 레벨** ⭐
+
+| 레벨 | 방식 | 특징 |
+|---|---|---|
+| **RAID 0** | **스트라이핑**(Striping) | 데이터를 분산 저장. **속도 향상**, 안정성 없음 |
+| **RAID 1** | **미러링**(Mirroring) | 데이터를 **똑같이 복제**. 안정성 높음, 용량 절반 |
+| **RAID 5** | 스트라이핑 + **분산 패리티** | 성능과 안정성 절충. **최소 3개** 디스크 필요 |
+
+### 데이터베이스 관련 신기술 ⭐
+
+| 용어 | 설명 |
+|---|---|
+| **빅데이터**(Big Data) | 기존의 관리 방법이나 분석 체계로는 처리하기 어려운 **막대한 양의 정형·비정형 데이터** |
+| **브로드 데이터**(Broad Data) | 다양한 채널에서 소비자와 상호작용을 통해 생성된 **새로운 데이터** |
+| **메타 데이터**(Meta Data) | **데이터에 대한 데이터**. 데이터를 설명해 주는 데이터 |
+| **디지털 아카이빙** | 디지털 정보 자원을 장기적으로 **보존하기 위한 작업** |
+| **하둡**(Hadoop) | 오픈 소스를 기반으로 한 **분산 컴퓨팅 플랫폼**. 빅데이터 처리에 사용 |
+| **맵리듀스**(MapReduce) | 대용량 데이터를 **분산 처리**하기 위한 프로그래밍 모델. **Map(분산) + Reduce(취합)** |
+| **타조**(Tajo) | 오픈 소스 기반 **분산 컴퓨팅 플랫폼**. 국내 개발 |
+| **데이터 마이닝**(Data Mining) | 대량의 데이터에서 **유용한 정보를 추출**하는 기술 |
+| **OLAP**(Online Analytical Processing) | 다차원으로 이루어진 데이터로부터 **통계적인 요약 정보를 분석**해 의사결정에 활용 |
+| **데이터 웨어하우스**(DW) | 여러 시스템에 분산된 데이터를 **주제별로 통합**해 저장한 데이터베이스 |
+| **데이터 마트**(Data Mart) | 데이터 웨어하우스에서 **특정 주제나 부서 중심으로 추출**한 소규모 데이터 웨어하우스 |
+| **NoSQL** | 관계형 데이터 모델을 사용하지 않는 데이터베이스. **대규모 데이터 처리**에 적합 |
+
+**OLAP 연산** ⭐
+
+| 연산 | 의미 |
+|---|---|
+| **Roll-up** | 세부 → **요약**으로 집계 수준을 올림 |
+| **Drill-down** | 요약 → **세부**로 상세 수준을 내림 |
+| **Slicing** | 큐브에서 **한 조각을 선택**해 부분 집합을 봄 |
+| **Dicing** | 큐브에서 **여러 차원을 잘라** 부분 큐브를 만듦 |
+| **Pivoting** | 데이터의 **행과 열을 바꿔** 다른 관점에서 봄 |
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

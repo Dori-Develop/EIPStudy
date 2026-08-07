@@ -1,0 +1,17 @@
+# 작업용 파일 (사이트와 무관)
+CLAUDE.md
+
+# 빌드 임시 산출물
+.buildtmp/
+*.tmp
+*.bak
+~$*
+
+# 에디터 / 도구
+.claude/
+.vscode/
+.idea/
+*.log
+Thumbs.db
+desktop.ini
+.DS_Store

@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 03. 통합 구현 — 도해와 표로 정리한 학습 노트">
+<title>연계 테스트 · 03. 통합 구현</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch03",title:"정보처리기사 실기 — 03. 통합 구현",subtitle:"03. 통합 구현",total:10,base:"../",page:"section",index:8,sections:[{f:"s01.html",n:"1",t:"통합 구현의 개요"},{f:"s02.html",n:"2",t:"연계 요구사항 분석"},{f:"s03.html",n:"3",t:"연계 데이터 식별 및 표준화"},{f:"s04.html",n:"4",t:"연계 메커니즘"},{f:"s05.html",n:"5",t:"연계 장애 및 오류 처리"},{f:"s06.html",n:"6",t:"연계 데이터 보안"},{f:"s07.html",n:"7",t:"XML"},{f:"s08.html",n:"8",t:"SOAP과 WSDL"},{f:"s09.html",n:"9",t:"연계 테스트"},{f:"s10.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>03. 통합 구현</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (9) 연계 테스트
+
+### 연계 테스트
+
+구축된 연계 시스템과 연계 시스템의 **구성 요소가 정상적으로 동작하는지 확인**하는 활동.
+
+### 연계 테스트 절차 ⭐
+
+```mermaid
+flowchart LR
+    A[연계 테스트 케이스 작성] --> B[연계 테스트 환경 구축] --> C[연계 테스트 수행] --> D[연계 테스트 수행 결과 검증]
+```
+
+| 단계 | 내용 |
+|---|---|
+| **연계 테스트 케이스 작성** | 연계 테스트 항목을 **송·수신 시스템별로 도출**해 케이스로 만듦 |
+| **연계 테스트 환경 구축** | 테스트 일정·절차·방법을 협의하고 **테스트 환경을 준비** |
+| **연계 테스트 수행** | 송·수신 시스템의 **연계 프로그램을 실행**해 테스트를 진행 |
+| **연계 테스트 수행 결과 검증** | 연계 **데이터의 정합성과 오류 처리**가 정상인지 확인 |
+
+### 검증 방법
+
+| 방법 | 내용 |
+|---|---|
+| **운영 DB 데이터 조회** | 수신 시스템의 운영 DB 에 데이터가 정확히 반영됐는지 확인 |
+| **파일 생성 위치 확인** | 연계 파일이 지정된 위치에 정상 생성됐는지 확인 |
+| **연계 서버 로그 확인** | 송수신 및 오류 처리 로그를 확인 |
+| **모니터링 화면 확인** | 연계 현황 모니터링 화면에서 성공·실패 건수를 확인 |
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

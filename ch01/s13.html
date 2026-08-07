@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 01. 요구사항 확인 — 도해와 표로 정리한 학습 노트">
+<title>유스케이스(Use Case) 다이어그램 · 01. 요구사항 확인</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch01",title:"정보처리기사 실기 — 01. 요구사항 확인",subtitle:"01. 요구사항 확인",total:31,base:"../",page:"section",index:12,sections:[{f:"s01.html",n:"1",t:"소프트웨어 생명 주기"},{f:"s02.html",n:"2",t:"스크럼(Scrum) 기법"},{f:"s03.html",n:"3",t:"XP(eXtreme Programming) 기법"},{f:"s04.html",n:"4",t:"현행 시스템 파악"},{f:"s05.html",n:"5",t:"개발 기술 환경 파악"},{f:"s06.html",n:"6",t:"요구사항 정의"},{f:"s07.html",n:"7",t:"요구사항 개발 프로세스"},{f:"s08.html",n:"8",t:"요구사항 분석"},{f:"s09.html",n:"9",t:"요구사항 분석 CASE와 HIPO"},{f:"s10.html",n:"10",t:"UML(Unified Modeling Language)의 개요"},{f:"s11.html",n:"11",t:"UML — 관계(Relationship)"},{f:"s12.html",n:"12",t:"UML — 다이어그램"},{f:"s13.html",n:"13",t:"유스케이스(Use Case) 다이어그램"},{f:"s14.html",n:"14",t:"활동(Activity) 다이어그램"},{f:"s15.html",n:"15",t:"클래스(Class) 다이어그램"},{f:"s16.html",n:"16",t:"시퀀스(Sequence) 다이어그램"},{f:"s17.html",n:"17",t:"커뮤니케이션(Communication) 다이어그램"},{f:"s18.html",n:"18",t:"상태(State) 다이어그램"},{f:"s19.html",n:"19",t:"패키지(Package) 다이어그램"},{f:"s20.html",n:"20",t:"소프트웨어 개발 방법론"},{f:"s21.html",n:"21",t:"S/W 공학의 발전적 추세"},{f:"s22.html",n:"22",t:"비용 산정 기법"},{f:"s23.html",n:"23",t:"비용 산정 기법 — 하향식"},{f:"s24.html",n:"24",t:"비용 산정 기법 — 상향식"},{f:"s25.html",n:"25",t:"수학적 산정 기법"},{f:"s26.html",n:"26",t:"프로젝트 일정 계획"},{f:"s27.html",n:"27",t:"소프트웨어 개발 방법론 결정과 프로젝트 관리"},{f:"s28.html",n:"28",t:"소프트웨어 개발 표준"},{f:"s29.html",n:"29",t:"소프트웨어 개발 방법론 테일러링"},{f:"s30.html",n:"30",t:"소프트웨어 개발 프레임워크"},{f:"s31.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>01. 요구사항 확인</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (13) 유스케이스(Use Case) 다이어그램
+
+### 기능 모델링
+
+사용자의 요구사항을 분석해 시스템이 갖춰야 할 **기능을 정리**한 뒤,
+그 내용을 사용자와 공유하기 위해 **그림으로 표현**하는 것.
+
+- 개발할 시스템의 전반적인 형태를 **기능에 초점**을 맞춰 표현.
+- **종류** : 유스케이스(Use Case) 다이어그램, 액티비티(Activity) 다이어그램
+
+### 유스케이스 다이어그램
+
+사용자와 외부 시스템이 개발 대상 시스템으로 무엇을 할 수 있는지를 **사용자 관점**에서 표현한 것.
+
+- **외부 요소와 시스템 사이의 상호작용**을 확인할 수 있음.
+- 사용자의 **요구사항을 분석**하기 위한 도구로 사용됨.
+- **시스템의 범위**를 파악할 수 있음.
+
+### 예제 : `<도서관 대출>` 시스템
+
+```mermaid
+graph LR
+    비회원(("비회원"))
+    회원(("회원"))
+    이용자(("이용자"))
+
+    비회원 -->|일반화| 이용자
+    회원 -->|일반화| 이용자
+
+    subgraph 도서관["도서관 대출 (시스템 범위)"]
+        UC1(["도서검색"])
+        UC2(["도서대출"])
+        UC3(["반납연장"])
+        UC4(["서평작성"])
+        UC5(["로그인"])
+        UC6(["제목으로 검색"])
+        UC7(["저자로 검색"])
+        UC8(["사진 첨부"])
+    end
+
+    이용자 --- UC1
+    회원 --- UC2
+    회원 --- UC3
+    회원 --- UC4
+
+    UC6 -->|일반화| UC1
+    UC7 -->|일반화| UC1
+
+    UC2 -.《include》.-> UC5
+    UC3 -.《include》.-> UC5
+    UC4 -.《include》.-> UC5
+    UC8 -.《extends》.-> UC4
+
+    UC2 --> 소장["《Actor》<br/>소장정보 시스템"]
+    UC2 --> 연체["《Actor》<br/>연체관리 시스템"]
+    UC3 --> 문자["《Actor》<br/>알림문자 발송사"]
+```
+
+**해설** ⭐
+
+1. 이용자는 **회원과 비회원으로 구분**됨. *(일반화 관계)*
+2. 회원은 **도서검색, 도서대출, 반납연장, 서평작성** 기능을 사용할 수 있음.
+3. 비회원은 **도서검색 기능만** 사용할 수 있음.
+4. 이용자는 **제목이나 저자로** 도서를 검색할 수 있음. *(일반화 관계)*
+5. 도서대출·반납연장·서평작성을 하려면 **반드시 로그인을 수행**해야 . → `《include》`
+6. 서평작성 시 **필요한 경우** 사진을 첨부할 수 있음. → `《extends》`
+7. 도서대출을 완료하려면 **소장정보 시스템**에서 보유 여부를 확인해야 . *(부액터)*
+8. 도서대출을 완료하려면 **연체관리 시스템**에서 연체 여부를 확인받아야 . *(부액터)*
+9. 반납연장 결과는 **알림문자 발송사**를 통해 회원에게 전달됨. *(부액터)*
+
+> 💡 **include vs extend** — 반드시 거쳐야 하면 `《include》`, 조건이 맞을 때만 붙으면 `《extends》`.
+
+### 유스케이스 다이어그램의 구성 요소
+
+| 구성 요소 | 표현 방법 | 내용 |
+|---|---|---|
+| **시스템(System) /<br>시스템 범위(System Scope)** | **큰 사각형** 상단에 시스템명 표기<br>`┌── 도서관 대출 ──┐` | 시스템 내부의 유스케이스들을 **사각형으로 묶어** 범위를 표현한 것 |
+| **액터(Actor)** | 주액터: **막대 인간(사람 모양)**<br>부액터: **《Actor》 표기한 사각형** | - 시스템과 **상호작용**하는 모든 **외부 요소**로, 주로 사람이나 외부 시스템을 의미.<br>- **주액터** : 시스템을 사용함으로써 **이득을 얻는 대상**. 주로 **사람**이 해당됨.<br>- **부액터** : 주액터의 목적 달성을 위해 시스템에 **서비스를 제공하는 외부 시스템**. 조직이나 기관도 해당될 수 있음. |
+| **유스케이스(Use Case)** | **타원** 안에 기능명 표기<br>`( 도서검색 )` | 사용자가 보는 관점에서 시스템이 액터에게 제공하는 **서비스나 기능**을 표현한 것 |
+| **관계(Relationship)** | 포함: `- -《include》- ▶`<br>확장: `◀ - -《extends》- -`<br>일반화: `◀────` (속이 빈 삼각 화살표) | - **액터↔유스케이스**, **유스케이스↔유스케이스** 사이에 나타날 수 있음.<br>- 종류 : **포함(Include)**, **확장(Extend)**, **일반화(Generalization)** |
+
+> **포함(Include) 관계** : 둘 이상의 유스케이스에 **공통으로 적용되는 기능을 별도로 분리**해
+> 새로운 유스케이스로 만든 경우, 원래 유스케이스와 분리된 유스케이스 사이의 관계
+> **확장(Extend) 관계** : 유스케이스가 **특정 조건에 부합되어 기능이 확장**될 때,
+> 원래 유스케이스와 확장된 유스케이스 사이의 관계
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+<script src="../assets/bank-ch01.js"></script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

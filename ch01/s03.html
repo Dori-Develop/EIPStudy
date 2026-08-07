@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 01. 요구사항 확인 — 도해와 표로 정리한 학습 노트">
+<title>XP(eXtreme Programming) 기법 · 01. 요구사항 확인</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch01",title:"정보처리기사 실기 — 01. 요구사항 확인",subtitle:"01. 요구사항 확인",total:31,base:"../",page:"section",index:2,sections:[{f:"s01.html",n:"1",t:"소프트웨어 생명 주기"},{f:"s02.html",n:"2",t:"스크럼(Scrum) 기법"},{f:"s03.html",n:"3",t:"XP(eXtreme Programming) 기법"},{f:"s04.html",n:"4",t:"현행 시스템 파악"},{f:"s05.html",n:"5",t:"개발 기술 환경 파악"},{f:"s06.html",n:"6",t:"요구사항 정의"},{f:"s07.html",n:"7",t:"요구사항 개발 프로세스"},{f:"s08.html",n:"8",t:"요구사항 분석"},{f:"s09.html",n:"9",t:"요구사항 분석 CASE와 HIPO"},{f:"s10.html",n:"10",t:"UML(Unified Modeling Language)의 개요"},{f:"s11.html",n:"11",t:"UML — 관계(Relationship)"},{f:"s12.html",n:"12",t:"UML — 다이어그램"},{f:"s13.html",n:"13",t:"유스케이스(Use Case) 다이어그램"},{f:"s14.html",n:"14",t:"활동(Activity) 다이어그램"},{f:"s15.html",n:"15",t:"클래스(Class) 다이어그램"},{f:"s16.html",n:"16",t:"시퀀스(Sequence) 다이어그램"},{f:"s17.html",n:"17",t:"커뮤니케이션(Communication) 다이어그램"},{f:"s18.html",n:"18",t:"상태(State) 다이어그램"},{f:"s19.html",n:"19",t:"패키지(Package) 다이어그램"},{f:"s20.html",n:"20",t:"소프트웨어 개발 방법론"},{f:"s21.html",n:"21",t:"S/W 공학의 발전적 추세"},{f:"s22.html",n:"22",t:"비용 산정 기법"},{f:"s23.html",n:"23",t:"비용 산정 기법 — 하향식"},{f:"s24.html",n:"24",t:"비용 산정 기법 — 상향식"},{f:"s25.html",n:"25",t:"수학적 산정 기법"},{f:"s26.html",n:"26",t:"프로젝트 일정 계획"},{f:"s27.html",n:"27",t:"소프트웨어 개발 방법론 결정과 프로젝트 관리"},{f:"s28.html",n:"28",t:"소프트웨어 개발 표준"},{f:"s29.html",n:"29",t:"소프트웨어 개발 방법론 테일러링"},{f:"s30.html",n:"30",t:"소프트웨어 개발 프레임워크"},{f:"s31.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>01. 요구사항 확인</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (3) XP(eXtreme Programming) 기법
+
+### XP 개요
+
+시도 때도 없이 바뀌는 고객 요구에 유연하게 맞서기 위해, **고객의 참여**와 **개발 과정의 반복**을
+극단까지 밀어붙여 생산성을 높이는 방법.
+
+- **짧고 반복적인 개발 주기**, **단순한 설계**, **고객의 적극적인 참여**로 빠르게 개발하는 것이 목적.
+- 릴리즈 주기를 짧게 가져가 요구사항이 반영되는 모습을 고객이 눈으로 확인하게 함(**가시성**).
+
+**XP의 5대 핵심 가치** ⭐
+
+1. **의사소통**(Communication)
+2. **단순성**(Simplicity)
+3. **용기**(Courage)
+4. **존중**(Respect)
+5. **피드백**(Feedback)
+
+### XP 개발 프로세스
+
+```mermaid
+flowchart LR
+    A["릴리즈 계획 수립<br/>(Release Planning)"] --> B["이터레이션<br/>(1~3주)"] --> C["승인 검사<br/>(Acceptance Test)"] --> D["소규모 릴리즈<br/>(Small Release)"]
+```
+
+| 프로세스 | 내용 |
+|---|---|
+| **릴리즈 계획 수립**<br>(Release Planning) | - 부분 또는 전체 개발이 끝나는 시점의 일정을 수립하는 단계<br>- 스토리 몇 개가 반영되어 기능이 일부 완성된 제품을 내보내는 것을 릴리즈라고 . |
+| **이터레이션**<br>(Iteration, 주기) | 실제 개발이 이뤄지는 구간. 보통 **1~3주**로 잡음. |
+| **승인 검사**<br>(Acceptance Test, 인수 테스트) | 한 이터레이션 안에서 부분 완료 제품이 나오면 수행하는 테스트 |
+| **소규모 릴리즈**<br>(Small Release) | 요구 변화에 민첩하게 대응하려고 릴리즈 단위를 잘게 쪼갠 것 |
+
+> 📌 암기: **"계획하고 진행(이터레이션)한 후 검사하고 출시(릴리즈)한다."**
+> 스크럼은 **2~4주**, XP는 **1~3주**. 주기 길이를 바꿔 내는 문제가 나옴.
+
+### XP의 주요 실천 방법(Practice) ⭐
+
+| 실천 방법 | 내용 |
+|---|---|
+| **Pair Programming**<br>(짝 프로그래밍) | 둘이 함께 프로그래밍해서 개발에 대한 책임을 **공동으로** 나눠 갖는 환경을 조성. |
+| **Collective Ownership**<br>(공동 코드 소유) | 코드에 대한 **권한과 책임을 팀이 공동으로 소유**. |
+| **Test-Driven Development**<br>(테스트 주도 개발) | - 실제 코드를 짜기 **전에 테스트 케이스를 먼저 작성**하므로 개발자가 자신이 무엇을 해야 하는지 정확히 파악하게 됨.<br>- 테스트가 끊이지 않고 돌아가도록 **자동화된 테스팅 도구(구조, 프레임워크)** 를 사용. |
+| **Whole Team**<br>(전체 팀) | 개발에 참여하는 모든 구성원이 **고객을 포함해** 각자의 역할과 그에 따른 책임을 가짐. |
+| **Continuous Integration**<br>(계속적인 통합) | 모듈 단위로 나눠 개발한 코드를 작업이 하나 끝날 때마다 **지속적으로 통합**. |
+| **Refactoring**<br>(리팩토링) | - 프로그램의 **기능은 그대로 둔 채** 시스템 내부를 재구성.<br>- 목적은 이해하기 쉽고 고치기 쉬운 상태로 만들어 개발 속도를 유지하는 것. |
+| **Small Release**<br>(소규모 릴리즈) | 릴리즈 간격을 짧게 반복해 고객의 요구 변화에 **신속히 대응**. |
+
+> ⚠️ **영문 명칭까지 함께 외워야 .** 다만 의미는 서로 구분할 수 있을 정도면 충분함.
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+<script src="../assets/bank-ch01.js"></script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

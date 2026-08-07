@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 10. 프로그래밍 언어 활용 — 도해와 표로 정리한 학습 노트">
+<title>프로그래밍 언어의 분류 · 10. 프로그래밍 언어 활용</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch10",title:"정보처리기사 실기 — 10. 프로그래밍 언어 활용",subtitle:"10. 프로그래밍 언어 활용",total:14,base:"../",page:"section",index:10,sections:[{f:"s01.html",n:"1",t:"데이터 타입과 변수"},{f:"s02.html",n:"2",t:"연산자"},{f:"s03.html",n:"3",t:"제어문"},{f:"s04.html",n:"4",t:"배열과 문자열"},{f:"s05.html",n:"5",t:"포인터"},{f:"s06.html",n:"6",t:"구조체"},{f:"s07.html",n:"7",t:"사용자 정의 함수"},{f:"s08.html",n:"8",t:"Java의 클래스"},{f:"s09.html",n:"9",t:"Java의 상속과 다형성"},{f:"s10.html",n:"10",t:"Python의 활용"},{f:"s11.html",n:"11",t:"프로그래밍 언어의 분류"},{f:"s12.html",n:"12",t:"라이브러리"},{f:"s13.html",n:"13",t:"예외 처리"},{f:"s14.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>10. 프로그래밍 언어 활용</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (11) 프로그래밍 언어의 분류
+
+### 절차적 프로그래밍 언어 ⭐
+
+**일련의 처리 절차를 정해진 문법에 따라 순서대로 기술**하는 언어.
+
+- 프로그램 전체가 유기적으로 연결되어 있어 **대규모 프로그램에는 부적합**함.
+- 데이터와 함수가 분리되어 있음.
+
+| 언어 | 특징 |
+|---|---|
+| **C** | **1972년 벨 연구소의 데니스 리치**가 개발. **UNIX 운영체제를 위한 언어**. 이식성이 좋아 컴퓨터 기종에 관계없이 사용 가능 |
+| **ALGOL** | 수치 계산이나 논리 연산을 위한 과학 기술 계산용 언어 |
+| **COBOL** | **사무 처리용** 언어. 영어 문장 형식으로 구성 |
+| **FORTRAN** | **과학 기술 계산용** 언어 |
+| **PASCAL** | 교육용으로 개발된 언어 |
+
+### 객체 지향 프로그래밍 언어 ⭐
+
+**현실 세계의 개체를 객체로 만들어** 조립해서 프로그램을 구현하는 언어.
+
+| 언어 | 특징 |
+|---|---|
+| **JAVA** | **분산 네트워크 환경**에 적용 가능. **운영체제 및 하드웨어에 독립적**(JVM). 실시간 정보를 통해 애니메이션을 구현 |
+| **C++** | C 언어에 객체 지향 개념을 추가한 언어 |
+| **Smalltalk** | **1980년대 앨런 케이**가 개발. **최초로 GUI 를 제공**한 언어 |
+
+**객체 지향 프로그래밍 언어의 구성 요소** — 객체(Object), 클래스(Class), 메시지(Message)
+
+**객체 지향 프로그래밍 언어의 특징** — 캡슐화, 정보 은닉, 추상화, 상속성, 다형성
+
+### 스크립트 언어 ⭐⭐
+
+**HTML 문서 안에 직접 프로그래밍 언어를 삽입**해 사용하는 언어.
+**기계어로 컴파일되지 않고 실행되는 인터프리터 방식**임.
+
+| 구분 | 설명 | 종류 |
+|---|---|---|
+| **서버용 스크립트 언어** | 서버에서 실행된 후 결과만 클라이언트로 보냄 | **ASP, JSP, PHP, Python** |
+| **클라이언트용 스크립트 언어** | 클라이언트의 웹 브라우저에서 실행됨 | **JavaScript, VBScript** |
+
+| 언어 | 특징 |
+|---|---|
+| **JavaScript** | 클라이언트용 스크립트 언어. 웹 페이지의 동작을 구현. **Netscape 사**에서 개발 |
+| **JSP**(Java Server Page) | **JAVA 로 만들어진 서버용 스크립트 언어**. 다양한 운영체제에서 사용 가능 |
+| **PHP** | 서버용 스크립트 언어. **C, Java 등과 문법이 유사**하고 배우기 쉬움 |
+| **ASP**(Active Server Page) | 서버용 스크립트 언어. **Windows 계열에서만** 수행 가능 |
+| **Python** | 인터프리터 방식의 객체 지향 언어. **플랫폼에 독립적**이고 **문법이 간단**해 초보자도 쉽게 배울 수 있음 |
+| **Basic** | 절차 지향 기능도 지원하는 **문법이 쉬운 언어** |
+
+**스크립트 언어의 장·단점**
+
+| 장점 | 단점 |
+|---|---|
+| 컴파일 없이 **바로 실행**하므로 결과를 빠르게 확인 | 코드를 **읽고 해석해야 하므로 실행 속도가 느림** |
+| 개발 시간이 짧고 **소스 코드 수정이 간단** | **런타임 오류가 많이 발생** |
+
+### 선언형 언어 ⭐
+
+**프로그램이 수행해야 할 문제를 기술**하는 언어. **목표를 명시**하고 알고리즘은 명시하지 않음.
+
+| 구분 | 설명 | 종류 |
+|---|---|---|
+| **함수형 언어** | **수학적 함수를 조합**해 문제를 해결 | **LISP, ML, Haskell** |
+| **논리형 언어** | **논리 문장을 이용**해 문제를 해결. 비절차적 언어 | **PROLOG** |
+| **기타** | – | **HTML, XML, SQL, Haskell** |
+
+| 언어 | 특징 |
+|---|---|
+| **HTML** | 인터넷의 **표준 문서인 하이퍼텍스트 문서**를 만들기 위해 사용하는 언어 |
+| **LISP** | **인공지능 분야**에 사용되는 함수형 언어. **1960년 매카시**가 개발 |
+| **PROLOG** | **논리학을 기초**로 한 언어. 인공지능 분야의 **논리적 추론이나 삼단 논법** 표현에 적합 |
+| **XML** | 기존 HTML 의 단점을 보완해 **사용자가 새로운 태그를 정의**할 수 있는 언어 |
+| **Haskell** | **함수형 프로그래밍 언어**. 부작용(Side Effect)이 없음 |
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

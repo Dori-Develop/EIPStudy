@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 10. 프로그래밍 언어 활용 — 도해와 표로 정리한 학습 노트">
+<title>예외 처리 · 10. 프로그래밍 언어 활용</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch10",title:"정보처리기사 실기 — 10. 프로그래밍 언어 활용",subtitle:"10. 프로그래밍 언어 활용",total:14,base:"../",page:"section",index:12,sections:[{f:"s01.html",n:"1",t:"데이터 타입과 변수"},{f:"s02.html",n:"2",t:"연산자"},{f:"s03.html",n:"3",t:"제어문"},{f:"s04.html",n:"4",t:"배열과 문자열"},{f:"s05.html",n:"5",t:"포인터"},{f:"s06.html",n:"6",t:"구조체"},{f:"s07.html",n:"7",t:"사용자 정의 함수"},{f:"s08.html",n:"8",t:"Java의 클래스"},{f:"s09.html",n:"9",t:"Java의 상속과 다형성"},{f:"s10.html",n:"10",t:"Python의 활용"},{f:"s11.html",n:"11",t:"프로그래밍 언어의 분류"},{f:"s12.html",n:"12",t:"라이브러리"},{f:"s13.html",n:"13",t:"예외 처리"},{f:"s14.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>10. 프로그래밍 언어 활용</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (13) 예외 처리
+
+### 예외(Exception)
+
+프로그램의 정상적인 실행을 방해하는 조건이나 상태.
+
+**예외의 원인** — 컴퓨터 하드웨어 문제, 운영체제의 설정 실수, 라이브러리 손상,
+사용자의 입력 실수, 받아들일 수 없는 연산, 할당하지 못하는 기억 장치 접근 등
+
+### 예외 처리(Exception Handling) ⭐⭐
+
+프로그램의 오류가 발생했을 때 **오류를 처리하는 방법**.
+오류 발생 시 **프로그램이 비정상적으로 종료되는 것을 방지**함.
+
+### Java의 예외 처리
+
+```java
+try {
+    // 예외가 발생할 가능성이 있는 코드
+    int result = 10 / 0;
+} catch (ArithmeticException e) {
+    // 예외 발생 시 실행되는 코드
+    System.out.println("0으로 나눌 수 없습니다");
+} finally {
+    // 예외 발생 여부와 관계없이 항상 실행되는 코드
+    System.out.println("종료");
+}
+```
+
+| 블록 | 역할 |
+|---|---|
+| **try** | 예외가 발생할 가능성이 있는 코드를 작성 |
+| **catch** | 예외가 발생했을 때 처리할 코드를 작성 |
+| **finally** | **예외 발생 여부와 관계없이 반드시 실행**되는 코드 |
+
+> ⚠️ **finally 블록은 예외가 발생하든 안 하든 항상 실행됨.** 자원 반환 코드를 여기에 둠.
+
+### Java의 주요 예외 객체 ⭐
+
+| 예외 객체 | 발생 상황 |
+|---|---|
+| **ClassNotFoundException** | 클래스를 찾지 못한 경우 |
+| **NoSuchMethodException** | 메소드를 찾지 못한 경우 |
+| **FileNotFoundException** | 파일을 찾지 못한 경우 |
+| **InterruptedIOException** | 입·출력 처리가 중단된 경우 |
+| **ArithmeticException** | **0으로 나누는 등** 산술 연산에 오류가 발생한 경우 |
+| **IllegalArgumentException** | 잘못된 인자를 전달한 경우 |
+| **NumberFormatException** | 숫자로 **변환할 수 없는 문자열**을 변환한 경우 |
+| **ArrayIndexOutOfBoundsException** | **배열의 범위를 벗어난** 인덱스에 접근한 경우 |
+| **NullPointerException** | **null 인 객체**의 멤버에 접근한 경우 |
+
+### Python의 예외 처리
+
+```python
+try:
+    result = 10 / 0
+except ZeroDivisionError:
+    print("0으로 나눌 수 없습니다")
+except Exception as e:
+    print("기타 오류:", e)
+else:
+    print("예외가 발생하지 않았을 때 실행")
+finally:
+    print("항상 실행")
+```
+
+> 💡 Python 은 Java 와 달리 **`else` 블록**이 있음. 예외가 발생하지 않았을 때만 실행됨.
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

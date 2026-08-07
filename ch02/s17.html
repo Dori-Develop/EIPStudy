@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 02. 데이터 입·출력 구현 — 도해와 표로 정리한 학습 노트">
+<title>시스템 카탈로그 · 02. 데이터 입·출력 구현</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch02",title:"정보처리기사 실기 — 02. 데이터 입·출력 구현",subtitle:"02. 데이터 입·출력 구현",total:33,base:"../",page:"section",index:16,sections:[{f:"s01.html",n:"1",t:"데이터 전환"},{f:"s02.html",n:"2",t:"데이터 검증"},{f:"s03.html",n:"3",t:"오류 데이터 측정 및 정제"},{f:"s04.html",n:"4",t:"데이터베이스 개요"},{f:"s05.html",n:"5",t:"데이터베이스 설계"},{f:"s06.html",n:"6",t:"데이터 모델의 개념"},{f:"s07.html",n:"7",t:"데이터 모델의 구성 요소"},{f:"s08.html",n:"8",t:"식별자(Identifier)"},{f:"s09.html",n:"9",t:"E-R(개체-관계) 모델"},{f:"s10.html",n:"10",t:"관계형 데이터베이스의 구조"},{f:"s11.html",n:"11",t:"키(Key)"},{f:"s12.html",n:"12",t:"무결성(Integrity)"},{f:"s13.html",n:"13",t:"관계대수와 관계해석"},{f:"s14.html",n:"14",t:"이상과 함수적 종속"},{f:"s15.html",n:"15",t:"정규화(Normalization)"},{f:"s16.html",n:"16",t:"반정규화(Denormalization)"},{f:"s17.html",n:"17",t:"시스템 카탈로그"},{f:"s18.html",n:"18",t:"데이터베이스 저장 공간 설계"},{f:"s19.html",n:"19",t:"트랜잭션 분석과 CRUD 분석"},{f:"s20.html",n:"20",t:"인덱스(Index)"},{f:"s21.html",n:"21",t:"뷰와 클러스터"},{f:"s22.html",n:"22",t:"파티션(Partition)"},{f:"s23.html",n:"23",t:"분산 데이터베이스 설계"},{f:"s24.html",n:"24",t:"데이터베이스 이중화와 서버 클러스터링"},{f:"s25.html",n:"25",t:"데이터베이스 보안"},{f:"s26.html",n:"26",t:"데이터베이스 백업"},{f:"s27.html",n:"27",t:"스토리지(Storage)"},{f:"s28.html",n:"28",t:"논리 데이터 모델의 물리 데이터 모델 변환"},{f:"s29.html",n:"29",t:"물리 데이터 모델 품질 검토"},{f:"s30.html",n:"30",t:"자료 구조"},{f:"s31.html",n:"31",t:"트리와 이진 트리"},{f:"s32.html",n:"32",t:"정렬(Sort)"},{f:"s33.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>02. 데이터 입·출력 구현</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (17) 시스템 카탈로그
+
+### 시스템 카탈로그(System Catalog)
+
+시스템 그 자체에 관련이 있는 다양한 객체에 관한 정보를 포함하는
+**시스템 데이터베이스**.
+
+- 시스템 카탈로그 내의 각 테이블은 **DBMS 가 스스로 생성하고 유지**함.
+- **데이터 사전(Data Dictionary)** 이라고도 함.
+- 저장되는 정보를 **메타 데이터(Meta-Data)** 라고 함.
+- 사용자가 **SQL 을 이용해 내용을 검색할 수는 있음**.
+- ⚠️ 사용자가 **직접 갱신할 수는 없음**. DBMS 가 자동으로 갱신함.
+
+**저장되는 메타 데이터**
+
+- 릴레이션 스키마, 뷰, 인덱스, 사용자, 접근 권한
+- 데이터베이스 구조, 무결성 제약 조건
+- 통계 정보(테이블 크기, 인덱스 정보 등)
+
+### 데이터 디렉터리(Data Directory)
+
+**데이터 사전에 수록된 데이터에 실제로 접근하는 데 필요한 정보**를 관리하는 시스템.
+
+| 구분 | 시스템 카탈로그(데이터 사전) | 데이터 디렉터리 |
+|---|---|---|
+| 사용자 접근 | **검색 가능** | **접근 불가** |
+| 갱신 주체 | DBMS | DBMS |
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

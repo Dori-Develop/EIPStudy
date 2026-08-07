@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 01. 요구사항 확인 — 도해와 표로 정리한 학습 노트">
+<title>시퀀스(Sequence) 다이어그램 · 01. 요구사항 확인</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch01",title:"정보처리기사 실기 — 01. 요구사항 확인",subtitle:"01. 요구사항 확인",total:31,base:"../",page:"section",index:15,sections:[{f:"s01.html",n:"1",t:"소프트웨어 생명 주기"},{f:"s02.html",n:"2",t:"스크럼(Scrum) 기법"},{f:"s03.html",n:"3",t:"XP(eXtreme Programming) 기법"},{f:"s04.html",n:"4",t:"현행 시스템 파악"},{f:"s05.html",n:"5",t:"개발 기술 환경 파악"},{f:"s06.html",n:"6",t:"요구사항 정의"},{f:"s07.html",n:"7",t:"요구사항 개발 프로세스"},{f:"s08.html",n:"8",t:"요구사항 분석"},{f:"s09.html",n:"9",t:"요구사항 분석 CASE와 HIPO"},{f:"s10.html",n:"10",t:"UML(Unified Modeling Language)의 개요"},{f:"s11.html",n:"11",t:"UML — 관계(Relationship)"},{f:"s12.html",n:"12",t:"UML — 다이어그램"},{f:"s13.html",n:"13",t:"유스케이스(Use Case) 다이어그램"},{f:"s14.html",n:"14",t:"활동(Activity) 다이어그램"},{f:"s15.html",n:"15",t:"클래스(Class) 다이어그램"},{f:"s16.html",n:"16",t:"시퀀스(Sequence) 다이어그램"},{f:"s17.html",n:"17",t:"커뮤니케이션(Communication) 다이어그램"},{f:"s18.html",n:"18",t:"상태(State) 다이어그램"},{f:"s19.html",n:"19",t:"패키지(Package) 다이어그램"},{f:"s20.html",n:"20",t:"소프트웨어 개발 방법론"},{f:"s21.html",n:"21",t:"S/W 공학의 발전적 추세"},{f:"s22.html",n:"22",t:"비용 산정 기법"},{f:"s23.html",n:"23",t:"비용 산정 기법 — 하향식"},{f:"s24.html",n:"24",t:"비용 산정 기법 — 상향식"},{f:"s25.html",n:"25",t:"수학적 산정 기법"},{f:"s26.html",n:"26",t:"프로젝트 일정 계획"},{f:"s27.html",n:"27",t:"소프트웨어 개발 방법론 결정과 프로젝트 관리"},{f:"s28.html",n:"28",t:"소프트웨어 개발 표준"},{f:"s29.html",n:"29",t:"소프트웨어 개발 방법론 테일러링"},{f:"s30.html",n:"30",t:"소프트웨어 개발 프레임워크"},{f:"s31.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>01. 요구사항 확인</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (16) 시퀀스(Sequence) 다이어그램
+
+### 동적 모델링
+
+시스템 내부 구성 요소의 **상태 변화 과정**과 그 과정에서 발생하는 **상호작용**을 표현한 것.
+
+- 구성 요소 사이에서 이뤄지는 **동작이라는 관점(View)** 에서 표현.
+- 시스템이 실행될 때 구성 요소 간 **메시지 호출**, 즉 **오퍼레이션을 통한 상호작용**에 초점을 둠.
+- **종류** : 시퀀스 다이어그램 / 커뮤니케이션 다이어그램 / 상태 다이어그램
+
+### 시퀀스 다이어그램
+
+- 시스템이나 객체가 **메시지를 주고받으며 상호작용하는 과정**을 그림으로 표현한 것
+- 상호작용 과정에서 주고받는 **메시지**를 표현.
+- 각 동작에 참여하는 객체의 **수행 기간**을 확인할 수 있음.
+- **클래스 내부의 객체를 기본 단위**로 하여 상호작용을 표현.
+
+### 예제 : 회원의 도서 대출 과정
+
+**프레임명** : `SD 도서대출`
+
+```mermaid
+sequenceDiagram
+    actor 회원
+    participant 로그인화면
+    participant 회원정보
+    participant 검색화면 as 도서검색화면
+    participant 신규대출 as 도서 신규대출
+    participant 확인화면 as 대출확인화면
+    participant 소장 as 소장정보 시스템
+    participant 연체 as 연체관리 시스템
+
+    회원->>로그인화면: 1. 로그인 버튼 클릭
+    회원->>로그인화면: 2. ID, 비밀번호 입력
+    로그인화면->>회원정보: 3. 회원 정보 확인 요청
+    회원정보->>회원정보: 4. 회원 정보 확인
+    회원정보-->>로그인화면: 5. 로그인 완료
+    로그인화면-->>회원: 6. 도서 검색 화면 출력
+    Note over 로그인화면,회원정보: ✖ 객체 소멸
+
+    회원->>검색화면: 7. 도서 선택
+    검색화면-->>신규대출: 8. 대출생성 (객체 생성)
+    Note over 검색화면: ✖ 객체 소멸
+    신규대출->>소장: 9. 도서 보유 확인 요청
+    소장->>소장: 10. 대출 가능 여부 확인
+    소장-->>신규대출: 11. 대출 가능
+    신규대출-->>회원: 12. 대출확인 화면 출력
+    Note over 신규대출,소장: ✖ 객체 소멸
+
+    회원->>확인화면: 13. 대출 신청
+    확인화면->>연체: 14. 연체 이력 확인 요청
+    연체->>연체: 15. 연체 이력 확인
+    연체-->>확인화면: 16. 대출 승인
+    확인화면-->>회원: 17. 대출 완료
+    Note over 회원,연체: ✖ 객체 소멸
+```
+
+**해석**
+
+| 참여 객체 | 동작 |
+|---|---|
+| **`<회원>` 액터** | ① 로그인 버튼을 클릭.<br>② ID와 비밀번호를 입력.<br>③ 로그인이 완료되면 검색 화면에서 대출할 도서를 선택.<br>④ 보유 확인이 완료되면 대출확인 화면에서 대출을 신청.<br>⑤ "대출 완료" 메시지를 확인한 후 **소멸**됨. |
+| **`<로그인화면>` 객체** | ① `<회원>`이 입력한 ID·비밀번호가 올바른지 `<회원정보>`에 **확인 요청**.<br>② "로그인 완료" 메시지를 받으면 `<회원>`에게 **검색 화면을 출력**한 후 소멸. |
+| **`<회원정보>` 객체** | ① 입력받은 ID·비밀번호를 **확인**. *(자기 자신에게 보내는 메시지)*<br>② "로그인 완료" 메시지를 전송한 후 소멸. |
+| **`<도서검색화면>` 객체** | ① `<회원>`이 도서를 선택하면 그 도서에 대한 `<도서:신규대출>` **객체를 생성**한 후 소멸. |
+| **`<도서:신규대출>` 객체** | ① "대출생성" 메시지를 받으면 **새로운 객체로 생성**됨.<br>② `<소장정보 시스템>`에 보유 확인을 요청.<br>③ "대출 가능" 메시지를 받으면 `<회원>`에게 대출확인 화면을 출력한 후 소멸. |
+| **`<대출확인화면>` 객체** | ① `<회원>`이 대출을 신청하면 `<연체관리 시스템>`에 연체 이력 확인을 요청.<br>② "대출 승인" 메시지를 받으면 `<회원>`에게 "대출 완료"를 전송한 후 소멸. |
+| **`<소장정보 시스템>` 액터** | ① 선택한 도서의 대출 가능 여부를 확인.<br>② `<도서:신규대출>`에 "대출 가능" 메시지를 전송한 후 소멸. |
+| **`<연체관리 시스템>` 액터** | ① 회원의 연체 이력을 확인.<br>② `<대출확인화면>`에 "대출 승인" 메시지를 전송한 후 소멸. |
+
+### 시퀀스 다이어그램의 구성 요소 ⭐
+
+| 구성 요소 | 표현 방법 | 의미 |
+|---|---|---|
+| **액터(Actor)** | **막대 인간(사람 모양)** + 아래에 이름 `회원` | 시스템으로부터 서비스를 요청하는 **외부 요소**로, 사람이나 외부 시스템을 의미. |
+| **객체(Object)** | **사각형** 안에 `: 로그인화면` (콜론 + 객체명) | **메시지를 주고받는 주체** |
+| **생명선(Lifeline)** | **세로 점선** | - 객체가 **메모리에 존재하는 기간**으로, 객체 아래쪽에 점선을 그어 표현.<br>- **객체 소멸(✖)** 이 표시된 기간까지 존재. |
+| **실행 상자<br>(Active Box, 활성 상자)** | 생명선 위에 겹쳐진 **가늘고 긴 사각형** | 객체가 메시지를 주고받으며 **구동되고 있음**을 표현. |
+| **메시지(Message)** | **화살표** 위에 `1. 로그인 버튼 클릭` (번호 + 내용) | 객체가 상호작용을 위해 주고받는 메시지 |
+| **객체 소멸** | **굵은 ✖ 표시** | 해당 객체가 **더 이상 메모리에 존재하지 않음**을 표현한 것 |
+| **프레임(Frame)** | 좌측 상단 모서리가 잘린 라벨 `SD 도서대출` + 전체를 감싼 사각형 | 다이어그램의 **전체 또는 일부를 묶어** 표현한 것 |
+
+> 💡 메시지에 번호가 없으면 **위쪽 메시지가 아래쪽보다 시간 순서상 먼저** 전달된 것으로 읽음.
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+<script src="../assets/bank-ch01.js"></script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

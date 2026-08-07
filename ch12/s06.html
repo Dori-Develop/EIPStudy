@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 12. 제품 소프트웨어 패키징 — 도해와 표로 정리한 학습 노트">
+<title>소프트웨어 버전 등록 · 12. 제품 소프트웨어 패키징</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch12",title:"정보처리기사 실기 — 12. 제품 소프트웨어 패키징",subtitle:"12. 제품 소프트웨어 패키징",total:10,base:"../",page:"section",index:5,sections:[{f:"s01.html",n:"1",t:"소프트웨어 패키징"},{f:"s02.html",n:"2",t:"릴리즈 노트 작성"},{f:"s03.html",n:"3",t:"디지털 저작권 관리(DRM)"},{f:"s04.html",n:"4",t:"소프트웨어 설치 매뉴얼 작성"},{f:"s05.html",n:"5",t:"소프트웨어 사용자 매뉴얼 작성"},{f:"s06.html",n:"6",t:"소프트웨어 버전 등록"},{f:"s07.html",n:"7",t:"소프트웨어 버전 관리 도구"},{f:"s08.html",n:"8",t:"Git 명령어 활용"},{f:"s09.html",n:"9",t:"빌드 자동화 도구"},{f:"s10.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>12. 제품 소프트웨어 패키징</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (6) 소프트웨어 버전 등록
+
+### 소프트웨어 패키징의 형상 관리 ⭐⭐
+
+**형상 관리(SCM; Software Configuration Management)** 는
+소프트웨어의 개발 과정에서 소프트웨어의 **변경 사항을 관리**하기 위해 개발된 일련의 활동.
+
+- 소프트웨어 **변경의 원인을 알아내고 제어**하며, **적절히 변경되고 있는지 확인**해
+  해당 담당자에게 통보함.
+- 형상 관리는 소프트웨어 개발의 **전 단계에 적용**되는 활동이며,
+  **유지보수 단계에서도 수행**됨.
+- 형상 관리를 통해 이전 리버전이나 버전에 대한 정보에 접근 가능해
+  **배포본 관리에 유용**함.
+- 불필요한 사용자의 소스 수정을 제한할 수 있음.
+- 동일한 프로젝트에 대해 **여러 개발자가 동시 개발**할 수 있음.
+
+### 형상 관리의 중요성
+
+- 지속적인 소프트웨어의 **변경 사항을 체계적으로 추적하고 통제**할 수 있음
+- 제품 소프트웨어에 대한 **무절제한 변경을 방지**할 수 있음
+- 제품 소프트웨어에서 발견된 **버그나 수정 사항을 추적**할 수 있음
+
+### 형상 관리 기능(절차) ⭐⭐⭐
+
+```mermaid
+flowchart LR
+    A["형상 식별<br/>(Identification)"] --> B["형상 통제<br/>(Control)"] --> C["형상 감사<br/>(Audit)"] --> D["형상 기록<br/>(Status Accounting)"]
+```
+
+| 기능 | 내용 |
+|---|---|
+| **형상 식별** | 형상 관리 대상에 **이름과 관리 번호를 부여**하고, 계층(Tree) 구조로 구분해 수정 및 추적이 용이하도록 함 |
+| **버전 제어** | 소프트웨어 업그레이드나 유지 보수 과정에서 **생성된 다른 버전의 형상 항목을 관리**하고, 이를 위해 **특정 절차와 도구(Tool)를 결합**시키는 작업 |
+| **형상 통제**(변경 관리) | 식별된 형상 항목에 대한 **변경 요구를 검토**해 현재의 **기준선(Baseline)이 잘 반영될 수 있도록 조정**하는 작업 |
+| **형상 감사** | 기준선의 무결성을 평가하기 위해 **확인, 검증, 검열 과정을 통해 공식적으로 승인**하는 작업 |
+| **형상 기록**(상태 보고) | 형상의 식별, 통제, 감사 작업의 **결과를 기록·관리하고 보고서를 작성**하는 작업 |
+
+> 📌 암기: **"식통감기"** (형상 식별 → 형상 통제 → 형상 감사 → 형상 기록)
+
+### 소프트웨어의 버전 등록 관련 주요 용어 ⭐⭐
+
+| 용어 | 의미 |
+|---|---|
+| **저장소**(Repository) | **최신 버전의 파일들과 변경 내역에 대한 정보들이 저장**되어 있는 곳 |
+| **가져오기**(Import) | **버전 관리가 되고 있지 않은** 저장소에 처음으로 파일을 **복사**함 |
+| **체크아웃**(Check-Out) | 프로그램을 수정하기 위해 저장소에서 **파일을 받아옴**. 소스 파일과 함께 버전 관리를 위한 **파일들도 함께** 받아옴 |
+| **체크인**(Check-In) | 체크아웃한 파일의 수정을 완료한 후 **저장소의 파일을 새로운 버전으로 갱신**함 |
+| **커밋**(Commit) | 체크인을 수행할 때 이전에 갱신된 내용이 있는 경우 **충돌(Conflict)을 알리고 diff 도구를 이용해 수정**한 후 갱신을 완료함 |
+| **동기화**(Update) | **저장소에 있는 최신 버전으로 자신의 작업 공간을 동기화**함 |
+
+### 소프트웨어 버전 등록 과정 ⭐
+
+```mermaid
+flowchart LR
+    A["가져오기<br/>Import"] --> B["인출<br/>Check-Out"] --> C["예치<br/>Commit"] --> D["동기화<br/>Update"] --> E["차이<br/>Diff"]
+```
+
+| 단계 | 내용 |
+|---|---|
+| **가져오기**(Import) | 개발자가 저장소에 **파일을 최초로 업로드** |
+| **인출**(Check-Out) | 개발자가 저장소의 파일을 **자신의 작업 공간으로 인출** |
+| **예치**(Commit) | 개발자가 수정한 파일을 저장소에 **예치** |
+| **동기화**(Update) | 저장소의 최신 버전으로 **자신의 작업 공간을 동기화** |
+| **차이**(Diff) | 이전 개발자가 처음 커밋한 내역과 이후 개발자가 수정한 내역의 **차이를 확인** |
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

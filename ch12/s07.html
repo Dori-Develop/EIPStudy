@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 12. 제품 소프트웨어 패키징 — 도해와 표로 정리한 학습 노트">
+<title>소프트웨어 버전 관리 도구 · 12. 제품 소프트웨어 패키징</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch12",title:"정보처리기사 실기 — 12. 제품 소프트웨어 패키징",subtitle:"12. 제품 소프트웨어 패키징",total:10,base:"../",page:"section",index:6,sections:[{f:"s01.html",n:"1",t:"소프트웨어 패키징"},{f:"s02.html",n:"2",t:"릴리즈 노트 작성"},{f:"s03.html",n:"3",t:"디지털 저작권 관리(DRM)"},{f:"s04.html",n:"4",t:"소프트웨어 설치 매뉴얼 작성"},{f:"s05.html",n:"5",t:"소프트웨어 사용자 매뉴얼 작성"},{f:"s06.html",n:"6",t:"소프트웨어 버전 등록"},{f:"s07.html",n:"7",t:"소프트웨어 버전 관리 도구"},{f:"s08.html",n:"8",t:"Git 명령어 활용"},{f:"s09.html",n:"9",t:"빌드 자동화 도구"},{f:"s10.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>12. 제품 소프트웨어 패키징</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (7) 소프트웨어 버전 관리 도구
+
+### 버전 관리 도구의 분류 ⭐⭐⭐
+
+| 방식 | 설명 | 도구 |
+|---|---|---|
+| **공유 폴더 방식** | 버전 관리 자료가 **로컬 컴퓨터의 공유 폴더에 저장**되어 관리되는 방식.<br>담당자 한 명이 매일 파일의 이상 유무를 확인함 | **SCCS, RCS, PVCS, QVCS** |
+| **클라이언트/서버 방식** | 버전 관리 자료가 **중앙 시스템(서버)에 저장**되어 관리되는 방식.<br>모든 버전 관리는 서버에서 수행됨. **서버에 문제가 생기면 협업 불가** | **CVS, SVN(Subversion), CVSNT, Clear Case, CMVC, Perforce** |
+| **분산 저장소 방식** | 버전 관리 자료가 **하나의 원격 저장소와 분산된 개발자 PC 의 로컬 저장소에 함께 저장**되어 관리되는 방식.<br>개발자별로 원격 저장소의 자료를 **자신의 로컬 저장소로 복제(Clone)** 해 작업한 후 반영함 | **Git, GNU arch, DCVS, Bazaar, Mercurial, TeamWare, Bitkeeper, Plastic SCM** |
+
+> ⚠️ **SVN = 클라이언트/서버**, **Git = 분산 저장소**. 이 구분이 매번 나옴.
+
+### 주요 버전 관리 도구 ⭐⭐
+
+| 도구 | 특징 |
+|---|---|
+| **CVS**(Concurrent Version System) | **가장 오래된** 버전 관리 도구 중 하나로 **중앙 집중형** 서버 저장소를 두고 클라이언트가 접속해 버전 관리를 수행함.<br>⚠️ 다양한 OS 를 지원하지만 **파일의 이름이나 디렉터리 변경, 심볼릭 링크는 지원하지 않음** |
+| **SVN**(Subversion) | **CVS 를 개선**한 것으로, 아파치 소프트웨어 재단에서 발표함.<br>**하나의 서버에서 소스를 관리**하며, 소스가 오픈되어 있어 무료로 사용 가능.<br>**디렉터리, 파일을 자유롭게 이동**해도 버전 관리가 가능함 |
+| **Git** | **리누스 토발즈**가 리눅스 커널 개발을 위해 개발함. 이후 **주니오 하마노**에 의해 유지 보수됨.<br>**분산형 버전 관리 시스템**으로, **지역(로컬) 저장소와 원격 저장소**가 존재함.<br>버전 관리가 지역 저장소에서 진행되므로 **속도가 빠름**.<br>**커밋(Commit) 은 지역 저장소에서 수행**되고, **푸시(Push) 라는 동작으로 원격 저장소에 반영**됨 |
+
+**SVN 의 주요 명령어**
+
+| 명령어 | 기능 |
+|---|---|
+| `add` | 새로운 파일이나 디렉터리를 **버전 관리 대상으로 등록** |
+| `commit` | 변경된 파일을 **서버에 반영** |
+| `update` | 서버의 최신 커밋 이력을 **로컬로 가져옴** |
+| `checkout` | 저장소에서 **소스 파일을 받아옴** |
+| `import` | 아무것도 없는 저장소에 **파일을 처음 등록** |
+| `merge` | 다른 디렉터리에서 작업된 버전 관리 내역을 **기본 개발 작업과 병합** |
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

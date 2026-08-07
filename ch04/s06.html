@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 04. 서버 프로그램 구현 — 도해와 표로 정리한 학습 노트">
+<title>모듈과 결합도·응집도 · 04. 서버 프로그램 구현</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch04",title:"정보처리기사 실기 — 04. 서버 프로그램 구현",subtitle:"04. 서버 프로그램 구현",total:15,base:"../",page:"section",index:5,sections:[{f:"s01.html",n:"1",t:"개발 환경 구축"},{f:"s02.html",n:"2",t:"소프트웨어 아키텍처"},{f:"s03.html",n:"3",t:"아키텍처 패턴"},{f:"s04.html",n:"4",t:"객체 지향(Object-Oriented)"},{f:"s05.html",n:"5",t:"객체 지향 분석 및 설계"},{f:"s06.html",n:"6",t:"모듈과 결합도·응집도"},{f:"s07.html",n:"7",t:"단위 모듈과 공통 모듈"},{f:"s08.html",n:"8",t:"코드(Code)"},{f:"s09.html",n:"9",t:"디자인 패턴"},{f:"s10.html",n:"10",t:"개발 지원 도구"},{f:"s11.html",n:"11",t:"서버 개발"},{f:"s12.html",n:"12",t:"보안 및 API"},{f:"s13.html",n:"13",t:"배치 프로그램"},{f:"s14.html",n:"14",t:"패키지 소프트웨어"},{f:"s15.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>04. 서버 프로그램 구현</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (6) 모듈과 결합도·응집도
+
+### 모듈(Module)
+
+모듈화를 통해 분리된 시스템의 각 기능. **서브루틴, 서브시스템, 소프트웨어 내의 프로그램,
+작업 단위** 등을 의미함.
+
+**모듈의 특징**
+
+- 다른 것들과 **구별될 수 있는 독립적인 기능**을 가진 단위
+- **독립성이 높은 모듈일수록** 수정 시 다른 모듈에 영향이 적고, 오류 발견과 해결이 쉬움
+- 모듈의 독립성은 **결합도와 응집도**로 측정함
+
+> ⚠️ **독립성을 높이려면 결합도는 낮게, 응집도는 높게, 모듈의 크기는 작게** 만들어야 함.
+
+### 결합도(Coupling) ⭐⭐⭐
+
+모듈 간에 **상호 의존하는 정도** 또는 **연관 관계**.
+
+**약함(좋음) → 강함(나쁨) 순서**
+
+| 순서 | 결합도 | 설명 |
+|:---:|---|---|
+| 1 | **자료 결합도**<br>(Data Coupling) | 모듈 간의 인터페이스가 **자료 요소로만** 구성될 때. 가장 **바람직한** 결합도 |
+| 2 | **스탬프 결합도**<br>(Stamp Coupling) | 모듈 간 인터페이스로 **배열이나 레코드 등의 자료 구조**가 전달될 때 |
+| 3 | **제어 결합도**<br>(Control Coupling) | 어떻게 처리할지를 알려주는 **제어 요소(Flag)** 를 전달할 때. **권리 전도 현상** 발생 |
+| 4 | **외부 결합도**<br>(External Coupling) | 어떤 모듈에서 선언한 **데이터(변수)를 외부의 다른 모듈에서 참조**할 때 |
+| 5 | **공통 결합도**<br>(Common Coupling) | **공유되는 공통 데이터 영역(전역 변수)** 을 여러 모듈이 사용할 때 |
+| 6 | **내용 결합도**<br>(Content Coupling) | 한 모듈이 다른 모듈의 **내부 기능 및 내부 자료를 직접 참조하거나 수정**할 때. 가장 **나쁜** 결합도 |
+
+> 📌 암기: **"자스제외공내"** (자료 → 스탬프 → 제어 → 외부 → 공통 → 내용)
+> 앞으로 갈수록 **좋고**, 뒤로 갈수록 **나쁨**.
+
+### 응집도(Cohesion) ⭐⭐⭐
+
+모듈의 **내부 요소들이 서로 관련되어 있는 정도**.
+
+**강함(좋음) → 약함(나쁨) 순서**
+
+| 순서 | 응집도 | 설명 |
+|:---:|---|---|
+| 1 | **기능적 응집도**<br>(Functional Cohesion) | 모듈 내부의 모든 기능 요소들이 **단일 문제와 연관되어 수행**될 때. 가장 **바람직한** 응집도 |
+| 2 | **순차적 응집도**<br>(Sequential Cohesion) | 한 활동으로부터 나온 **출력값을 다음 활동의 입력값으로** 사용할 때 |
+| 3 | **교환(통신)적 응집도**<br>(Communication Cohesion) | **동일한 입력과 출력**을 사용해 서로 다른 기능을 수행할 때 |
+| 4 | **절차적 응집도**<br>(Procedural Cohesion) | 모듈이 다수의 관련 기능을 가질 때, 모듈 안의 구성 요소들이 **그 기능을 순차적으로 수행**할 때 |
+| 5 | **시간적 응집도**<br>(Temporal Cohesion) | **특정 시간에 처리되어야 하는 활동들**을 한 모듈에서 처리할 때 |
+| 6 | **논리적 응집도**<br>(Logical Cohesion) | **유사한 성격**을 갖거나 특정 형태로 분류되는 처리 요소들이 한 모듈에서 처리될 때 |
+| 7 | **우연적 응집도**<br>(Coincidental Cohesion) | 모듈 내부의 각 구성 요소들이 **서로 관련 없는** 요소로만 구성될 때. 가장 **나쁜** 응집도 |
+
+> 📌 암기: **"기순교절시논우"** (기능 → 순차 → 교환 → 절차 → 시간 → 논리 → 우연)
+> 앞으로 갈수록 **좋고**, 뒤로 갈수록 **나쁨**.
+
+### 팬인(Fan-In)과 팬아웃(Fan-Out)
+
+| 용어 | 의미 |
+|---|---|
+| **팬인**(Fan-In) | 어떤 모듈을 **제어(호출)하는 상위 모듈의 수** |
+| **팬아웃**(Fan-Out) | 어떤 모듈에 의해 **제어(호출)되는 하위 모듈의 수** |
+
+> 💡 **팬인이 높다** = 재사용이 잘 되고 있음 (단, 관리 비용·테스트 비용 증가)
+> **팬아웃이 높다** = 불필요하게 다른 모듈을 많이 호출 → **단순화 검토 필요**
+> 시스템 복잡도를 낮추려면 **팬인은 높게, 팬아웃은 낮게** 설계함.
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

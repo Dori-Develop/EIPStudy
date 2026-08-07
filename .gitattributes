@@ -1,0 +1,8 @@
+* text=auto
+*.sh text eol=lf
+*.md text eol=lf
+
+# 빌드 산출물도 LF 고정 — 안 하면 build.sh 실행 때마다 224개 파일이
+# 내용 변화 없이 수정된 것으로 잡혀 진짜 변경이 묻힌다.
+*.html text eol=lf
+*.js   text eol=lf

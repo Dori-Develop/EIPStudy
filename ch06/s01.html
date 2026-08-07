@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 06. 화면 설계 — 도해와 표로 정리한 학습 노트">
+<title>사용자 인터페이스(UI) · 06. 화면 설계</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch06",title:"정보처리기사 실기 — 06. 화면 설계",subtitle:"06. 화면 설계",total:8,base:"../",page:"section",index:0,sections:[{f:"s01.html",n:"1",t:"사용자 인터페이스(UI)"},{f:"s02.html",n:"2",t:"UI 표준 및 지침"},{f:"s03.html",n:"3",t:"UI 설계 도구"},{f:"s04.html",n:"4",t:"UI 요구사항 확인"},{f:"s05.html",n:"5",t:"품질 요구사항"},{f:"s06.html",n:"6",t:"UI 설계"},{f:"s07.html",n:"7",t:"HCI · UX · 감성공학"},{f:"s08.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>06. 화면 설계</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (1) 사용자 인터페이스(UI)
+
+### 사용자 인터페이스(UI; User Interface)
+
+사용자와 시스템 간의 **상호작용이 원활하게 이뤄지도록 도와주는 장치나 소프트웨어**.
+
+**세 가지 분야**
+
+| 분야 | 내용 |
+|---|---|
+| **정보 제공과 전달을 위한 물리적 제어** | 하드웨어 부분 |
+| **콘텐츠의 상세적인 표현과 전체적인 구성** | 디자인 부분 |
+| **모든 사용자가 편리하고 간편하게 사용하도록 하는 기능** | 기능 부분 |
+
+### UI 의 특징
+
+- 사용자의 **만족도에 가장 큰 영향을 미치는 요소**로, 소프트웨어 영역 중 **변경이 가장 많이 발생**함.
+- 사용자의 **편리성과 가독성**을 높여 작업 시간을 단축하고 업무 이해도를 높여 줌.
+- 최소한의 노력으로 **원하는 결과를 얻을 수 있게** 함.
+- 사용자 중심으로 설계되어 **사용자 중심의 상호작용이 되도록** 해야 함.
+- 수행 결과의 **오류를 줄임**.
+- 정보 제공자와 공급자 간의 **매개 역할**을 수행함.
+- UI 를 설계하려면 **소프트웨어 아키텍처를 반드시 숙지**해야 함.
+
+### UI 의 구분 ⭐⭐
+
+| 구분 | 설명 |
+|---|---|
+| **CLI**<br>(Command Line Interface) | **명령과 출력이 텍스트 형태**로 이뤄지는 인터페이스 |
+| **GUI**<br>(Graphical User Interface) | **아이콘이나 메뉴를 마우스로 선택**해 작업을 수행하는 그래픽 환경의 인터페이스 |
+| **NUI**<br>(Natural User Interface) | 사용자의 **말이나 행동(터치, 제스처)** 으로 조작하는 인터페이스 |
+| **VUI**<br>(Voice User Interface) | 사람의 **음성**으로 조작하는 인터페이스 |
+| **OUI**<br>(Organic User Interface) | **모든 사물과 사용자 간의 상호작용**을 위한 인터페이스. **입력과 출력이 하나로** 이뤄짐 |
+
+> 💡 **NUI 는 터치·제스처를 포함하는 넓은 개념**, **VUI 는 음성만**을 가리킴.
+
+### UI 의 기본 원칙 ⭐⭐⭐
+
+| 원칙 | 의미 |
+|---|---|
+| **직관성**(Intuitiveness) | 누구나 **쉽게 이해하고 사용**할 수 있어야 함 |
+| **유효성**(Efficiency) | 사용자의 목적을 **정확하고 완벽하게 달성**해야 함 |
+| **학습성**(Learnability) | 누구나 **쉽게 배우고 익힐 수** 있어야 함 |
+| **유연성**(Flexibility) | 사용자의 **요구사항을 최대한 수용**하고 **실수를 최소화**해야 함 |
+
+> 📌 암기: **"직유학유"** — 직관성 · 유효성 · 학습성 · 유연성
+
+### UI 설계 지침 ⭐
+
+| 지침 | 내용 |
+|---|---|
+| **사용자 중심** | 사용자가 **쉽게 이해하고 편리하게 사용**할 수 있는 환경을 제공 |
+| **일관성** | 버튼이나 조작 방법을 **일관성 있게** 제공해 쉽게 습득할 수 있게 함 |
+| **단순성** | 조작 방법을 단순화해 **인지적 부담을 감소**시킴 |
+| **결과 예측 가능** | 작동시킬 기능만 보고도 **결과를 미리 예측**할 수 있어야 함 |
+| **가시성** | 주요 기능을 **메인 화면에 배치**해 쉽게 찾을 수 있도록 함 |
+| **표준화** | 기능 구조와 디자인을 **표준화**해 쉽게 조작할 수 있도록 함 |
+| **접근성** | 사용자의 **연령, 성별, 인종 등 다양한 계층이 사용**할 수 있도록 함 |
+| **명확성** | 사용자가 개념적으로 **쉽게 인지**할 수 있어야 함 |
+| **오류 발생 해결** | 오류가 발생하면 사용자가 **쉽게 인지**할 수 있도록 표시함 |
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

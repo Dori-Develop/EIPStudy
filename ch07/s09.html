@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 07. 애플리케이션 테스트 관리 — 도해와 표로 정리한 학습 노트">
+<title>테스트 케이스 · 시나리오 · 오라클 · 07. 애플리케이션 테스트 관리</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch07",title:"정보처리기사 실기 — 07. 애플리케이션 테스트 관리",subtitle:"07. 애플리케이션 테스트 관리",total:15,base:"../",page:"section",index:8,sections:[{f:"s01.html",n:"1",t:"애플리케이션 테스트의 개요"},{f:"s02.html",n:"2",t:"애플리케이션 테스트의 기본 원리 ⭐⭐"},{f:"s03.html",n:"3",t:"애플리케이션 테스트의 분류"},{f:"s04.html",n:"4",t:"화이트박스 테스트"},{f:"s05.html",n:"5",t:"블랙박스 테스트"},{f:"s06.html",n:"6",t:"개발 단계에 따른 애플리케이션 테스트"},{f:"s07.html",n:"7",t:"통합 테스트의 종류"},{f:"s08.html",n:"8",t:"애플리케이션 테스트 프로세스"},{f:"s09.html",n:"9",t:"테스트 케이스 · 시나리오 · 오라클"},{f:"s10.html",n:"10",t:"결함 관리"},{f:"s11.html",n:"11",t:"테스트 자동화 도구"},{f:"s12.html",n:"12",t:"애플리케이션 성능 분석"},{f:"s13.html",n:"13",t:"복잡도"},{f:"s14.html",n:"14",t:"애플리케이션 성능 개선"},{f:"s15.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>07. 애플리케이션 테스트 관리</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (9) 테스트 케이스 · 시나리오 · 오라클
+
+### 테스트 케이스(Test Case) ⭐
+
+구현된 소프트웨어가 사용자의 요구사항을 정확하게 준수했는지를 확인하기 위해
+설계된 **입력값, 실행 조건, 기대 결과 등으로 구성된 테스트 항목에 대한 명세서**.
+
+**테스트 케이스 작성 순서**
+
+```mermaid
+flowchart LR
+    A[테스트 계획 검토 및 자료 확보] --> B[위험 평가 및 우선순위 결정] --> C[테스트 요구사항 정의] --> D[테스트 구조 설계 및 테스트 방법 결정] --> E[테스트 케이스 정의] --> F[테스트 케이스 타당성 확인 및 유지 보수]
+```
+
+**ISO/IEC/IEEE 29119-3 기반 테스트 케이스 구성 요소** ⭐
+
+| 구성 요소 | 내용 |
+|---|---|
+| **식별자**(Identifier) | 항목 식별자, 일련번호 |
+| **테스트 항목**(Test Item) | 테스트 대상(모듈 또는 기능) |
+| **입력 명세**(Input Specification) | 테스트 데이터 또는 테스트 조건 |
+| **출력 명세**(Output Specification) | 테스트 케이스 수행 시 **예상되는 출력 결과** |
+| **환경 설정**(Environmental Needs) | 필요한 하드웨어나 소프트웨어의 환경 |
+| **특수 절차 요구**(Special Procedure Requirement) | 테스트 케이스 수행 시 필요한 특별한 절차 |
+| **의존성 기술**(Inter-case Dependencies) | 테스트 케이스 간의 의존성 |
+
+### 테스트 시나리오(Test Scenario)
+
+테스트 케이스를 **적용하는 순서에 따라 여러 개의 테스트 케이스들을 묶은 집합**.
+
+**작성 시 유의 사항**
+
+- 시스템별, 모듈별, 항목별 등 **여러 개의 시나리오로 분리**해 작성
+- 사용자의 요구사항과 설계 문서 등을 토대로 작성
+- 각 테스트 항목은 **식별자 번호, 순서 번호, 테스트 데이터, 예상 결과, 확인** 등을 표기
+
+### 테스트 오라클(Test Oracle) ⭐⭐
+
+테스트의 결과가 참인지 거짓인지를 판단하기 위해
+**사전에 정의된 참값을 대입해 비교하는 기법 및 활동**.
+
+**테스트 오라클의 특징** — **제한된 검증**, **수학적 기법**, **자동화 가능**
+
+| 종류 | 설명 |
+|---|---|
+| **참(True) 오라클** | **모든 테스트 케이스의 입력값에 대해 기대하는 결과를 제공**하는 오라클. 발생된 모든 오류를 검출할 수 있음 |
+| **샘플링(Sampling) 오라클** | **특정한 몇 개의 입력값에 대해서만 기대하는 결과를 제공**하는 오라클 |
+| **추정(Heuristic) 오라클** | 샘플링 오라클을 개선한 것으로, **특정 입력값에 대해 올바른 결과를 제공**하고 **나머지 값들에 대해서는 추정으로 처리**하는 오라클 |
+| **일관성 검사(Consistent) 오라클** | 애플리케이션의 **변경이 있을 때, 수행 전과 후의 결과값이 동일한지** 확인하는 오라클 |
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

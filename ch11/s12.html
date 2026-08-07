@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 11. 응용 SW 기초 기술 활용 — 도해와 표로 정리한 학습 노트">
+<title>소프트웨어 개발 보안과 관련 법령 · 11. 응용 SW 기초 기술 활용</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch11",title:"정보처리기사 실기 — 11. 응용 SW 기초 기술 활용",subtitle:"11. 응용 SW 기초 기술 활용",total:16,base:"../",page:"section",index:11,sections:[{f:"s01.html",n:"1",t:"운영체제의 개념과 종류"},{f:"s02.html",n:"2",t:"기억장치 관리"},{f:"s03.html",n:"3",t:"가상기억장치"},{f:"s04.html",n:"4",t:"프로세스와 스케줄링"},{f:"s05.html",n:"5",t:"환경 변수와 기본 명령어"},{f:"s06.html",n:"6",t:"인터넷과 IP 주소"},{f:"s07.html",n:"7",t:"OSI 참조 모델"},{f:"s08.html",n:"8",t:"네트워크 장비"},{f:"s09.html",n:"9",t:"TCP/IP"},{f:"s10.html",n:"10",t:"경로 제어와 트래픽 제어"},{f:"s11.html",n:"11",t:"소프트웨어·하드웨어·네트워크 신기술"},{f:"s12.html",n:"12",t:"소프트웨어 개발 보안과 관련 법령"},{f:"s13.html",n:"13",t:"회복과 병행 제어"},{f:"s14.html",n:"14",t:"교착 상태"},{f:"s15.html",n:"15",t:"데이터 표준화"},{f:"s16.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>11. 응용 SW 기초 기술 활용</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (12) 소프트웨어 개발 보안과 관련 법령
+
+### 소프트웨어 개발 보안
+
+소프트웨어 개발 과정에서 발생할 수 있는 **보안 취약점을 최소화**하기 위한 활동.
+
+**소프트웨어 개발 보안 관련 기관**
+
+| 기관 | 역할 |
+|---|---|
+| **행정안전부** | 소프트웨어 개발 보안 **정책을 총괄** |
+| **한국인터넷진흥원(KISA)** | 소프트웨어 개발 보안 **기술 지원 및 가이드 개발** |
+| **발주기관 / 사업자** | 개발 보안을 **적용해 개발**하고 진단 |
+
+### 관련 법령 ⭐
+
+| 법령 | 내용 |
+|---|---|
+| **개인정보 보호법** | 개인정보의 수집·이용·제공 등 처리에 관한 사항을 규정. **정보 주체의 권리**를 보호 |
+| **정보통신망 이용촉진 및 정보보호 등에 관한 법률** | 정보통신망의 이용을 촉진하고 정보통신 서비스를 이용하는 자의 개인정보를 보호 |
+| **신용정보의 이용 및 보호에 관한 법률** | 신용정보의 오·남용을 방지 |
+| **위치정보의 보호 및 이용 등에 관한 법률** | 개인 위치정보의 유출·오용을 방지 |
+
+**개인정보의 분류**
+
+| 구분 | 예 |
+|---|---|
+| **일반 정보** | 이름, 주민등록번호, 주소, 연락처, 생년월일 |
+| **민감 정보** | 사상·신념, 노동조합 가입, 정치적 견해, 건강, 성생활, **유전정보, 범죄경력** |
+| **고유식별정보** | **주민등록번호, 여권번호, 운전면허번호, 외국인등록번호** |
+
+### Secure OS ⭐
+
+기존의 운영체제에 내재된 보안 취약점을 해소하기 위해
+**보안 기능을 갖춘 커널을 이식**해 여러 위협으로부터 시스템을 보호하는 운영체제.
+
+**보안 기능** — 식별 및 인증, 임의적/강제적 접근통제, 객체 재사용 보호,
+완전한 조정, 신뢰 경로, 감사 및 감사기록 축소
+
+**참조 모니터(Reference Monitor)**
+
+- 보호 대상 객체에 대한 **접근 통제를 수행하는 추상 머신**
+- 보안 커널 데이터베이스(SKDB)를 참조해 객체에 대한 접근 허용 여부를 결정함
+- 요건 : **격리성, 검증 가능성, 완전성**
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

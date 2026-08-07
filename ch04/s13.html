@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 04. 서버 프로그램 구현 — 도해와 표로 정리한 학습 노트">
+<title>배치 프로그램 · 04. 서버 프로그램 구현</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch04",title:"정보처리기사 실기 — 04. 서버 프로그램 구현",subtitle:"04. 서버 프로그램 구현",total:15,base:"../",page:"section",index:12,sections:[{f:"s01.html",n:"1",t:"개발 환경 구축"},{f:"s02.html",n:"2",t:"소프트웨어 아키텍처"},{f:"s03.html",n:"3",t:"아키텍처 패턴"},{f:"s04.html",n:"4",t:"객체 지향(Object-Oriented)"},{f:"s05.html",n:"5",t:"객체 지향 분석 및 설계"},{f:"s06.html",n:"6",t:"모듈과 결합도·응집도"},{f:"s07.html",n:"7",t:"단위 모듈과 공통 모듈"},{f:"s08.html",n:"8",t:"코드(Code)"},{f:"s09.html",n:"9",t:"디자인 패턴"},{f:"s10.html",n:"10",t:"개발 지원 도구"},{f:"s11.html",n:"11",t:"서버 개발"},{f:"s12.html",n:"12",t:"보안 및 API"},{f:"s13.html",n:"13",t:"배치 프로그램"},{f:"s14.html",n:"14",t:"패키지 소프트웨어"},{f:"s15.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>04. 서버 프로그램 구현</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (13) 배치 프로그램
+
+### 배치 프로그램(Batch Program)
+
+사용자와의 상호 작용 없이 **여러 작업들을 미리 정해진 일련의 순서에 따라 일괄적으로 처리**하는 것.
+
+### 배치 프로그램의 필수 요소 ⭐⭐
+
+| 요소 | 의미 |
+|---|---|
+| **대용량 데이터** | 대용량의 데이터를 **처리할 수 있어야** 함 |
+| **자동화** | 심각한 오류가 발생하는 상황을 제외하고는 **사용자의 개입 없이 수행**되어야 함 |
+| **견고성** | 잘못된 데이터나 데이터 중복 등으로 인해 **중단되는 일 없이 수행**되어야 함 |
+| **안정성 / 신뢰성** | 오류가 발생하면 **오류의 발생 위치, 시간 등을 추적**할 수 있어야 함 |
+| **성능** | 지정된 시간 내에 처리가 완료되어야 하며, **다른 응용 프로그램의 수행을 방해하지 않아야** 함 |
+
+> 📌 암기: **"대자견안성"**
+
+### 배치 스케줄러(Batch Scheduler)
+
+일괄 처리(Batch Processing) 작업이 **설정된 주기에 맞춰 자동으로 수행되도록** 지원해 주는 도구.
+
+| 종류 | 설명 |
+|---|---|
+| **스프링 배치**(Spring Batch) | **Spring Source 사와 Accenture 사**가 공동 개발한 오픈 소스 프레임워크. 로그 관리, 추적, 트랜잭션 관리 등을 제공 |
+| **Quartz** | **스프링 프레임워크로 개발되는 응용 프로그램들의 일괄 처리**를 위한 오픈 소스 라이브러리 |
+| **Cron** | **리눅스의 기본 스케줄러 도구**. `crontab` 명령어로 작업을 예약 |
+
+### Cron 표현식 ⭐
+
+```
+*     *     *     *     *
+분    시    일    월    요일
+(0-59)(0-23)(1-31)(1-12)(0-7, 0·7=일요일)
+```
+
+| 표현식 | 의미 |
+|---|---|
+| `0 3 * * *` | 매일 **새벽 3시 정각**에 실행 |
+| `*/10 * * * *` | **10분마다** 실행 |
+| `0 0 1 * *` | 매월 **1일 자정**에 실행 |
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

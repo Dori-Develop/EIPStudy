@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 09. 소프트웨어 개발 보안 구축 — 도해와 표로 정리한 학습 노트">
+<title>서비스 공격 유형 · 09. 소프트웨어 개발 보안 구축</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch09",title:"정보처리기사 실기 — 09. 소프트웨어 개발 보안 구축",subtitle:"09. 소프트웨어 개발 보안 구축",total:16,base:"../",page:"section",index:9,sections:[{f:"s01.html",n:"1",t:"Secure SDLC"},{f:"s02.html",n:"2",t:"입력 데이터 검증 및 표현"},{f:"s03.html",n:"3",t:"보안 기능"},{f:"s04.html",n:"4",t:"시간 및 상태"},{f:"s05.html",n:"5",t:"에러 처리"},{f:"s06.html",n:"6",t:"코드 오류"},{f:"s07.html",n:"7",t:"캡슐화"},{f:"s08.html",n:"8",t:"API 오용"},{f:"s09.html",n:"9",t:"암호화 알고리즘"},{f:"s10.html",n:"10",t:"서비스 공격 유형"},{f:"s11.html",n:"11",t:"서버 인증"},{f:"s12.html",n:"12",t:"보안 아키텍처와 보안 프레임워크"},{f:"s13.html",n:"13",t:"로그 분석"},{f:"s14.html",n:"14",t:"보안 솔루션"},{f:"s15.html",n:"15",t:"취약점 분석과 평가"},{f:"s16.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>09. 소프트웨어 개발 보안 구축</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (10) 서비스 공격 유형
+
+### DoS(Denial of Service, 서비스 거부) 공격 ⭐⭐
+
+**시스템의 자원을 부족하게 하여 원래 의도된 용도로 사용하지 못하게 하는** 공격.
+
+| 공격 | 설명 |
+|---|---|
+| **Ping of Death**(죽음의 핑) | **패킷의 크기를 인터넷 프로토콜 허용 범위 이상으로 전송**해 시스템을 마비시킴 |
+| **SMURFING**(스머핑) | **IP 나 ICMP 의 특성을 악용**해 대량의 데이터를 한 사이트에 집중적으로 보내 네트워크를 불능 상태로 만듦 |
+| **SYN Flooding** | TCP 의 **3-Way-Handshake 과정을 악용**. **SYN 패킷만 보내고 ACK 를 보내지 않아** 서버의 대기 큐를 가득 채움 |
+| **TearDrop** | 데이터 송수신 과정에서 **패킷의 Fragment Offset 값을 변경**해 수신 측에서 패킷 재조립 시 오류를 일으킴 |
+| **LAND Attack** | 패킷의 **송신 IP 와 수신 IP 를 모두 공격 대상 IP 로 설정**해 자기 자신에게 무한 응답하게 만듦 |
+| **DDoS**(분산 서비스 거부) | 여러 대의 컴퓨터(**좀비 PC**)를 **일제히 동작**하게 하여 특정 사이트를 공격 |
+
+> 📌 **SYN Flooding** 은 **3-Way-Handshake**, **LAND** 는 **송·수신 IP 동일**,
+> **Ping of Death** 는 **큰 패킷**. 이 셋의 구분이 자주 나옴.
+
+**DDoS 공격 도구**
+
+| 유형 | 도구 |
+|---|---|
+| **트리누**(Trinoo) | 많은 소스로부터 통합된 UDP flood 서비스 거부 공격 유발 |
+| **TFN**(Tribe Flood Network) | UDP flood, TCP SYN flood, ICMP 등 다양한 공격 지원 |
+| **스타첼드라트**(Stacheldraht) | 공격자와 마스터 간 통신을 **암호화** |
+
+### 네트워크 침해 공격 ⭐⭐
+
+| 공격 | 설명 |
+|---|---|
+| **스미싱**(Smishing) | **SMS + Phishing**. 문자 메시지를 이용해 개인 정보를 빼내는 수법 |
+| **스피어 피싱**(Spear Phishing) | **특정 대상**에게 지속적으로 이메일을 보내 링크나 첨부파일을 클릭하도록 유도 |
+| **APT**(Advanced Persistent Threat, 지능형 지속 위협) | **특정 대상을 목표로 장기간에 걸쳐 다양한 수단**을 총동원하는 지능적 공격 |
+| **무작위 대입 공격**(Brute Force Attack) | 암호화된 문서의 **암호키를 찾기 위해 가능한 모든 값을 대입** |
+| **큐싱**(Qshing) | **QR 코드 + Phishing**. QR 코드를 통해 악성 앱을 내려받게 유도 |
+| **SQL 삽입**(SQL Injection) | 웹 응용 프로그램에 SQL 을 삽입해 데이터를 유출·변조 |
+| **XSS**(Cross Site Scripting) | 웹 페이지에 악성 스크립트를 삽입 |
+
+### 정보 보안 침해 공격 ⭐⭐
+
+| 공격 | 설명 |
+|---|---|
+| **좀비(Zombie) PC** | **악성코드(봇)에 감염되어 다른 프로그램이나 컴퓨터를 조종하도록 만들어진** 컴퓨터 |
+| **C&C 서버** | 해커가 **좀비 PC 에 명령을 내리고 악성코드를 제어**하기 위한 서버 |
+| **봇넷**(Botnet) | 악성 프로그램에 감염되어 **악의적인 의도로 사용될 수 있는 다수의 컴퓨터들이 네트워크로 연결된 형태** |
+| **웜**(Worm) | **네트워크를 통해 스스로 복제·전파**하며 시스템을 파괴하거나 부하를 높이는 악성 프로그램 |
+| **제로 데이 공격**(Zero Day Attack) | 보안 취약점이 발견되었을 때 **취약점에 대한 패치가 발표되기도 전에** 이루어지는 공격 |
+| **키로거 공격**(Key Logger Attack) | 사용자의 **키보드 입력을 기록**해 개인 정보를 빼냄 |
+| **랜섬웨어**(Ransomware) | 사용자의 파일을 **암호화한 뒤 이를 인질로 금전을 요구**하는 악성 프로그램 |
+| **백도어**(Back Door) | 시스템 설계자가 **인증되지 않은 사용자가 컴퓨터의 기능을 이용할 수 있도록 몰래 설치한 통신 연결 기능** |
+| **트로이 목마**(Trojan Horse) | 정상적인 프로그램으로 위장해 숨어 있다가 **활성화되면 부작용을 일으키는** 프로그램. **자기 복제는 하지 않음** |
+| **스니핑**(Sniffing) | 네트워크상의 **데이터를 몰래 엿보는** 수동적 공격 |
+| **스푸핑**(Spoofing) | **정보를 위조**해 다른 사람으로 가장하는 공격 (IP 스푸핑, DNS 스푸핑, ARP 스푸핑) |
+| **세션 하이재킹**(Session Hijacking) | 이미 인증된 **세션을 가로채는** 공격 |
+
+> 💡 **웜 = 자기 복제 O**, **트로이 목마 = 자기 복제 X**. 이 구분이 자주 나옴.
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

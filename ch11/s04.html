@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 11. 응용 SW 기초 기술 활용 — 도해와 표로 정리한 학습 노트">
+<title>프로세스와 스케줄링 · 11. 응용 SW 기초 기술 활용</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch11",title:"정보처리기사 실기 — 11. 응용 SW 기초 기술 활용",subtitle:"11. 응용 SW 기초 기술 활용",total:16,base:"../",page:"section",index:3,sections:[{f:"s01.html",n:"1",t:"운영체제의 개념과 종류"},{f:"s02.html",n:"2",t:"기억장치 관리"},{f:"s03.html",n:"3",t:"가상기억장치"},{f:"s04.html",n:"4",t:"프로세스와 스케줄링"},{f:"s05.html",n:"5",t:"환경 변수와 기본 명령어"},{f:"s06.html",n:"6",t:"인터넷과 IP 주소"},{f:"s07.html",n:"7",t:"OSI 참조 모델"},{f:"s08.html",n:"8",t:"네트워크 장비"},{f:"s09.html",n:"9",t:"TCP/IP"},{f:"s10.html",n:"10",t:"경로 제어와 트래픽 제어"},{f:"s11.html",n:"11",t:"소프트웨어·하드웨어·네트워크 신기술"},{f:"s12.html",n:"12",t:"소프트웨어 개발 보안과 관련 법령"},{f:"s13.html",n:"13",t:"회복과 병행 제어"},{f:"s14.html",n:"14",t:"교착 상태"},{f:"s15.html",n:"15",t:"데이터 표준화"},{f:"s16.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>11. 응용 SW 기초 기술 활용</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (4) 프로세스와 스케줄링
+
+### 프로세스(Process) ⭐
+
+**실행 중인 프로그램**. 다음과 같이 여러 가지로 정의됨.
+
+- PCB 를 가진 프로그램
+- 실기억장치에 저장된 프로그램
+- 프로세서가 할당되는 실체
+- 프로시저가 활동 중인 것
+- **비동기적 행위**를 일으키는 주체
+- 지정된 결과를 얻기 위한 **일련의 계통적 동작**
+- 목적 또는 결과에 따라 발생되는 사건들의 과정
+- 운영체제가 관리하는 **실행 단위**
+
+### PCB(Process Control Block, 프로세스 제어 블록)
+
+운영체제가 프로세스에 대한 중요한 정보를 저장해 놓는 곳.
+
+**저장되는 정보** — 프로세스의 현재 상태, 고유 식별자(PID), 스케줄링 및 프로세스의 우선순위,
+CPU 레지스터 정보, 주기억장치 관리 정보, 입·출력 상태 정보, 계정 정보
+
+### 프로세스 상태 전이 ⭐⭐
+
+```mermaid
+stateDiagram-v2
+    [*] --> 제출
+    제출 --> 접수
+    접수 --> 준비
+    준비 --> 실행 : Dispatch
+    실행 --> 준비 : Timer Runout
+    실행 --> 대기 : Block(입출력 발생)
+    대기 --> 준비 : Wake Up(입출력 완료)
+    실행 --> [*] : 종료
+```
+
+| 상태 | 의미 |
+|---|---|
+| **제출**(Submit) | 작업을 처리하기 위해 **사용자가 시스템에 제출**한 상태 |
+| **접수**(Hold) | 제출된 작업이 **스풀 공간인 디스크의 할당 위치에 저장**된 상태 |
+| **준비**(Ready) | 프로세스가 프로세서를 **할당받기 위해 기다리고 있는** 상태 |
+| **실행**(Run) | 준비 상태 큐에 있는 프로세스가 **프로세서를 할당받아 실행**되는 상태 |
+| **대기**(Wait, Block) | 프로세스에 **입·출력 처리가 필요하면** 현재 실행 중인 프로세스가 중단되고 대기하는 상태 |
+| **종료**(Terminated) | 프로세스의 실행이 **끝나고 프로세스 할당이 해제**된 상태 |
+
+**상태 전이 관련 용어** ⭐
+
+| 용어 | 의미 |
+|---|---|
+| **Dispatch** | **준비 → 실행**. 준비 상태의 프로세스 중 하나가 프로세서를 할당받아 실행됨 |
+| **Wake Up** | **대기 → 준비**. 입·출력이 완료되어 다시 준비 상태로 |
+| **Timer Runout** | **실행 → 준비**. 할당된 시간(Time Slice)이 끝나 준비 상태로 |
+| **Block** | **실행 → 대기**. 입·출력이 발생해 대기 상태로 |
+| **문맥 교환**(Context Switching) | 하나의 프로세스에서 다른 프로세스로 **CPU 제어권이 넘어가는 과정** |
+
+### 스레드(Thread)
+
+**프로세스 내에서의 작업 단위**로, 시스템의 여러 자원을 할당받아 실행하는 프로그램의 단위.
+
+| 종류 | 설명 |
+|---|---|
+| **단일 스레드** | 하나의 프로세스에 **하나의 스레드**만 존재 |
+| **다중 스레드** | 하나의 프로세스에 **여러 개의 스레드**가 존재 |
+
+**스레드의 장점** — 하드웨어·운영체제의 성능과 응용 프로그램의 처리율 향상,
+응용 프로그램의 **응답 시간 단축**, 실행 환경을 **공유**시켜 기억장소의 낭비 감소,
+프로세스들 간의 통신 향상, **프로세스의 생성과 문맥 교환 오버헤드 감소**
+
+### 스케줄링(Scheduling) ⭐
+
+프로세스가 생성되어 실행될 때 필요한 **시스템의 여러 자원을 해당 프로세스에게 할당하는 작업**.
+
+| 종류 | 의미 |
+|---|---|
+| **장기 스케줄링** | 어떤 프로세스가 시스템의 **자원을 차지할 수 있도록 할 것인가**를 결정. **작업 스케줄링, 상위 스케줄링** |
+| **중기 스케줄링** | 어떤 프로세스들이 **CPU 를 할당받을 것인지 결정** |
+| **단기 스케줄링** | 프로세스가 실행되기 위해 **CPU 를 할당받는 시기와 특정 프로세스를 지정**. **프로세서 스케줄링, 하위 스케줄링** |
+
+### 비선점 vs 선점 스케줄링 ⭐⭐
+
+| 구분 | 비선점(Non-Preemptive) | 선점(Preemptive) |
+|---|---|---|
+| 의미 | 이미 할당된 CPU 를 **다른 프로세스가 강제로 빼앗을 수 없는** 방식 | 이미 할당된 CPU 를 **다른 프로세스가 강제로 빼앗아 사용**할 수 있는 방식 |
+| 응답 시간 | 예측이 **용이** | 예측이 **어려움** |
+| 적합 환경 | **일괄 처리** 방식에 적합 | **대화식·시분할·실시간** 시스템에 적합 |
+| 종류 | **FCFS, SJF, HRN, 우선순위, 기한부** | **Round Robin, SRT, 다단계 큐, 다단계 피드백 큐, 선점 우선순위** |
+
+### 주요 스케줄링 알고리즘 ⭐⭐⭐
+
+| 알고리즘 | 설명 |
+|---|---|
+| **FCFS**(First Come First Served) | **먼저 도착한 순서**대로 CPU 를 할당. **FIFO** 라고도 함 |
+| **SJF**(Shortest Job First) | **실행 시간이 가장 짧은** 프로세스에게 먼저 CPU 를 할당.<br>**평균 대기 시간이 가장 짧음**. 단, 실행 시간이 긴 작업은 **무한 연기(기아)** 발생 가능 |
+| **HRN**(Highest Response-ratio Next) | SJF 의 무한 연기를 보완. **우선순위 = (대기 시간 + 서비스 시간) ÷ 서비스 시간** |
+| **Round Robin** | 시분할 시스템을 위해 고안. **동일한 시간 할당량(Time Slice)** 만큼 사용하다가 완료되지 못하면 다음 프로세스에게 넘어감 |
+| **SRT**(Shortest Remaining Time) | **남은 실행 시간이 가장 짧은** 프로세스에게 CPU 를 할당. **선점형 SJF** |
+| **다단계 큐**(Multi-level Queue) | 프로세스를 특정 그룹으로 분류하고 **각 그룹마다 독자적인 준비 상태 큐**를 사용 |
+| **다단계 피드백 큐** | 특정 그룹의 준비 상태 큐에 있는 프로세스가 **다른 준비 상태 큐로 이동할 수 있는** 방식 |
+
+**HRN 우선순위 계산** ⭐
+
+<div class="formula"><span class="lhs">우선순위 =</span><span class="frac"><span class="num">대기 시간 + 서비스 시간</span><span class="den">서비스 시간</span></span><span class="cond">값이 클수록 우선순위가 높음</span></div>
+
+> **예제** : 대기 시간 10, 서비스 시간 5 → (10+5)÷5 = **3**
+> 대기 시간 8, 서비스 시간 2 → (8+2)÷2 = **5** → 이쪽이 우선
+
+**SJF 평균 대기 시간 예제**
+
+프로세스 A(6), B(2), C(4) 가 동시에 도착한 경우 (SJF 순서 : B → C → A)
+
+| 프로세스 | 실행 시간 | 대기 시간 |
+|---|---|---|
+| B | 2 | 0 |
+| C | 4 | 2 |
+| A | 6 | 6 |
+
+→ 평균 대기 시간 = (0+2+6) ÷ 3 = **2.67**
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 01. 요구사항 확인 — 도해와 표로 정리한 학습 노트">
+<title>소프트웨어 개발 표준 · 01. 요구사항 확인</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch01",title:"정보처리기사 실기 — 01. 요구사항 확인",subtitle:"01. 요구사항 확인",total:31,base:"../",page:"section",index:27,sections:[{f:"s01.html",n:"1",t:"소프트웨어 생명 주기"},{f:"s02.html",n:"2",t:"스크럼(Scrum) 기법"},{f:"s03.html",n:"3",t:"XP(eXtreme Programming) 기법"},{f:"s04.html",n:"4",t:"현행 시스템 파악"},{f:"s05.html",n:"5",t:"개발 기술 환경 파악"},{f:"s06.html",n:"6",t:"요구사항 정의"},{f:"s07.html",n:"7",t:"요구사항 개발 프로세스"},{f:"s08.html",n:"8",t:"요구사항 분석"},{f:"s09.html",n:"9",t:"요구사항 분석 CASE와 HIPO"},{f:"s10.html",n:"10",t:"UML(Unified Modeling Language)의 개요"},{f:"s11.html",n:"11",t:"UML — 관계(Relationship)"},{f:"s12.html",n:"12",t:"UML — 다이어그램"},{f:"s13.html",n:"13",t:"유스케이스(Use Case) 다이어그램"},{f:"s14.html",n:"14",t:"활동(Activity) 다이어그램"},{f:"s15.html",n:"15",t:"클래스(Class) 다이어그램"},{f:"s16.html",n:"16",t:"시퀀스(Sequence) 다이어그램"},{f:"s17.html",n:"17",t:"커뮤니케이션(Communication) 다이어그램"},{f:"s18.html",n:"18",t:"상태(State) 다이어그램"},{f:"s19.html",n:"19",t:"패키지(Package) 다이어그램"},{f:"s20.html",n:"20",t:"소프트웨어 개발 방법론"},{f:"s21.html",n:"21",t:"S/W 공학의 발전적 추세"},{f:"s22.html",n:"22",t:"비용 산정 기법"},{f:"s23.html",n:"23",t:"비용 산정 기법 — 하향식"},{f:"s24.html",n:"24",t:"비용 산정 기법 — 상향식"},{f:"s25.html",n:"25",t:"수학적 산정 기법"},{f:"s26.html",n:"26",t:"프로젝트 일정 계획"},{f:"s27.html",n:"27",t:"소프트웨어 개발 방법론 결정과 프로젝트 관리"},{f:"s28.html",n:"28",t:"소프트웨어 개발 표준"},{f:"s29.html",n:"29",t:"소프트웨어 개발 방법론 테일러링"},{f:"s30.html",n:"30",t:"소프트웨어 개발 프레임워크"},{f:"s31.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>01. 요구사항 확인</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (28) 소프트웨어 개발 표준
+
+**소프트웨어 개발 표준** : 소프트웨어 개발 단계에서 수행하는 **품질 관리**에 사용되는 **국제 표준**.
+
+**주요 표준** : ISO/IEC 12207 / CMMI / SPICE(ISO/IEC 15504)
+
+### ISO/IEC 12207
+
+- **ISO(국제표준화기구)** 가 만든 **표준 소프트웨어 생명 주기 프로세스**
+- 소프트웨어의 **개발, 운영, 유지보수** 등을 체계적으로 관리하기 위한 생명 주기 표준을 제공.
+
+| 구분 | 프로세스 |
+|---|---|
+| **기본 생명 주기 프로세스** | **획득, 공급, 개발, 운영, 유지보수** 프로세스 |
+| **지원 생명 주기 프로세스** | **품질 보증, 검증, 확인, 활동 검토, 감사, 문서화, 형상 관리, 문제 해결** 프로세스 |
+| **조직 생명 주기 프로세스** | **관리, 기반 구조, 훈련, 개선** 프로세스 |
+
+### CMMI(Capability Maturity Model Integration, 능력 성숙도 통합 모델)
+
+- 소프트웨어 개발 조직의 **업무 능력 및 조직의 성숙도**를 평가하는 모델
+- 미국 **카네기멜론 대학교의 소프트웨어 공학연구소(SEI)** 에서 개발.
+
+**CMMI의 소프트웨어 프로세스 성숙도 — 5단계** ⭐⭐
+
+| 단계 | 프로세스 | 특징 |
+|---|---|---|
+| **초기**(Initial) | 정의된 프로세스 **없음** | **작업자 능력**에 따라 성공 여부가 결정됨. |
+| **관리**(Managed) | **규칙화**된 프로세스 | **특정한 프로젝트 내**의 프로세스를 정의하고 수행. |
+| **정의**(Defined) | **표준화**된 프로세스 | **조직의 표준 프로세스**를 활용해 업무를 수행. |
+| **정량적 관리**(Quantitatively Managed) | **예측 가능**한 프로세스 | 프로젝트를 **정량적으로** 관리 및 통제. |
+| **최적화**(Optimizing) | **지속적 개선** 프로세스 | 프로세스 역량 향상을 위해 지속적으로 프로세스를 개선. |
+
+### SPICE(Software Process Improvement and Capability dEtermination)
+
+- 정보 시스템 분야에서 소프트웨어의 **품질 및 생산성 향상**을 위해 소프트웨어 프로세스를
+  **평가 및 개선**하는 국제 표준
+- 공식 명칭은 **ISO/IEC 15504** .
+
+**SPICE의 구성 — 5개 범주 (총 40개 프로세스)** ⭐
+
+| 범주 | 특징 |
+|---|---|
+| **고객-공급자**<br>(Customer-Supplier) 프로세스 | - 소프트웨어를 개발해 **고객에게 전달**하는 것을 지원하고, 소프트웨어의 정확한 **운용 및 사용**을 위한 프로세스<br>- 구성 요소 : **인수, 공급, 요구 도출, 운영**<br>- 프로세스 수 : **10개** |
+| **공학**<br>(Engineering) 프로세스 | - 시스템과 소프트웨어 제품의 **명세화, 구현, 유지보수**에 사용되는 프로세스<br>- 구성 요소 : **개발, 소프트웨어 유지보수**<br>- 프로세스 수 : **9개** |
+| **지원**<br>(Support) 프로세스 | - 소프트웨어 생명 주기에서 **다른 프로세스에 의해 이용**되는 프로세스<br>- 구성 요소 : **문서화, 형상, 품질 보증, 검증, 확인, 리뷰, 감사, 품질 문제 해결**<br>- 프로세스 수 : **8개** |
+| **관리**<br>(Management) 프로세스 | - 소프트웨어 생명 주기에서 **프로젝트 관리자**에 의해 사용되는 프로세스<br>- 구성 요소 : **관리, 프로젝트 관리, 품질 및 위험 관리**<br>- 프로세스 수 : **4개** |
+| **조직**<br>(Organization) 프로세스 | - 조직의 **업무 목적 수립**과 **업무 목표 달성**을 위한 프로세스<br>- 구성 요소 : **조직 배치, 개선 활동 프로세스, 인력 관리, 기반 관리, 측정 도구, 재사용**<br>- 프로세스 수 : **9개** |
+
+**SPICE의 프로세스 수행 능력 단계 — 6단계** ⭐⭐
+
+| 단계 | 특징 |
+|---|---|
+| **불완전**(Incomplete) | 프로세스가 **구현되지 않았거나 목적을 달성하지 못한** 단계 |
+| **수행**(Performed) | 프로세스가 **수행되고 목적이 달성**된 단계 |
+| **관리**(Managed) | **정의된 자원의 한도 내**에서 그 프로세스가 **작업 산출물을 인도**하는 단계 |
+| **확립**(Established) | **소프트웨어 공학 원칙에 기반**해 정의된 프로세스가 수행되는 단계 |
+| **예측**(Predictable) | 프로세스가 목적 달성을 위해 **통제**되고, **양적인 측정**을 통해 **일관되게 수행**되는 단계 |
+| **최적화**(Optimizing) | 프로세스 수행을 **최적화**하고, **지속적인 개선**을 통해 업무 목적을 만족시키는 단계 |
+
+> 💡 **CMMI(5단계)** : 초기 → 관리 → 정의 → 정량적 관리 → 최적화
+> 💡 **SPICE(6단계)** : 불완전 → 수행 → 관리 → 확립 → 예측 → 최적화
+> 둘 다 **최적화**로 끝남. 단계 수(5 / 6)로 구분할 것.
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+<script src="../assets/bank-ch01.js"></script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

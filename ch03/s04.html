@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 03. 통합 구현 — 도해와 표로 정리한 학습 노트">
+<title>연계 메커니즘 · 03. 통합 구현</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch03",title:"정보처리기사 실기 — 03. 통합 구현",subtitle:"03. 통합 구현",total:10,base:"../",page:"section",index:3,sections:[{f:"s01.html",n:"1",t:"통합 구현의 개요"},{f:"s02.html",n:"2",t:"연계 요구사항 분석"},{f:"s03.html",n:"3",t:"연계 데이터 식별 및 표준화"},{f:"s04.html",n:"4",t:"연계 메커니즘"},{f:"s05.html",n:"5",t:"연계 장애 및 오류 처리"},{f:"s06.html",n:"6",t:"연계 데이터 보안"},{f:"s07.html",n:"7",t:"XML"},{f:"s08.html",n:"8",t:"SOAP과 WSDL"},{f:"s09.html",n:"9",t:"연계 테스트"},{f:"s10.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>03. 통합 구현</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (4) 연계 메커니즘
+
+### 연계 메커니즘
+
+응용 소프트웨어와 연계 대상 모듈 사이의 **데이터 연계 시 요구사항을 고려한 데이터 연계 방식**.
+
+### 연계 메커니즘의 과정 ⭐
+
+```mermaid
+flowchart LR
+    subgraph 송신["송신 체계"]
+        A1[연계 데이터 생성 및 추출] --> A2[코드 매핑 및 데이터 변환] --> A3[인터페이스 테이블/파일 생성] --> A4[로그 기록]
+    end
+    A4 --> T[전송]
+    subgraph 수신["수신 체계"]
+        T --> B1[연계 서버 수신] --> B2[코드 매핑 및 데이터 변환] --> B3[운영 DB 반영] --> B4[로그 기록]
+    end
+```
+
+| 단계 | 내용 |
+|---|---|
+| **연계 데이터 생성 및 추출** | 송신 시스템의 DB 나 파일에서 연계 대상 데이터를 추출 |
+| **코드 매핑 및 데이터 변환** | 수신 시스템이 이해할 수 있는 코드와 형식으로 변환 |
+| **인터페이스 테이블 / 파일 생성** | 변환된 데이터를 인터페이스 테이블 또는 파일로 만듦 |
+| **로그(Log) 기록** | 처리 이력을 남겨 **오류 발생 시 추적**할 수 있게 함 |
+| **연계 서버 전송·수신** | 네트워크를 통해 데이터를 주고받음 |
+| **운영 DB 반영** | 수신 시스템의 운영 데이터베이스에 반영 |
+
+### 연계 방식 ⭐⭐
+
+| 방식 | 설명 |
+|---|---|
+| **직접 연계 방식** | 중간 매개체 없이 **송·수신 시스템이 직접 연결**됨.<br>- 연계·통합 처리 **속도가 빠르고 구현이 단순**함<br>- 결합도가 높아 **시스템 변경에 민감**하고, 보안·데이터 변환 처리가 어려움<br>- 종류 : **DB Link, DB Connection, JDBC, API/Open API, 하이퍼링크** |
+| **간접 연계 방식** | **연계 솔루션(미들웨어)** 을 매개로 연결됨.<br>- 서로 다른 네트워크·프로토콜 환경을 **통합 관리**할 수 있음<br>- 인터페이스 변화에 **유연하게 대처**할 수 있고 보안·오류 처리가 쉬움<br>- 아키텍처가 복잡하고 **성능 저하** 가능성이 있음<br>- 종류 : **EAI, ESB, 소켓(Socket), 웹 서비스(Web Service)** |
+
+### 주요 연계 기술
+
+| 기술 | 설명 |
+|---|---|
+| **DB Link** | 수신 시스템의 DB 에서 **송신 시스템 DB 객체를 직접 참조**하는 링크를 생성 |
+| **API / Open API** | 송신 시스템의 DB 에서 데이터를 읽어 제공하는 **응용 프로그램 인터페이스** |
+| **JDBC** | 수신 시스템의 프로그램에서 **송신 시스템 DB 와 연결**하는 자바 기반 드라이버 |
+| **하이퍼링크** | 웹에서 **링크를 통해** 다른 시스템으로 이동 |
+| **소켓(Socket)** | 서버가 **포트를 할당하고 클라이언트의 요청을 대기**하다가 연결을 수락해 통신 |
+| **웹 서비스** | **WSDL, UDDI, SOAP** 프로토콜을 이용해 서비스 간 통신 |
+
+### EAI(Enterprise Application Integration) ⭐⭐
+
+기업 내 각종 **애플리케이션 간의 상호 연동이 가능하도록 통합**하는 솔루션.
+
+**구축 유형 4가지**
+
+| 유형 | 구조 | 특징 |
+|---|---|---|
+| **Point-to-Point** | 1:1 직접 연결 | 가장 **단순한 형태**. 변경·재사용이 **어려움** |
+| **Hub & Spoke** | 중앙 **허브**를 통한 연결 | 모든 데이터가 허브를 경유. **확장·유지보수가 용이**하나 **허브 장애 시 전체 영향** |
+| **Message Bus**<br>(ESB 방식) | **미들웨어(버스)** 를 두고 연결 | **뛰어난 확장성과 대용량 처리** 가능 |
+| **Hybrid** | Hub & Spoke + Message Bus | 그룹 내부는 Hub & Spoke, 그룹 간은 Message Bus. **데이터 병목 최소화** |
+
+```mermaid
+flowchart LR
+    subgraph PTP["Point-to-Point"]
+        p1[A] --- p2[B]
+        p1 --- p3[C]
+        p2 --- p3
+    end
+    subgraph HS["Hub & Spoke"]
+        h1[A] --- H((Hub))
+        h2[B] --- H
+        h3[C] --- H
+    end
+    subgraph MB["Message Bus"]
+        m1[A] --- BUS[[Bus]]
+        m2[B] --- BUS
+        m3[C] --- BUS
+    end
+```
+
+### ESB(Enterprise Service Bus)
+
+애플리케이션 간 통합 측면에서 **서비스 중심의 통합**을 지향하는 아키텍처.
+
+- 특정 서비스에 국한되지 않고 **범용적으로 사용**하기 위해 **표준 인터페이스**를 지원함.
+- EAI 가 애플리케이션 중심이라면 **ESB 는 서비스 중심**임.
+- **느슨한 결합(Loosely Coupled)** 형태로 유연성이 높음.
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 01. 요구사항 확인 — 도해와 표로 정리한 학습 노트">
+<title>활동(Activity) 다이어그램 · 01. 요구사항 확인</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch01",title:"정보처리기사 실기 — 01. 요구사항 확인",subtitle:"01. 요구사항 확인",total:31,base:"../",page:"section",index:13,sections:[{f:"s01.html",n:"1",t:"소프트웨어 생명 주기"},{f:"s02.html",n:"2",t:"스크럼(Scrum) 기법"},{f:"s03.html",n:"3",t:"XP(eXtreme Programming) 기법"},{f:"s04.html",n:"4",t:"현행 시스템 파악"},{f:"s05.html",n:"5",t:"개발 기술 환경 파악"},{f:"s06.html",n:"6",t:"요구사항 정의"},{f:"s07.html",n:"7",t:"요구사항 개발 프로세스"},{f:"s08.html",n:"8",t:"요구사항 분석"},{f:"s09.html",n:"9",t:"요구사항 분석 CASE와 HIPO"},{f:"s10.html",n:"10",t:"UML(Unified Modeling Language)의 개요"},{f:"s11.html",n:"11",t:"UML — 관계(Relationship)"},{f:"s12.html",n:"12",t:"UML — 다이어그램"},{f:"s13.html",n:"13",t:"유스케이스(Use Case) 다이어그램"},{f:"s14.html",n:"14",t:"활동(Activity) 다이어그램"},{f:"s15.html",n:"15",t:"클래스(Class) 다이어그램"},{f:"s16.html",n:"16",t:"시퀀스(Sequence) 다이어그램"},{f:"s17.html",n:"17",t:"커뮤니케이션(Communication) 다이어그램"},{f:"s18.html",n:"18",t:"상태(State) 다이어그램"},{f:"s19.html",n:"19",t:"패키지(Package) 다이어그램"},{f:"s20.html",n:"20",t:"소프트웨어 개발 방법론"},{f:"s21.html",n:"21",t:"S/W 공학의 발전적 추세"},{f:"s22.html",n:"22",t:"비용 산정 기법"},{f:"s23.html",n:"23",t:"비용 산정 기법 — 하향식"},{f:"s24.html",n:"24",t:"비용 산정 기법 — 상향식"},{f:"s25.html",n:"25",t:"수학적 산정 기법"},{f:"s26.html",n:"26",t:"프로젝트 일정 계획"},{f:"s27.html",n:"27",t:"소프트웨어 개발 방법론 결정과 프로젝트 관리"},{f:"s28.html",n:"28",t:"소프트웨어 개발 표준"},{f:"s29.html",n:"29",t:"소프트웨어 개발 방법론 테일러링"},{f:"s30.html",n:"30",t:"소프트웨어 개발 프레임워크"},{f:"s31.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>01. 요구사항 확인</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (14) 활동(Activity) 다이어그램
+
+### 개요
+
+**사용자 관점**에서 시스템이 수행하는 기능을 **처리 흐름에 따라 순서대로** 표현한 것.
+
+- 유스케이스 하나 안에서, 또는 유스케이스 사이에서 발생하는 **복잡한 처리 흐름**을 명확하게 표현할 수 있음.
+- **자료 흐름도(DFD)와 유사함.**
+
+### 예제 : 회원의 도서 대출 처리
+
+세로 **스윔레인 3개** — `연체관리` | `회원` | `소장정보`
+
+```mermaid
+flowchart TD
+    subgraph 회원레인["회원"]
+        S((●)) --> A1[로그인 클릭]
+        A1 --> A2[회원정보 입력]
+        A2 --> D1{"입력한 정보가<br/>잘못됐다면"}
+        D1 -->|잘못됨| A2
+        D1 -->|정상| A3[대출할 도서 선택]
+        A3 --> FORK[["▬ 포크 노드 ▬"]]
+        JOIN[["▬ 조인 노드 ▬"]] --> A4[대출 완료]
+        A4 --> E((◉))
+    end
+
+    subgraph 연체레인["연체관리"]
+        FORK --> B1[연체 이력 조회]
+        B1 --> D2{판단}
+        D2 -->|연체 있음| B2[연체료 납부]
+        B2 --> D3{판단}
+        D3 -->|미납| E2((◉))
+        D2 -->|연체 없음| M1{{병합}}
+        D3 -->|납부 완료| M1
+        M1 --> JOIN
+    end
+
+    subgraph 소장레인["소장정보"]
+        FORK --> C1[도서 보유 확인]
+        C1 --> D4{판단}
+        D4 -->|대출 가능| JOIN
+        D4 -->|대출 중| A3
+    end
+```
+
+**해설**
+
+**`<회원>`**
+1. 도서를 빌리기 위해 **로그인 단추를 클릭**한 후 **회원 정보를 입력**.
+2. 정보가 잘못됐으면 **다시 입력**받고, 정상이면 **'대출할 도서 선택'** 으로 이동.
+3. 도서를 선택하면 흐름이 **'연체 이력 조회'와 '도서 보유 확인'으로 분할(포크)** 되어 진행됨.
+4. 대출을 완료하고 액티비티를 종료.
+
+**`<연체관리>`**
+1. 회원의 **연체 이력을 조회**.
+2. 연체가 없으면 곧바로, 있으면 **연체료 납부** 단계를 거침.
+3. 납부가 완료되면 '대출 완료'로, 끝내 미납이면 **연체 확인에 대한 처리 흐름을 종료**.
+
+**`<소장정보>`**
+1. 선택한 도서의 **보유 상태를 확인**.
+2. 대출 가능하면 흐름을 '대출 완료'로 이동하고, 이미 대출 중이면 다른 도서를 선택하도록 **'대출할 도서 선택'** 으로 이동.
+
+### 활동 다이어그램의 구성 요소 ⭐⭐
+
+| 구성 요소 | 표현 방법 | 내용 |
+|---|---|---|
+| **액션(Action) /<br>액티비티(Activity)** | **모서리가 둥근 사각형**<br>액션 예: `[로그인 클릭]`<br>액티비티 예: `[회원정보 입력]` | - **액션** : 더 이상 분해할 수 없는 **단일 작업**<br>- **액티비티** : 몇 개의 액션으로 **분리될 수 있는 작업** |
+| **시작 노드** | **속이 꽉 찬 검은 원 ●** | 액션이나 액티비티가 **시작**됨을 표현한 것 |
+| **종료 노드** | **검은 원을 둘러싼 원 ◉** (동심원) | 액티비티 안의 **모든 흐름이 종료**됨을 표현한 것 |
+| **조건(판단) 노드** | **마름모(◇)** — 들어오는 화살표 1개 / 나가는 화살표 2개 이상 | - **조건**에 따라 제어 흐름이 **분리**됨을 표현<br>- 입력 **1개**, 출력 **여러 개** |
+| **병합 노드** | **마름모(◇)** — 들어오는 화살표 2개 이상 / 나가는 화살표 1개 | - 여러 경로의 흐름이 **하나로 합쳐짐**을 표현<br>- 입력 **여러 개**, 출력 **1개** |
+| **포크(Fork) 노드** | **굵은 가로 막대(▬)** — 위에서 1개 진입 / 아래로 2개 이상 진출 | - 액티비티의 흐름이 **분리되어 수행**됨을 표현<br>- 입력 **1개**, 출력 **여러 개** |
+| **조인(Join) 노드** | **굵은 가로 막대(▬)** — 위에서 2개 이상 진입 / 아래로 1개 진출 | - 분리되어 수행되던 흐름이 **다시 합쳐짐**을 표현<br>- 입력 **여러 개**, 출력 **1개** |
+| **스윔레인(Swim Lane)** | **하나의 세로 실선(│)** | - 액티비티 수행을 담당하는 **주체를 구분**하는 선<br>- **가로 또는 세로 실선**을 그어 구분. |
+
+> 💡 **모양이 같은 짝이 둘 있음.** 기호로는 구분되지 않고 **화살표의 입·출 개수**로만 갈림.
+> - 마름모(◇) → 입1/출2 이상이면 **조건**, 입2 이상/출1이면 **병합**
+> - 굵은 막대(▬) → 입1/출2 이상이면 **포크**, 입2 이상/출1이면 **조인**
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+<script src="../assets/bank-ch01.js"></script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

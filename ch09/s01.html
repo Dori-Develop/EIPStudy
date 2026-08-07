@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="정보처리기사 실기 — 09. 소프트웨어 개발 보안 구축 — 도해와 표로 정리한 학습 노트">
+<title>Secure SDLC · 09. 소프트웨어 개발 보안 구축</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<script>
+window.EIP_CHAPTER = {id:"ch09",title:"정보처리기사 실기 — 09. 소프트웨어 개발 보안 구축",subtitle:"09. 소프트웨어 개발 보안 구축",total:16,base:"../",page:"section",index:0,sections:[{f:"s01.html",n:"1",t:"Secure SDLC"},{f:"s02.html",n:"2",t:"입력 데이터 검증 및 표현"},{f:"s03.html",n:"3",t:"보안 기능"},{f:"s04.html",n:"4",t:"시간 및 상태"},{f:"s05.html",n:"5",t:"에러 처리"},{f:"s06.html",n:"6",t:"코드 오류"},{f:"s07.html",n:"7",t:"캡슐화"},{f:"s08.html",n:"8",t:"API 오용"},{f:"s09.html",n:"9",t:"암호화 알고리즘"},{f:"s10.html",n:"10",t:"서비스 공격 유형"},{f:"s11.html",n:"11",t:"서버 인증"},{f:"s12.html",n:"12",t:"보안 아키텍처와 보안 프레임워크"},{f:"s13.html",n:"13",t:"로그 분석"},{f:"s14.html",n:"14",t:"보안 솔루션"},{f:"s15.html",n:"15",t:"취약점 분석과 평가"},{f:"s16.html",n:"·",t:"부록 — 핵심 암기 요약"}]};
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
+  <div class="hdr__title">
+    <a href="../index.html">← EIP Study</a>
+    <small>09. 소프트웨어 개발 보안 구축</small>
+  </div>
+  <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="progressbar" id="readbar"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__head">
+      <span>목차</span>
+      <button type="button" class="iconbtn js-menu-close" aria-label="목차 닫기">✕</button>
+    </div>
+    <div class="sidebar__body">
+      <div class="tocmeta">
+        <span>학습 진도</span>
+        <strong class="js-chapter-progress">0/0 · 0%</strong>
+      </div>
+      <nav id="toc" aria-label="문서 목차"></nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <article class="wrap doc" id="doc">
+      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>
+    </article>
+    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+<script type="text/markdown" id="markdown-source">
+## (1) Secure SDLC
+
+### Software Development Security(소프트웨어 개발 보안)
+
+소프트웨어 개발 과정에서 개발자의 실수, 논리적 오류 등으로 인해
+소프트웨어에 발생할 수 있는 **보안 취약점을 최소화**하여,
+사이버 보안 위협에 대응할 수 있는 안전한 소프트웨어를 만들기 위한 일련의 보안 활동.
+
+### 보안의 3대 요소 ⭐⭐
+
+| 요소 | 의미 |
+|---|---|
+| **기밀성**(Confidentiality) | 인가되지 않은 개인 혹은 시스템의 접근에 따른 **정보 공개 및 노출을 차단**하는 특성 |
+| **무결성**(Integrity) | 정당한 방법을 따르지 않고서는 **데이터가 변경될 수 없는** 특성 |
+| **가용성**(Availability) | 권한을 가진 사용자나 애플리케이션이 **원하는 서비스를 지속해서 사용할 수 있도록** 보장하는 특성 |
+
+> 📌 암기: **"기무가"** — 기밀성 · 무결성 · 가용성 (CIA)
+
+### Secure SDLC ⭐
+
+**보안상 안전한 소프트웨어를 개발하기 위해** SDLC(소프트웨어 개발 생명주기)에
+**보안 강화를 위한 프로세스를 포함**한 것.
+
+**대표적인 방법론**
+
+| 방법론 | 설명 |
+|---|---|
+| **CLASP**<br>(Comprehensive, Lightweight Application Security Process) | SDLC 의 **초기 단계에서 보안을 강화**하기 위해 개발된 방법론.<br>이미 운용 중인 시스템에 적용하기 적합함. **활동 중심·역할 기반**의 프로세스로 구성됨 |
+| **SDL**<br>(Security Development Lifecycle) | **마이크로소프트 사**에서 개발한 방법론. 전통적인 나선형 모델을 기반으로 함 |
+| **Seven Touchpoints** | 소프트웨어 보안의 **모범 사례를 SDLC 에 통합**한 방법론.<br>SDLC 의 각 단계에 **7개의 보안 강화 활동**을 집중적으로 수행 |
+
+### 단계별 보안 활동 ⭐
+
+| 단계 | 보안 활동 |
+|---|---|
+| **요구사항 분석** | 보안 항목에 해당하는 **요구사항을 식별**하는 작업 수행 |
+| **설계** | 식별된 보안 요구사항을 소프트웨어 설계서에 반영하고 **보안 설계서를 작성** |
+| **구현** | 표준 코딩 정의서와 **소프트웨어 개발 보안 가이드**를 준수하며 개발.<br>**소스 코드 보안 약점을 진단하고 개선** |
+| **테스트** | 설계 단계에서 작성한 **보안 사항이 모두 적용됐는지 확인**.<br>**모의 침투 테스트, 동적 분석**을 통해 취약점 검증 |
+| **유지보수** | 이전 과정에서 발견되지 않은 **보안 이슈가 발생할 경우 이를 해결** |
+
+### 소프트웨어 개발 보안 점검 항목 — 7가지 ⭐⭐⭐
+
+**행정안전부의 소프트웨어 개발 보안 가이드**에서 정한 분류.
+
+| 분류 | 내용 |
+|---|---|
+| **입력 데이터 검증 및 표현** | 입력 데이터로 인해 발생하는 문제. 프로그램 입력값에 대한 검증 누락, 부적절한 검증, 데이터의 잘못된 형식 지정 |
+| **보안 기능** | 인증, 접근 제어, 기밀성, 암호화 등 보안 기능을 **부적절하게 구현**한 경우 발생 |
+| **시간 및 상태** | **둘 이상의 프로세스가 동작하는 환경**에서 시간과 상태를 부적절하게 관리해 발생 |
+| **에러 처리** | 에러를 처리하지 않거나 **불충분하게 처리해** 에러 정보에 중요 정보가 포함될 때 발생 |
+| **코드 오류** | 타입 변환 오류, 자원의 부적절한 반환 등 **개발자가 범할 수 있는 코딩 오류** |
+| **캡슐화** | 데이터와 데이터 처리 방법을 **부적절하게 캡슐화**해 발생 |
+| **API 오용** | 의도된 사용에 부적합한 API 를 사용하거나, **보안에 취약한 API 를 사용**해 발생 |
+
+> 📌 암기: **"입보시에코캡API"**
+
+---
+
+</script>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<button type="button" class="totop" id="totop" aria-label="맨 위로">↑</button>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="본문 검색">
+  <div class="search__panel">
+    <div class="search__inputrow">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" class="search__input" id="search-input"
+             placeholder="챕터 전체 검색…  (예: 스크럼, DFD, COCOMO)"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <kbd style="font-size:11px;color:var(--fg-faint)">ESC</kbd>
+    </div>
+    <div class="search__results" id="search-results"></div>
+    <div class="search__hint">↑↓ 이동 · Enter 열기 · / 로 검색 열기</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="다이어그램 크게 보기">
+  <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+  <div class="lightbox__inner" id="lightbox-inner"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>
