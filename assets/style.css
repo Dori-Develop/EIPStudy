@@ -435,15 +435,14 @@ button { font: inherit; cursor: pointer; }
 }
 .quiz__item:first-child { border-top: 0; }
 
-/* ★ 저장한 문제 — 지문 오른쪽 위. 지문이 닿지 않도록 quiz__q 에 여백을 준다.
-   ⚠️ z-index 가 반드시 필요하다. 바로 다음 형제인 .quiz__q 도 position: relative 라
-      (번호를 ::before 로 절대 배치하기 때문) 위치 지정 요소끼리는 DOM 순서가 늦은
-      쪽이 위에 그려진다. 없으면 지문이 별을 덮어 위쪽 8px 만 눌린다.
-   크기를 고정하고 flex 로 가운데 정렬해 터치 영역도 확보한다. */
+/* ★ 저장한 문제 — 생김새는 공용, 자리 잡는 방식만 화면마다 다르다.
+   🔒 절대 위치·번호 매기기는 섹션 퀴즈에서만 맞는 규칙이라 .quiz__item / .quiz__list
+      안으로 범위를 좁혀 둔다. 전역으로 두면 오답노트·모의 문제지처럼 같은 위젯을
+      쓰는 다른 화면으로 새어 나가 덮어쓰기를 계속 늘려야 한다.
+   크기를 고정하고 flex 로 가운데 정렬해 터치 영역을 확보한다. */
 .quiz__fav {
-  position: absolute; top: 8px; right: 8px; z-index: 1;
   display: flex; align-items: center; justify-content: center;
-  width: 30px; height: 30px; padding: 0;
+  flex: none; width: 30px; height: 30px; padding: 0;
   background: none; border: 0;
   font-size: 15px; line-height: 1; cursor: pointer;
   color: var(--border);
@@ -453,16 +452,30 @@ button { font: inherit; cursor: pointer; }
 .quiz__fav:active { transform: scale(.88); }
 .quiz__fav[aria-pressed="true"] { color: var(--warn); }
 
+/* 섹션 퀴즈에서만 지문 오른쪽 위에 겹쳐 놓는다.
+   ⚠️ z-index 가 반드시 필요하다. 바로 다음 형제인 .quiz__list .quiz__q 도
+      position: relative 라(번호를 ::before 로 절대 배치하기 때문) 위치 지정
+      요소끼리는 DOM 순서가 늦은 쪽이 위에 그려진다.
+      없으면 지문이 별을 덮어 위쪽 8px 만 눌린다. */
+.quiz__item > .quiz__fav {
+  position: absolute; top: 8px; right: 8px; z-index: 1;
+}
+
 .quiz__q {
   font-size: 14.5px; line-height: 1.65; margin: 0 0 11px;
-  padding-left: 25px; padding-right: 26px; position: relative;
 }
-.quiz__q::before {
+.quiz__q b { font-weight: 700; }
+
+/* 번호 매기기와 그에 따른 여백도 섹션 퀴즈 전용 */
+.quiz__list .quiz__q {
+  position: relative;
+  padding-left: 25px; padding-right: 26px;
+}
+.quiz__list .quiz__q::before {
   content: counter(quiz) ".";
   position: absolute; left: 0; top: 0;
   font-weight: 700; color: var(--fg-faint);
 }
-.quiz__q b { font-weight: 700; }
 
 .quiz__code {
   margin: 0 0 11px; padding: 11px 13px;
@@ -475,8 +488,22 @@ button { font: inherit; cursor: pointer; }
 /* ---------- 오답노트 (wrong.html) ---------- */
 .wtabs {
   display: flex; flex-wrap: wrap; gap: 6px;
+  margin: 0 0 10px;
+}
+
+/* 정렬·필터 줄 */
+.wctl {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
   margin: 0 0 18px;
 }
+.wctl__sel, .wctl__dir {
+  padding: 6px 9px;
+  background: var(--bg-elev); color: var(--fg-muted);
+  border: 1px solid var(--border); border-radius: var(--radius-s);
+  font-size: 12.5px; font-family: inherit; cursor: pointer;
+}
+.wctl__sel:hover, .wctl__dir:hover { border-color: var(--accent); color: var(--fg); }
+.wctl__dir { font-variant-numeric: tabular-nums; }
 .wtab {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 7px 13px;
@@ -522,7 +549,6 @@ button { font: inherit; cursor: pointer; }
   text-decoration: none;
 }
 a.wcard__loc:hover { color: var(--accent); text-decoration: underline; }
-.wcard__head .quiz__fav { position: static; flex: none; }
 
 .wcard__stat {
   margin: 0 0 11px;
@@ -530,9 +556,8 @@ a.wcard__loc:hover { color: var(--accent); text-decoration: underline; }
 }
 .wcard__stub { font-size: 13px; color: var(--fg-faint); }
 
-/* 문항 본문은 섹션 퀴즈와 같은 스타일을 그대로 쓴다 (qcard.js 가 같은 클래스를 붙인다) */
-.wcard__body .quiz__q { padding-left: 0; }
-.wcard__body .quiz__q::before { content: none; }
+/* 문항 본문은 섹션 퀴즈와 같은 스타일을 그대로 쓴다 (qcard.js 가 같은 클래스를 붙인다).
+   번호·별 위치는 .quiz__list / .quiz__item 안에서만 걸리므로 여기서 덮어쓸 것이 없다. */
 
 .wcard__foot {
   display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
@@ -680,18 +705,35 @@ mark, .hl {
 .flash { animation: flashTarget 1.6s ease; border-radius: var(--radius-s); }
 
 /* ==========================================================================
-   맨 위로
+   맨 위로 / 맨 아래로
    ========================================================================== */
+/* app.js 가 빌드 산출물의 ↑ 버튼을 이 상자 안으로 옮기고 ↓ 를 하나 더 붙인다.
+   iOS 홈 인디케이터에 가리지 않도록 안전영역만큼 띄운다. */
+.scrollnav {
+  position: fixed; right: 14px; z-index: 55;
+  bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  display: flex; flex-direction: column; gap: 8px;
+}
+
 .totop {
+  /* JS 가 돌기 전에도 엉뚱한 자리에 뜨지 않도록 기본값은 고정 위치 */
   position: fixed; right: 14px; bottom: 14px; z-index: 55;
   width: 46px; height: 46px; border-radius: 50%;
   border: 1px solid var(--border);
   background: var(--bg-elev); color: var(--fg-muted);
-  box-shadow: var(--shadow); font-size: 17px;
+  box-shadow: var(--shadow); font-size: 17px; cursor: pointer;
   opacity: 0; pointer-events: none; transform: translateY(8px);
-  transition: opacity .2s, transform .2s;
+  transition: opacity .2s, transform .2s, color .15s, border-color .15s;
 }
+.scrollnav .totop { position: static; }
+.totop:hover { color: var(--accent); border-color: var(--accent); }
 .totop.is-show { opacity: 1; pointer-events: auto; transform: none; }
+
+/* 화면이 좁으면 본문을 덜 가리도록 조금 줄인다 */
+@media (max-width: 480px) {
+  .scrollnav { right: 10px; gap: 6px; }
+  .totop { width: 40px; height: 40px; font-size: 15px; }
+}
 
 /* ==========================================================================
    홈 화면
@@ -758,6 +800,12 @@ mark, .hl {
 .dangerlink {
   background: none; border: 0; padding: 0;
   color: var(--fg-faint); font-size: 12.5px; text-decoration: underline;
+  cursor: pointer;
+}
+/* 초기화 버튼이 둘 나란히 놓인다 — 공백만으로는 한 문장처럼 읽혀 구분선을 넣는다 */
+.dangerlink + .dangerlink {
+  margin-left: 11px; padding-left: 12px;
+  border-left: 1px solid var(--border);
 }
 .dangerlink:hover { color: var(--warn); }
 
@@ -799,7 +847,7 @@ mark, .hl {
    인쇄
    ========================================================================== */
 @media print {
-  .hdr, .sidebar, .totop, .progressbar, .sectiondone,
+  .hdr, .sidebar, .totop, .scrollnav, .progressbar, .sectiondone,
   .diagram__zoom, .scrim, .search, .quiz { display: none !important; }
   .layout { grid-template-columns: 1fr; padding-top: 0; }
   .main { padding: 0; }

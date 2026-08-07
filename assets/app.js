@@ -180,12 +180,48 @@
         : '챕터를 한 번 열면 진도 추적이 시작됩니다';
     }
 
+  }
+
+  /* ------------------------------------------------------------- 초기화 버튼 */
+  /* 두 갈래다. "진도만"은 done. 만 지우고, "전체"는 eip. 로 시작하는 학습 기록을
+     통째로 지운다. 어떤 것이 지워지는지 확인 문구에 반드시 적는다 —
+     오답노트와 저장한 문제는 다시 만들 수 없는 기록이다. */
+  function initReset() {
+    /* 학습 기록이 아니라서 전체 초기화에서도 남기는 키.
+       📌 T8 에서 만들 6자리 동기화 코드(sync.*)도 여기 넣어야 한다.
+          안 그러면 초기화 한 번에 다른 기기와의 연결이 끊긴다. */
+    var KEEP = ['theme'];
+
+    function isKept(key) {
+      var i;
+      for (i = 0; i < KEEP.length; i++) {
+        if (key === KEEP[i] || key.indexOf(KEEP[i] + '.') === 0) return true;
+      }
+      return false;
+    }
+
     var reset = $('.js-reset');
     if (reset) {
       reset.addEventListener('click', function () {
-        if (!confirm('저장된 학습 진도를 모두 지웁니다. 계속할까요?')) return;
+        if (!confirm('섹션 학습 완료 표시를 모두 지웁니다.\n' +
+                     '오답노트와 저장한 문제는 그대로 남습니다.\n\n계속할까요?')) return;
         store.keys().forEach(function (k) {
           if (k.indexOf('done.') === 0) store.remove(k);
+        });
+        location.reload();
+      });
+    }
+
+    var resetAll = $('.js-reset-all');
+    if (resetAll) {
+      resetAll.addEventListener('click', function () {
+        if (!confirm('이 브라우저에 쌓인 학습 기록을 전부 지웁니다.\n\n' +
+                     '  · 섹션 학습 진도\n' +
+                     '  · 오답노트 (틀린 횟수 · 분류)\n' +
+                     '  · ★ 저장한 문제\n\n' +
+                     '되돌릴 수 없습니다. 계속할까요?')) return;
+        store.keys().forEach(function (k) {
+          if (!isKept(k)) store.remove(k);
         });
         location.reload();
       });
@@ -607,25 +643,74 @@
   /* ------------------------------------------------------------- 읽기 진행바 */
   function initReadingProgress() {
     var bar = $('#readbar');
-    var top = $('#totop');
-    if (!bar && !top) return;
+    if (!bar) return;
 
     var update = function () {
       var h = document.documentElement;
       var max = h.scrollHeight - h.clientHeight;
-      var pct = max > 0 ? (h.scrollTop / max) * 100 : 0;
-      if (bar) bar.style.width = pct + '%';
-      if (top) top.classList.toggle('is-show', h.scrollTop > 600);
+      bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + '%';
     };
     window.addEventListener('scroll', update, { passive: true });
     window.addEventListener('resize', debounce(update, 150));
     update();
+  }
 
-    if (top) {
-      top.addEventListener('click', function () {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
+  /* --------------------------------------------------- 맨 위로 / 맨 아래로 */
+  /* 섹션이 길다. 특히 문항이 16~18개 붙는 챕터는 스크롤이 상당해서
+     "맨 아래로"가 퀴즈·학습 완료 버튼으로 가는 지름길이 된다.
+
+     빌드 산출물에는 ↑ 버튼 하나만 들어 있다. ↓ 는 여기서 만들어 붙인다 —
+     페이지 껍데기를 고치면 226개 산출물을 다시 만들어야 하고,
+     이 사이트는 어차피 화면 대부분을 JS 로 그린다. */
+  var SCROLL_EDGE = 400;   /* 이만큼 떨어져 있어야 버튼이 나타난다 */
+
+  function initScrollNav() {
+    var nav = el('div', 'scrollnav');
+    var up = $('#totop');
+
+    if (up) {
+      up.parentNode.insertBefore(nav, up);
+      nav.appendChild(up);
+    } else {
+      up = el('button', 'totop', '↑');
+      up.type = 'button';
+      up.id = 'totop';
+      up.setAttribute('aria-label', '맨 위로');
+      nav.appendChild(up);
+      document.body.appendChild(nav);
     }
+
+    var down = el('button', 'totop', '↓');
+    down.type = 'button';
+    down.setAttribute('aria-label', '맨 아래로');
+    down.title = '맨 아래로';
+    nav.appendChild(down);
+
+    var update = function () {
+      var h = document.documentElement;
+      var max = h.scrollHeight - h.clientHeight;
+      /* 스크롤할 것이 별로 없는 페이지에서는 둘 다 숨긴다 */
+      var worth = max > SCROLL_EDGE;
+      up.classList.toggle('is-show', worth && h.scrollTop > SCROLL_EDGE);
+      down.classList.toggle('is-show', worth && (max - h.scrollTop) > SCROLL_EDGE);
+    };
+
+    up.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    down.addEventListener('click', function () {
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: 'smooth'
+      });
+    });
+
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', debounce(update, 150));
+    /* 본문·퀴즈가 그려지면 문서 높이가 달라진다. 스크롤이 없어도 다시 재 준다. */
+    window.addEventListener('load', update);
+    setTimeout(update, 400);
+    update();
   }
 
   /* ------------------------------------------------------- 챕터 전체 검색 */
@@ -816,6 +901,8 @@
     theme.init();
     initSidebar();
     initHome();
+    initReset();
+    initScrollNav();
 
     if (CH && CH.page === 'index') {
       buildSidebar(null);

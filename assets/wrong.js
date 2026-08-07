@@ -26,8 +26,19 @@
     { k: 0, label: '★ 저장' }      /* k=0 은 저장 축 */
   ];
 
-  var root, tabsEl, listEl, emptyEl;
+  /* 정렬 기준. dir 은 이 기준을 골랐을 때의 기본 방향 —
+     날짜·횟수는 큰 것부터, 챕터 순서는 ch01 부터가 자연스럽다. */
+  var SORTS = [
+    { k: 'at', label: '마지막 기록', dir: -1 },
+    { k: 'w',  label: '틀린 횟수',   dir: -1 },
+    { k: 'id', label: '챕터·섹션 순', dir: 1 }
+  ];
+
+  var root, ctlEl, tabsEl, listEl, emptyEl;
   var current = 1;
+  var sortKey = 'at';
+  var sortDir = -1;   /* 1 오름차순 · -1 내림차순 */
+  var chFilter = '';  /* '' 이면 전체 챕터 */
   var byId = {};      /* 문항 id → 문항 */
   var entries = {};   /* 문항 id → 기록 */
   var favs = {};
@@ -39,13 +50,6 @@
     if (text != null) n.textContent = text;
     return n;
   }
-  function html(tag, cls, markup) {
-    var n = document.createElement(tag);
-    if (cls) n.className = cls;
-    if (markup != null) n.innerHTML = markup;
-    return n;
-  }
-
   /* ------------------------------------------------------- 문항 위치 이름 */
   /* 'ch10-s05-03' → { ch:'ch10', sec:5 } */
   function locate(id) {
@@ -121,43 +125,151 @@
   }
 
   /* ------------------------------------------------------------- 목록 계산 */
+  function has(obj, k) { return Object.prototype.hasOwnProperty.call(obj, k); }
+
+  function inFilter(id) {
+    if (!chFilter) return true;
+    var loc = locate(id);
+    return !!loc && loc.ch === chFilter;
+  }
+
+  /* ★ 탭에는 한 번도 틀린 적 없는 문항도 들어온다. 그때는 저장한 시각을 쓴다. */
+  function atOf(id) {
+    var e = entries[id];
+    if (e && e.at) return e.at;
+    return favs[id] || 0;
+  }
+  function wOf(id) {
+    var e = entries[id];
+    return e ? (e.w || 0) : 0;
+  }
+
+  function compare(a, b) {
+    var d = 0;
+    if (sortKey === 'w') {
+      d = wOf(a) - wOf(b);
+      if (d === 0) d = atOf(a) - atOf(b);   /* 같은 횟수면 최근 것을 뒤로 */
+    } else if (sortKey === 'id') {
+      d = a < b ? -1 : (a > b ? 1 : 0);     /* id 가 챕터·섹션·번호 순서를 그대로 품는다 */
+    } else {
+      d = atOf(a) - atOf(b);
+      if (d === 0) d = a < b ? -1 : (a > b ? 1 : 0);
+    }
+    return d * sortDir;
+  }
+
   function idsFor(tab) {
     var out = [], id;
-    if (tab === 0) {
-      for (id in favs) {
-        if (Object.prototype.hasOwnProperty.call(favs, id)) out.push(id);
-      }
-      out.sort(function (a, b) { return (favs[b] || 0) - (favs[a] || 0); });
-      return out;
+    var pool = tab === 0 ? favs : entries;
+    for (id in pool) {
+      if (!has(pool, id)) continue;
+      if (!inFilter(id)) continue;
+      if (tab !== 0 && W.classify(entries[id]) !== tab) continue;
+      out.push(id);
     }
-    for (id in entries) {
-      if (!Object.prototype.hasOwnProperty.call(entries, id)) continue;
-      if (W.classify(entries[id]) === tab) out.push(id);
-    }
-    /* 최근에 손댄 것이 위로 */
-    out.sort(function (a, b) { return (entries[b].at || 0) - (entries[a].at || 0); });
+    out.sort(compare);
     return out;
   }
 
+  /* 탭 옆 숫자도 챕터 필터를 따른다 — 목록과 숫자가 어긋나면 필터가 걸린 줄 모른다 */
   function counts() {
     var c = { 1: 0, 2: 0, 3: 0, 0: 0 }, id, k;
     for (id in entries) {
-      if (!Object.prototype.hasOwnProperty.call(entries, id)) continue;
+      if (!has(entries, id) || !inFilter(id)) continue;
       k = W.classify(entries[id]);
       if (c[k] !== undefined) c[k]++;
     }
     for (id in favs) {
-      if (Object.prototype.hasOwnProperty.call(favs, id)) c[0]++;
+      if (has(favs, id) && inFilter(id)) c[0]++;
     }
     return c;
+  }
+
+  /* 기록이 있는 챕터만 — 없는 챕터를 선택지에 넣으면 항상 빈 목록이 된다 */
+  function chaptersWithRecords() {
+    var seen = {}, out = [], id, loc, k;
+    function scan(obj) {
+      for (id in obj) {
+        if (!has(obj, id)) continue;
+        loc = locate(id);
+        if (loc) seen[loc.ch] = 1;
+      }
+    }
+    scan(entries);
+    scan(favs);
+    for (k in seen) { if (has(seen, k)) out.push(k); }
+    out.sort();
+    return out;
   }
 
   /* --------------------------------------------------------------- 렌더 */
   function refresh() {
     entries = W.all();
     favs = W.favs();
+    renderControls();
     renderTabs();
     renderList();
+  }
+
+  /* 정렬·필터 줄. 고른 값은 저장하지 않는다 —
+     새 localStorage 키를 만들면 T8 동기화의 병합 대상이 하나 늘어난다. */
+  function renderControls() {
+    var chapters = chaptersWithRecords();
+    ctlEl.innerHTML = '';
+
+    /* ---- 챕터 필터 ---- */
+    if (chapters.length > 1) {
+      var chSel = el('select', 'wctl__sel');
+      chSel.title = '챕터로 거르기';
+      chSel.setAttribute('aria-label', '챕터로 거르기');
+      var all = el('option', null, '전체 챕터');
+      all.value = '';
+      chSel.appendChild(all);
+      chapters.forEach(function (ch) {
+        var op = el('option', null, (TOC[ch] && TOC[ch].t) || ch);
+        op.value = ch;
+        chSel.appendChild(op);
+      });
+      chSel.value = chFilter;
+      chSel.addEventListener('change', function () {
+        chFilter = chSel.value;
+        renderTabs();
+        renderList();
+      });
+      ctlEl.appendChild(chSel);
+    } else if (chFilter) {
+      chFilter = '';   /* 선택지가 사라졌는데 필터만 남는 일이 없도록 */
+    }
+
+    /* ---- 정렬 기준 ---- */
+    var sortSel = el('select', 'wctl__sel');
+    sortSel.title = '정렬 기준';
+    sortSel.setAttribute('aria-label', '정렬 기준');
+    SORTS.forEach(function (s) {
+      var op = el('option', null, s.label);
+      op.value = s.k;
+      sortSel.appendChild(op);
+    });
+    sortSel.value = sortKey;
+    sortSel.addEventListener('change', function () {
+      sortKey = sortSel.value;
+      /* 기준을 바꾸면 그 기준의 자연스러운 방향으로 되돌린다 */
+      SORTS.forEach(function (s) { if (s.k === sortKey) sortDir = s.dir; });
+      renderControls();
+      renderList();
+    });
+    ctlEl.appendChild(sortSel);
+
+    /* ---- 방향 ---- */
+    var dirBtn = el('button', 'wctl__dir', sortDir < 0 ? '↓ 내림차순' : '↑ 오름차순');
+    dirBtn.type = 'button';
+    dirBtn.title = '정렬 방향 바꾸기';
+    dirBtn.addEventListener('click', function () {
+      sortDir = -sortDir;
+      dirBtn.textContent = sortDir < 0 ? '↓ 내림차순' : '↑ 오름차순';
+      renderList();
+    });
+    ctlEl.appendChild(dirBtn);
   }
 
   function renderTabs() {
@@ -184,9 +296,14 @@
 
     if (!ids.length) {
       emptyEl.hidden = false;
-      emptyEl.textContent = current === 0
-        ? '저장한 문제가 없습니다. 섹션 퀴즈에서 ★ 을 눌러 담아 두세요.'
-        : '해당하는 문제가 없습니다.';
+      if (chFilter) {
+        emptyEl.textContent = ((TOC[chFilter] && TOC[chFilter].t) || chFilter) +
+          ' 에는 해당하는 문제가 없습니다.';
+      } else {
+        emptyEl.textContent = current === 0
+          ? '저장한 문제가 없습니다. 섹션 퀴즈에서 ★ 을 눌러 담아 두세요.'
+          : '해당하는 문제가 없습니다.';
+      }
       return;
     }
     emptyEl.hidden = true;
@@ -316,10 +433,12 @@
     if (!root || !W || !Q) return;
 
     tabsEl = el('div', 'wtabs');
+    ctlEl = el('div', 'wctl');
     listEl = el('div', 'wlist');
     emptyEl = el('p', 'wempty');
     emptyEl.hidden = true;
     root.appendChild(tabsEl);
+    root.appendChild(ctlEl);
     root.appendChild(emptyEl);
     root.appendChild(listEl);
 
