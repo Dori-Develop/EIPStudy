@@ -10,8 +10,9 @@
 
    ② 우클릭(contextmenu)은 입력으로 쓰지 않는다. 브라우저 메뉴가 뜨고,
       preventDefault 로 막으면 "붙여넣기가 안 되는 페이지"가 되어 사용자가 당황한다.
-      카드를 좌 · 가운데 · 우 세 구역으로 나눠 누른 위치로 구분한다.
-      폰에서도 같은 코드가 그대로 먹으므로 분기가 하나로 끝난다.
+      마우스는 카드를 좌 · 가운데 · 우 세 구역으로 나눠 누른 위치로 구분한다.
+      손가락은 구역을 나누지 않고 어디를 눌러도 뒤집기다 — 모바일에서 넘기는 방법은
+      미는 것이라, 좁은 화면에서 구역까지 겨누게 하면 뒤집으려다 카드가 넘어간다.
 
    eip.card.saved = 저장한 카드 id 배열
    📌 eip.fav.all(★ 저장한 문제)과 다른 키다. 문항과 카드는 별개 축이다.
@@ -27,8 +28,12 @@
   var S = (window.EIP && window.EIP.store) || null;
 
   var SWIPE_MIN = 55;      /* 이만큼 밀어야 넘김으로 친다 (px) */
-  var LOCK_MIN = 10;       /* 이만큼 움직이면 가로·세로 중 하나로 못 박는다 */
-  var Y_BIAS = 1.3;        /* 세로가 가로보다 이 배 이상이어야 스크롤로 넘긴다 */
+  /* 🚨 LOCK_MIN 은 작아야 한다. 방향을 정하기 전에는 preventDefault 를 못 하는데,
+        그 사이에 브라우저가 세로 스크롤을 시작해 버리면 그 뒤로는 못 막는다
+        (event.cancelable 이 false 가 된다). 10px 로 뒀더니 실제로 그랬다.
+        3px 은 손떨림은 걸러 내면서 브라우저가 아직 결정하기 전이다. */
+  var LOCK_MIN = 3;
+  var Y_BIAS = 1.5;        /* 세로가 가로보다 이 배 이상이어야 스크롤로 넘긴다 */
   var ZONE = 0.34;         /* 카드 좌·우 끝 34% 가 넘김 구역, 가운데 32% 가 뒤집기 */
   var OUT_MS = 190;        /* 날아가는 동안 */
 
@@ -268,11 +273,23 @@
     hintEl.appendChild(el('span', 'chint__side', spec.left.hint));
     hintEl.appendChild(el('span', 'chint__side', spec.right.hint));
 
+    /* 어느 챕터 어느 섹션에서 온 카드인지. 그 섹션으로 바로 갈 수 있게 링크로 둔다 —
+       카드만 봐서는 이해가 안 될 때 본문을 열어 보는 것이 유일한 다음 행동이다. */
     var chapter = TOC[card.ch];
+    var sec = chapter && (chapter.s || [])[card.s];
+    var where = card.ch.slice(2) +
+      (chapter ? ' · ' + chapter.t.replace(/^\d+\.\s*/, '') : '') +
+      (sec ? ' · ' + sec.t : '');
+
     metaEl.innerHTML = '';
-    var where = el('span', 'cmeta__where',
-      card.ch.slice(2) + (chapter ? ' · ' + chapter.t.replace(/^\d+\.\s*/, '') : ''));
-    metaEl.appendChild(where);
+    if (sec) {
+      var link = el('a', 'cmeta__where', where);
+      link.href = card.ch + '/' + sec.f;
+      link.title = '이 카드가 나온 본문으로 이동';
+      metaEl.appendChild(link);
+    } else {
+      metaEl.appendChild(el('span', 'cmeta__where', where));
+    }
     if (saved[card.id]) metaEl.appendChild(el('span', 'cmeta__saved', '★ 저장됨'));
     metaEl.appendChild(el('span', 'cmeta__pos', (pos + 1) + ' / ' + deck.length));
 
@@ -295,10 +312,16 @@
   function bindInput() {
     var startX = 0, startY = 0, dragging = false, swiped = false;
     var axis = '';        /* '' 아직 판단 안 함 · 'x' 카드 넘기기 · 'y' 페이지 스크롤 */
+    var fromTouch = false;
 
-    /* --- 마우스: 카드를 좌·가운데·우 세 구역으로 나눠 누른 위치로 구분 --- */
+    /* --- 누르기 ---
+       마우스는 카드를 좌·가운데·우 세 구역으로 나눠 누른 위치로 구분한다.
+       손가락은 구역을 나누지 않고 **어디를 눌러도 뒤집기**다 —
+       모바일에서 넘기는 방법은 미는 것이고, 좁은 화면에서 구역까지 겨누게 하면
+       뒤집으려다 카드가 넘어가 버린다. */
     cardEl.addEventListener('click', function (e) {
-      if (swiped) { swiped = false; return; }   /* 스와이프 뒤 따라오는 click 은 버린다 */
+      if (swiped) { swiped = false; fromTouch = false; return; }   /* 스와이프 뒤 click 은 버린다 */
+      if (fromTouch) { fromTouch = false; flip(); return; }
       var z = zoneOf(e.clientX);
       if (z === 'mid') flip(); else act(z);
     });
@@ -323,6 +346,7 @@
       dragging = true;
       swiped = false;
       axis = '';
+      fromTouch = true;
       cardEl.classList.add('is-dragging');
     }, { passive: true });
 
@@ -419,7 +443,8 @@
 
     /* 뒤집기 안내를 카드 위 힌트 줄에서 뺐으므로 여기서만 알려 준다 */
     deckEl.appendChild(el('p', 'ckeys',
-      '가운데를 눌러 뒤집기 · 좌우 끝을 눌러 넘기기 · 폰에서는 좌우로 밀기' +
+      '가운데를 눌러 뒤집기 · 좌우 끝을 눌러 넘기기' +
+      '  |  모바일은 눌러서 뒤집고 좌우로 밀어 넘기기' +
       '  |  Space 뒤집기 · ← → 넘기기 · Backspace 되돌리기'));
 
     root.appendChild(deckEl);

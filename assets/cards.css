@@ -52,11 +52,15 @@
 
 /* ---------- 카드 위 정보 ---------- */
 .cmeta {
-  display: flex; align-items: center; gap: 8px;
+  display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 8px;
   margin: 0 0 8px;
   font-size: 12px; color: var(--fg-faint);
 }
-.cmeta__where { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* 챕터 · 섹션까지 담아 길어졌다. 잘라 내지 말고 줄바꿈시킨다 —
+   어느 섹션에서 온 카드인지가 잘리면 적어 둔 뜻이 없다. */
+.cmeta__where { flex: 1 1 auto; min-width: 0; word-break: keep-all; }
+a.cmeta__where { color: inherit; text-decoration: none; }
+a.cmeta__where:hover { color: var(--accent); text-decoration: underline; }
 .cmeta__saved { flex: none; color: var(--star, var(--warn)); font-weight: 700; }
 .cmeta__pos { flex: none; font-variant-numeric: tabular-nums; }
 
