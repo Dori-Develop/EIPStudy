@@ -277,9 +277,6 @@
 
     frontEl.innerHTML = card.f;
     backEl.innerHTML = card.b;
-    /* 긴 글은 가운데 정렬로 두면 줄마다 시작점이 달라 읽기 어렵다 — 왼쪽으로 붙인다 */
-    backEl.classList.toggle('is-long', backEl.textContent.length > 60);
-    frontEl.classList.toggle('is-long', frontEl.textContent.length > 60);
     cardEl.classList.toggle('is-flipped', flipped);
     cardEl.setAttribute('aria-label',
       '암기 카드 ' + (pos + 1) + '번. 가운데를 누르면 뒤집힙니다.');
