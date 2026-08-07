@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="부록 암기 요약을 카드로 넘기며 외우기 — 정보처리기사 실기 학습 사이트">
+<title>암기 카드 · EIP Study</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/cards.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <a class="hdr__title" href="index.html" style="padding-left:8px">
+    EIP Study
+    <small>정보처리기사 실기</small>
+  </a>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="layout">
+  <main class="main">
+    <div class="wrap">
+
+      <section class="hero">
+        <h1>암기 카드</h1>
+        <p>
+          각 챕터 부록의 핵심 암기 요약을 카드로 넘깁니다.
+          <b>왼쪽은 남기고 오른쪽은 흘려보냅니다.</b>
+          저장한 카드는 「저장함」에서 다시 넘기며 하나씩 비워 나갑니다.
+        </p>
+      </section>
+
+      <div id="cards"></div>
+
+      <footer class="footer">
+        <p>
+          저장한 카드는 이 브라우저에만 기록됩니다.
+          <a class="dangerlink" href="index.html">← 홈으로</a>
+        </p>
+      </footer>
+
+    </div>
+  </main>
+</div>
+
+<script src="assets/app.js"></script>
+<script src="assets/toc.js"></script>
+<script src="assets/cards-data.js"></script>
+<script src="assets/cards.js"></script>
+</body>
+</html>

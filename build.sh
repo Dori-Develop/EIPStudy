@@ -514,5 +514,105 @@ gloss_n="$(wc -l < "$GLOSS_ABBR" | tr -d ' ')"
 rm -f "$GLOSS_TSV" "$GLOSS_ABBR" "$GLOSS_HITS"
 echo "  ✓ assets/glossary-data.js (약어 ${gloss_n}개)"
 
+# ---- 9) 암기 카드 (cards.html) ----
+# 12개 챕터 전부 마지막 섹션이 "## 📌 부록 — 핵심 암기 요약" 이고
+# `구분 | 암기 포인트` 2열 표다. 앞면 = 좌변 · 뒷면 = 우변.
+#
+# 🔒 id 는 행 번호로 매기지 않는다. 부록에 한 줄만 끼워 넣어도 그 아래가 전부 밀려
+#    저장해 둔 카드가 딴 것으로 바뀐다. 좌변 텍스트를 슬러그로 만들어 쓴다.
+#
+# 📌 챕터별로 쪼개지 않고 파일 하나로 만든다. 은행(bank-chNN.js)은 섹션 퀴즈가
+#    한 챕터만 쓰므로 쪼갤 값어치가 있지만, 암기 카드의 기본 모드는 "전체 카드"라
+#    어차피 12개를 다 싣는다. 쪼개면 요청만 11개 늘어난다. 전체가 40KB 남짓이다.
+{
+  printf '/* build.sh 가 content/*.md 의 부록 표에서 뽑아 생성한다. 직접 고치지 말 것.\n'
+  printf '   id · ch 챕터 · s 부록 섹션 순번(0부터) · f 앞면(구분) · b 뒷면(암기 포인트) */\n'
+  printf 'window.EIP_CARDS = [\n'
+
+  first_card=0
+  for md in "${sources[@]}"; do
+    awk -v ch="$(basename "$md" .md)" -v first="$first_card" '
+      function trim(s) { gsub(/^[ \t]+|[ \t]+$/, "", s); return s }
+
+      # 마크다운 강조를 HTML 로. <br> 는 살린다.
+      # 순서가 중요하다 — 먼저 <br> 를 감춰 두고, & < > 를 이스케이프한 뒤, 강조를 편다.
+      function render(s) {
+        gsub(/<br[ ]*\/?>/, "\001", s)
+        gsub(/&/, "\\&amp;", s)
+        gsub(/</, "\\&lt;", s)
+        gsub(/>/, "\\&gt;", s)
+        while (match(s, /\*\*[^*]+\*\*/)) {
+          s = substr(s, 1, RSTART - 1) "<b>" substr(s, RSTART + 2, RLENGTH - 4) "</b>" \
+              substr(s, RSTART + RLENGTH)
+        }
+        while (match(s, /`[^`]+`/)) {
+          s = substr(s, 1, RSTART - 1) "<code>" substr(s, RSTART + 1, RLENGTH - 2) "</code>" \
+              substr(s, RSTART + RLENGTH)
+        }
+        gsub(/\001/, "<br>", s)
+        gsub(/\\/, "\\\\", s); gsub(/"/, "\\\"", s)
+        return s
+      }
+
+      # 좌변 텍스트 → id 슬러그.  "**결합도(약→강)**" → "결합도약강"
+      # ⚠️ 한글을 살려야 하므로 [^A-Za-z0-9] 같은 부정 클래스를 쓰면 안 된다 —
+      #    C 로케일에서는 바이트 단위로 매칭돼 한글이 통째로 지워진다.
+      #    ASCII 만 담긴 클래스([ -~])로 "ASCII 인쇄문자인가"를 물어 한 글자씩 거른다.
+      function slug(s,   i, c, out) {
+        gsub(/\*\*/, "", s); gsub(/`/, "", s); gsub(/<br[ ]*\/?>/, " ", s)
+        # 여러 바이트 문장부호는 낱개 리터럴로 지운다. 클래스에 넣으면 한글 바이트를 깨뜨린다.
+        gsub(/→/, "", s); gsub(/←/, "", s); gsub(/↔/, "", s); gsub(/⇒/, "", s)
+        gsub(/·/, "", s); gsub(/—/, "", s); gsub(/–/, "", s); gsub(/…/, "", s)
+        gsub(/⭐/, "", s); gsub(/📌/, "", s); gsub(/⚠️/, "", s); gsub(/💡/, "", s)
+        gsub(/×/, "", s); gsub(/～/, "", s); gsub(/’/, "", s); gsub(/‘/, "", s)
+        out = ""
+        for (i = 1; i <= length(s); i++) {
+          c = substr(s, i, 1)
+          if (c ~ /[A-Za-z0-9]/) { out = out c; continue }
+          if (c ~ /[ -~]/) continue          # 그 밖의 ASCII(공백·괄호·기호)는 버린다
+          out = out c                        # ASCII 가 아닌 것(한글 등)은 그대로 둔다
+        }
+        return out
+      }
+
+      BEGIN { sec = 0; fence = 0; inApx = 0; n = first + 0 }
+
+      {
+        line = $0; sub(/\r$/, "", line)
+        if (line ~ /^```/) { fence = 1 - fence; next }
+        if (fence) next
+        if (line ~ /^## /) { sec++; inApx = (line ~ /부록/) }
+        if (!inApx) next
+        if (line !~ /^[ \t]*\|/) next
+
+        cnt = split(line, cell, "|")
+        # "| 앞 | 뒤 |" 는 split 결과가 4칸(양끝 빈칸 포함)이다. 2열이 아니면 버린다.
+        if (cnt != 4) next
+        f = trim(cell[2]); b = trim(cell[3])
+        if (f == "" || b == "") next
+        if (f ~ /^:?-+:?$/) next                                     # |---|---| 구분줄
+        if (f == "구분" || b == "암기 포인트") next                  # 머리글
+
+        id = slug(f)
+        if (id == "") id = "row"
+        if (id in used) { used[id]++; key = id "-" used[id] } else { used[id] = 1; key = id }
+
+        printf "%s{id:\"%s-card-%s\",ch:\"%s\",s:%d,f:\"%s\",b:\"%s\"}\n", \
+               (n ? "," : ""), ch, key, ch, sec - 1, render(f), render(b)
+        n++
+      }
+
+      END { print n > "/dev/stderr" }
+    ' "$md" 2> ".cardcount"
+    first_card="$(cat .cardcount)"
+  done
+
+  printf '];\n'
+} > "assets/cards-data.js"
+
+card_n="$first_card"
+rm -f .cardcount
+echo "  ✓ assets/cards-data.js (카드 ${card_n}장)"
+
 echo ""
 echo "빌드 완료. ${sources[*]} → 챕터 목차 + 섹션 페이지"

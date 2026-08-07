@@ -218,7 +218,8 @@
         if (!confirm('이 브라우저에 쌓인 학습 기록을 전부 지웁니다.\n\n' +
                      '  · 섹션 학습 진도\n' +
                      '  · 오답노트 (틀린 횟수 · 분류)\n' +
-                     '  · ★ 저장한 문제\n\n' +
+                     '  · ★ 저장한 문제\n' +
+                     '  · 저장한 암기 카드\n\n' +
                      '되돌릴 수 없습니다. 계속할까요?')) return;
         store.keys().forEach(function (k) {
           if (!isKept(k)) store.remove(k);
