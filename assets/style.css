@@ -431,12 +431,25 @@ button { font: inherit; cursor: pointer; }
   counter-increment: quiz;
   padding: 16px;
   border-top: 1px solid var(--border-soft);
+  position: relative;
 }
 .quiz__item:first-child { border-top: 0; }
 
+/* ★ 저장한 문제 — 지문 오른쪽 위. 지문이 닿지 않도록 quiz__q 에 여백을 준다 */
+.quiz__fav {
+  position: absolute; top: 12px; right: 12px;
+  background: none; border: 0; padding: 2px 4px;
+  font-size: 15px; line-height: 1; cursor: pointer;
+  color: var(--border);
+  transition: color .15s, transform .1s;
+}
+.quiz__fav:hover { color: var(--fg-muted); }
+.quiz__fav:active { transform: scale(.88); }
+.quiz__fav[aria-pressed="true"] { color: var(--warn); }
+
 .quiz__q {
   font-size: 14.5px; line-height: 1.65; margin: 0 0 11px;
-  padding-left: 25px; position: relative;
+  padding-left: 25px; padding-right: 26px; position: relative;
 }
 .quiz__q::before {
   content: counter(quiz) ".";

@@ -43,8 +43,10 @@ for md in "${sources[@]}"; do
   quiz_scripts=""
   if [ -f "content/quiz/${id}.js" ]; then
     cp "content/quiz/${id}.js" "assets/bank-${id}.js"
+    # wrongstore.js 가 먼저 와야 한다 — quiz.js 가 window.EIP_WRONG 을 참조한다.
     quiz_scripts="
 <script src=\"../assets/bank-${id}.js\"></script>
+<script src=\"../assets/wrongstore.js\"></script>
 <script src=\"../assets/quiz.js\"></script>"
   fi
 

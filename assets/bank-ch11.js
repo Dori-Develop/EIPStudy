@@ -68,7 +68,7 @@ window.EIP_BANK_ch11 = [
   {
     id: 'ch11-s02-03', ch: 11, sec: 2,
     t: 'short',
-    q: '주기억장치에 <b>흩어진 단편화 공간을 한데 모아</b> 하나의 큰 가용 공간을 만드는 작업은? (쓰레기 수집이라고도 함)',
+    q: '주기억장치에 <b>흩어진 단편화 공간을 한데 모아</b> 하나의 큰 가용 공간을 만드는 작업은?',
     a: ['압축', 'Compaction', '컴팩션'],
     why: '<b>압축(Compaction)</b> 이다. <b>쓰레기 수집(Garbage Collection)</b> 이라고도 한다. 인접한 것끼리만 합치는 <b>통합(Coalescing)</b> 과 구분한다.',
     d: 3, y: [], tag: ['단편화', '압축'], lang: null, code: null
@@ -562,7 +562,7 @@ window.EIP_BANK_ch11 = [
   {
     id: 'ch11-s14-03', ch: 11, sec: 14,
     t: 'short',
-    q: '교착 상태의 <b>필요 충분 조건 중 하나를 제거</b>해 아예 발생하지 않게 하는 해결 방법은? (자원 낭비가 가장 심함)',
+    q: '교착 상태의 <b>필요 충분 조건 중 하나를 제거</b>해 아예 발생하지 않게 하는 해결 방법은?',
     a: ['예방', 'Prevention'],
     why: '<b>예방(Prevention)</b> 이다. 발생 가능성을 두되 피해 나가는 것이 <b>회피(Avoidance)</b>, 발생 여부를 점검하는 것이 <b>발견(Detection)</b>, 사후 처리가 <b>회복(Recovery)</b> 이다.',
     d: 2, y: [], tag: ['교착상태', '예방'], lang: null, code: null

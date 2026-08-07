@@ -38,16 +38,15 @@
     if (store) store.set(key, value);
   }
 
-  /* 오답노트는 챕터를 나누지 않고 하나로 모은다.
-     섹션 퀴즈와 모의 문제지가 같은 키를 공유해야 "틀린 문제가 다시 나온다"가 성립한다. */
+  /* 오답 기록은 assets/wrongstore.js 가 전담한다.
+     오답노트 화면(wrong.html)과 분류 규칙을 공유해야 하므로 여기서 직접 다루지 않는다.
+
+     🚨 예전에는 정답이면 기록을 지웠다. 그러면 "틀렸다가 맞은 문제"(2번 분류)가
+        원리상 만들어지지 않아서 폐기했다. → PLAN-quiz.md 10장 */
+  var W = window.EIP_WRONG || null;
+
   function recordResult(item, correct) {
-    var wrong = getJSON('wrong.all', {}) || {};
-    if (correct) {
-      if (wrong[item.id]) delete wrong[item.id];
-    } else {
-      wrong[item.id] = (wrong[item.id] || 0) + 1;
-    }
-    setJSON('wrong.all', wrong);
+    if (W) W.record(item.id, correct);
   }
 
   function saveScore(score, total) {
@@ -154,6 +153,20 @@
   /* ----------------------------------------------------------- 문항 한 줄 */
   function buildRow(item) {
     var li = el('li', 'quiz__item');
+
+    /* ★ 저장한 문제 — 맞고 틀림과 무관한 별도 축이라 채점 전후 언제나 누를 수 있다 */
+    if (W) {
+      var fav = el('button', 'quiz__fav', '★');
+      fav.type = 'button';
+      fav.setAttribute('aria-label', '저장한 문제로 표시');
+      fav.title = '저장한 문제로 표시';
+      fav.setAttribute('aria-pressed', W.isFav(item.id) ? 'true' : 'false');
+      fav.addEventListener('click', function () {
+        fav.setAttribute('aria-pressed', W.toggleFav(item.id) ? 'true' : 'false');
+      });
+      li.appendChild(fav);
+    }
+
     li.appendChild(html('div', 'quiz__q', item.q));
 
     if (item.t === 'code' && item.code) {
