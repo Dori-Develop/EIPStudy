@@ -277,12 +277,6 @@
     if (text != null) n.textContent = text;
     return n;
   }
-  function html(tag, cls, markup) {
-    var n = document.createElement(tag);
-    if (cls) n.className = cls;
-    if (markup != null) n.innerHTML = markup;
-    return n;
-  }
   function $(sel) { return document.querySelector(sel); }
 
   var setupBox, sheetBox, cards = [], timerId = null, current = null, submitBtn = null;

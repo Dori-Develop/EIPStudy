@@ -6,3 +6,4 @@
 # 내용 변화 없이 수정된 것으로 잡혀 진짜 변경이 묻힌다.
 *.html text eol=lf
 *.js   text eol=lf
+*.css  text eol=lf

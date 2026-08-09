@@ -207,14 +207,6 @@ button { font: inherit; cursor: pointer; }
 .toc a.is-active .num { color: var(--accent); }
 .toc a.done .num::after { content: " ✓"; color: var(--good); }
 
-.toc__caret {
-  flex: none; width: 28px;
-  border: 0; background: transparent; color: var(--fg-faint);
-  border-radius: var(--radius-s); font-size: 11px;
-}
-.toc__caret:hover { background: var(--bg-sunken); color: var(--fg); }
-.toc__caret[aria-expanded="true"] { transform: rotate(90deg); }
-
 .toc__sub { list-style: none; margin: 0 0 6px; padding: 0 0 0 14px; display: none; }
 .toc__sub.is-open { display: block; }
 .toc__sub a { font-size: 13px; padding: 5px 10px; color: var(--fg-faint); }
