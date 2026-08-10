@@ -769,7 +769,7 @@
     foot.appendChild(again);
     sheetBox.appendChild(foot);
 
-    setBack("← 설정으로", "모의 문제지 #" + current.seed, backToSetup);
+    setBack("← 모의 문제지", "#" + current.seed, backToSetup);
 
     if (current.mins) startTimer(current.mins * 60);
     window.scrollTo(0, 0);
@@ -812,6 +812,8 @@
       a.addEventListener('click', backHandler);
     } else {
       a.href = 'index.html';
+      /* 직전이 우리 사이트면 「← 뒤로」로 바꿔 준다 — 규칙은 app.js 한 곳에만 있다 */
+      if (window.EIP && window.EIP.initBack) window.EIP.initBack();
     }
   }
   var backHandler = null;

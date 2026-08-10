@@ -281,10 +281,12 @@ a.cmeta__where:hover { color: var(--accent); text-decoration: underline; }
 .page-cards .cdone { flex: none; }
 .page-cards .footer { flex: none; margin-top: 10px; padding-top: 10px; }
 
-/* 화면이 낮으면 설명부터 접는다. 같은 안내가 카드 위 좌우 힌트에 또 있다 */
+/* 화면이 낮으면 설명부터 접는다. 같은 안내가 카드 위 좌우 힌트에 또 있다.
+   🚨 푸터를 통째로 숨기면 바로가기까지 사라진다 — 설명 줄만 접고 바로가기는 남긴다. */
 @media (max-height: 700px) {
   .page-cards .hero p { display: none; }
-  .page-cards .footer { display: none; }
+  .page-cards .footer p { display: none; }
+  .page-cards .footer { margin-top: 6px; padding-top: 6px; }
 }
 @media (max-height: 560px) {
   .page-cards .hero { display: none; }
@@ -304,3 +306,14 @@ a.cmeta__where:hover { color: var(--accent); text-decoration: underline; }
   .page-cards .hero, .page-cards .hero p, .page-cards .footer { display: block; }
   .page-cards .ccard, .page-cards .ccard__inner { min-height: 260px; }
 }
+
+/* 바로가기는 이 화면에서 한 줄로 눕힌다 — 자리가 없어 감추면 안 된다.
+   넘치면 가로로 민다. 이 화면은 세로로 스크롤되지 않으므로 줄이 늘면 카드가 줄어든다. */
+.page-cards .toolnav {
+  flex-wrap: nowrap;
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+  margin-top: 8px; padding-bottom: 2px;
+  scrollbar-width: none;
+}
+.page-cards .toolnav::-webkit-scrollbar { display: none; }
+.page-cards .toolnav__item, .page-cards .toolnav__title { flex: none; }

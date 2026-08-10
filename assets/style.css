@@ -1346,3 +1346,37 @@ mark, .hl {
 }
 .exam__histask { flex: 1 1 auto; font-size: 12.5px; color: var(--warn); }
 .exam__histrow.is-asking { border-color: var(--warn); }
+
+/* 헤더 오른쪽 브랜드 — 도구 이름이 제목 자리로 가면서 「정보처리기사 실기」가
+   갈 데가 없어졌다. 비어 있던 가운데를 채운다. 좁은 화면에서는 접는다. */
+.hdr__brand {
+  flex: none; margin-right: 4px;
+  font-size: 11.5px; color: var(--fg-faint); white-space: nowrap;
+}
+@media (max-width: 520px) { .hdr__brand { display: none; } }
+
+/* 도구 바로가기에 이름표 — 없으면 해시태그처럼 보인다 */
+.toolnav__title {
+  align-self: center;
+  margin-right: 2px;
+  font-size: 12px; font-weight: 700; color: var(--fg-muted);
+}
+
+/* 오답노트 페이지 넘김 — 목록 위아래에 같은 것을 둔다.
+   아래에만 두면 위에서 넘기려고 끝까지 내려가야 한다. */
+.wpager {
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  padding: 4px 0;
+}
+.wpager__btn {
+  padding: 6px 12px;
+  background: var(--bg-elev); color: var(--fg-muted);
+  border: 1px solid var(--border); border-radius: var(--radius-s);
+  font-family: inherit; font-size: 12.5px; cursor: pointer;
+}
+.wpager__btn:hover:not(:disabled) { border-color: var(--accent); color: var(--fg); }
+.wpager__btn:disabled { opacity: .35; cursor: default; }
+.wpager__now {
+  min-width: 56px; text-align: center;
+  font-size: 12.5px; color: var(--fg-faint); font-variant-numeric: tabular-nums;
+}

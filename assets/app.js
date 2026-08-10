@@ -296,6 +296,39 @@
     { href: 'glossary.html', label: '약어 사전' }
   ];
 
+  /* ==================================== 헤더 뒤로가기 (도구 페이지 공통) */
+  /* 💬 "오답노트 보기 누르면 오답노트로 가는데 여기는 뒤로가기 버튼이 없어.
+        오답노트 보기 누르기 직전으로 가고 싶어."
+
+     도구끼리 오갈 때 「직전으로」 돌아갈 길이 필요하다. 그 기록은 이미 브라우저가
+     들고 있으므로 따로 저장하지 않는다 — history.back() 을 부르면 된다.
+
+     🚨 다만 그냥 back() 을 걸면 안 된다. 주소를 직접 치고 들어왔거나 새 탭으로 열었으면
+        돌아갈 데가 없어 사이트 밖으로 나가 버린다.
+        **같은 사이트에서 왔을 때만** 뒤로가고, 아니면 홈으로 보낸다.
+
+     📌 exam.js 는 한 페이지 안에서 화면이 바뀌므로 자기 setBack 으로 덮어쓴다.
+        여기서는 첫 상태만 정한다. */
+  function initBackLink() {
+    var a = $('.js-back');
+    if (!a) return;
+
+    var ref = document.referrer || '';
+    var sameSite = ref.indexOf(location.protocol + '//' + location.host) === 0 ||
+                   (location.protocol === 'file:' && ref.indexOf('file:') === 0);
+    /* 같은 페이지를 새로고침한 것은 「직전」이 아니다 */
+    var samePage = ref.split('#')[0] === location.href.split('#')[0];
+
+    if (!sameSite || samePage) return;   /* 기본값 「← 홈」 그대로 둔다 */
+
+    a.textContent = '← 뒤로';
+    a.href = '#';
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      history.back();
+    });
+  }
+
   function initToolNav() {
     var host = $('.js-toolnav');
     if (!host) return;
@@ -304,6 +337,9 @@
     var here = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
 
     host.innerHTML = '';
+    /* 💬 "그냥 해시태그인줄 알았네" — 무엇인지 알려 주는 말이 앞에 있어야 한다 */
+    host.appendChild(el('span', 'toolnav__title', '바로가기'));
+
     TOOLS.forEach(function (t) {
       if (t.href.toLowerCase() === here) return;
       var a = el('a', 'toolnav__item');
@@ -987,6 +1023,7 @@
     initSidebar();
     initHome();
     initReset();
+    initBackLink();
     initToolNav();
     initScrollNav();
 
@@ -1007,5 +1044,7 @@
     boot();
   }
 
-  window.EIP = { store: store, theme: theme };
+  /* exam.js 는 한 페이지 안에서 화면이 바뀌므로 「← 홈」 상태로 되돌릴 때
+     같은 규칙(직전이 우리 사이트면 뒤로)을 다시 적용해야 한다. */
+  window.EIP = { store: store, theme: theme, initBack: initBackLink };
 })();

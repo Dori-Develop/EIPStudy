@@ -39,6 +39,13 @@
   var sortKey = 'at';
   var sortDir = -1;   /* 1 오름차순 · -1 내림차순 */
   var chFilter = '';  /* '' 이면 전체 챕터 */
+
+  /* 💬 "몇 개씩 보기 설정할 수 있도록 하고, 좌우 페이지 넘길 수 있도록"
+     한 화면에 수십 장이 깔리면 아래로 내려갈수록 무엇을 보고 있었는지 놓친다.
+     🔒 페이지 크기는 저장하지 않는다 — 정렬·필터와 같은 기준이다 (아래 「고른 값은 저장하지 않는다」). */
+  var PAGE_SIZES = [10, 20, 50, 0];   /* 0 = 전체 */
+  var pageSize = 10;
+  var page = 0;
   var byId = {};      /* 문항 id → 문항 */
   var entries = {};   /* 문항 id → 기록 */
   var favs = {};
@@ -233,6 +240,7 @@
       chSel.value = chFilter;
       chSel.addEventListener('change', function () {
         chFilter = chSel.value;
+        page = 0;
         renderTabs();
         renderList();
       });
@@ -253,6 +261,7 @@
     sortSel.value = sortKey;
     sortSel.addEventListener('change', function () {
       sortKey = sortSel.value;
+      page = 0;
       /* 기준을 바꾸면 그 기준의 자연스러운 방향으로 되돌린다 */
       SORTS.forEach(function (s) { if (s.k === sortKey) sortDir = s.dir; });
       renderControls();
@@ -267,9 +276,27 @@
     dirBtn.addEventListener('click', function () {
       sortDir = -sortDir;
       dirBtn.textContent = sortDir < 0 ? '↓ 내림차순' : '↑ 오름차순';
+      page = 0;
       renderList();
     });
     ctlEl.appendChild(dirBtn);
+
+    /* ---- 몇 개씩 보기 ---- */
+    var sizeSel = el('select', 'wctl__sel');
+    sizeSel.title = '한 화면에 보여 줄 개수';
+    sizeSel.setAttribute('aria-label', '한 화면에 보여 줄 개수');
+    PAGE_SIZES.forEach(function (n) {
+      var op = el('option', null, n ? n + '개씩' : '전체 보기');
+      op.value = String(n);
+      sizeSel.appendChild(op);
+    });
+    sizeSel.value = String(pageSize);
+    sizeSel.addEventListener('change', function () {
+      pageSize = parseInt(sizeSel.value, 10) || 0;
+      page = 0;
+      renderList();
+    });
+    ctlEl.appendChild(sizeSel);
   }
 
   function renderTabs() {
@@ -283,6 +310,7 @@
       b.setAttribute('aria-pressed', t.k === current ? 'true' : 'false');
       b.addEventListener('click', function () {
         current = t.k;
+        page = 0;
         renderTabs();
         renderList();
       });
@@ -290,11 +318,55 @@
     });
   }
 
+  function pageCount(n) {
+    if (!pageSize) return 1;
+    return Math.max(1, Math.ceil(n / pageSize));
+  }
+
+  /* 페이지 넘김 줄 — 목록 위아래에 같은 것을 둔다.
+     아래에만 두면 위에서 넘기려고 끝까지 내려가야 한다. */
+  function buildPager(total) {
+    var pages = pageCount(total);
+    if (pages <= 1) return null;
+
+    var box = el('div', 'wpager');
+
+    var prev = el('button', 'wpager__btn', '← 이전');
+    prev.type = 'button';
+    prev.disabled = page <= 0;
+    prev.addEventListener('click', function () { goPage(page - 1); });
+    box.appendChild(prev);
+
+    box.appendChild(el('span', 'wpager__now', (page + 1) + ' / ' + pages));
+
+    var next = el('button', 'wpager__btn', '다음 →');
+    next.type = 'button';
+    next.disabled = page >= pages - 1;
+    next.addEventListener('click', function () { goPage(page + 1); });
+    box.appendChild(next);
+
+    return box;
+  }
+
+  function goPage(n) {
+    page = n;
+    renderList();
+    /* 넘긴 뒤에는 목록 맨 위로 — 안 그러면 이전 페이지의 스크롤 위치에 남는다 */
+    if (listEl.scrollIntoView) listEl.scrollIntoView({ block: 'start' });
+    else window.scrollTo(0, 0);
+  }
+
   function renderList() {
     listEl.innerHTML = '';
-    var ids = idsFor(current);
+    var all = idsFor(current);
 
-    if (!ids.length) {
+    /* 필터·정렬이 바뀌어 페이지가 범위를 넘으면 마지막 페이지로 당긴다 */
+    if (page >= pageCount(all.length)) page = pageCount(all.length) - 1;
+    if (page < 0) page = 0;
+
+    var ids = pageSize ? all.slice(page * pageSize, (page + 1) * pageSize) : all;
+
+    if (!all.length) {
       emptyEl.hidden = false;
       if (chFilter) {
         emptyEl.textContent = ((TOC[chFilter] && TOC[chFilter].t) || chFilter) +
@@ -308,11 +380,17 @@
     }
     emptyEl.hidden = true;
 
+    var top = buildPager(all.length);
+    if (top) listEl.appendChild(top);
+
     ids.forEach(function (id) {
       var item = byId[id];
       /* 은행이 아직 없는 챕터의 기록이면 최소 정보만 보여 준다 */
       listEl.appendChild(item ? buildCard(item) : buildStub(id));
     });
+
+    var bottom = buildPager(all.length);
+    if (bottom) listEl.appendChild(bottom);
   }
 
   function buildStub(id) {
