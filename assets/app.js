@@ -276,6 +276,43 @@
     }
   }
 
+  /* ==================================== 도구 바로가기 (도구 페이지 푸터) */
+  /* 도구가 여섯이다. 홈으로 갔다가 다시 고르면 두 번 이동이라
+     푸터에서 바로 건너갈 수 있게 한다.
+
+     🔒 **고정 하단 탭바로 만들지 않는다.**
+        ① 오른쪽 아래에 이미 ↑↓ 버튼(.scrollnav)이 있어 겹친다
+        ② 암기 카드는 화면을 꽉 채우는 구조라(T26) 하단 바가 그 높이를 먹는다
+        ③ 시험 중에는 방해다 — 잘못 누르면 답안이 날아간다
+
+     📌 HTML 여섯 장에 각각 적지 않고 여기서 그린다. 도구가 늘어도 이 배열만 고친다. */
+  var TOOLS = [
+    { href: 'index.html', label: '홈' },
+    { href: 'chapters.html', label: '학습 정리본' },
+    { href: 'exam.html', label: '모의 문제지' },
+    { href: 'cards.html', label: '암기 카드' },
+    { href: 'wrong.html', label: '오답노트' },
+    { href: 'notes.html', label: '메모 모아보기' },
+    { href: 'glossary.html', label: '약어 사전' }
+  ];
+
+  function initToolNav() {
+    var host = $('.js-toolnav');
+    if (!host) return;
+
+    /* 지금 보고 있는 페이지는 뺀다 — 제자리로 가는 링크는 눌러 볼 이유가 없다 */
+    var here = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+
+    host.innerHTML = '';
+    TOOLS.forEach(function (t) {
+      if (t.href.toLowerCase() === here) return;
+      var a = el('a', 'toolnav__item');
+      a.href = t.href;
+      a.textContent = t.label;
+      host.appendChild(a);
+    });
+  }
+
   /* ------------------------------------------------- 사이드바 목차 (공통) */
   function buildSidebar(doc) {
     var nav = $('#toc');
@@ -950,6 +987,7 @@
     initSidebar();
     initHome();
     initReset();
+    initToolNav();
     initScrollNav();
 
     if (CH && CH.page === 'index') {

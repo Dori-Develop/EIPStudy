@@ -1313,3 +1313,36 @@ mark, .hl {
 }
 .exam__histbtn:hover { border-color: var(--accent); color: var(--fg); }
 .exam__histnone { font-size: 11.5px; color: var(--fg-faint); }
+
+/* ---------- 도구 바로가기 (app.js initToolNav) ---------- */
+/* 🔒 고정 하단 탭바가 아니라 푸터 안의 줄이다 — 이유는 app.js TOOLS 주석 참고 */
+.toolnav {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin: 12px 0 0;
+}
+.toolnav__item {
+  padding: 6px 11px;
+  background: var(--bg-elev); color: var(--fg-muted);
+  border: 1px solid var(--border); border-radius: 999px;
+  font-size: 12.5px; text-decoration: none;
+  transition: border-color .15s, color .15s;
+}
+.toolnav__item:hover { border-color: var(--accent); color: var(--fg); }
+
+@media print { .toolnav { display: none; } }
+
+/* 이력 한 건 삭제 — 그 자리에서 다시 묻는다 (confirm 을 안 쓰는 이유는 exam.js 참고) */
+.exam__histdel {
+  margin-left: auto;
+  padding: 6px 10px;
+  background: none; color: var(--fg-faint);
+  border: 1px solid transparent; border-radius: var(--radius-s);
+  font-family: inherit; font-size: 12px; cursor: pointer;
+}
+.exam__histdel:hover { border-color: var(--warn); color: var(--warn); }
+.exam__histdel--go {
+  margin-left: 0;
+  border-color: var(--warn); color: var(--warn); font-weight: 700;
+}
+.exam__histask { flex: 1 1 auto; font-size: 12.5px; color: var(--warn); }
+.exam__histrow.is-asking { border-color: var(--warn); }

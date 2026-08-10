@@ -18,10 +18,12 @@ document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
 <body>
 
 <header class="hdr">
-  <a class="hdr__title" href="index.html" style="padding-left:8px">
-    EIP Study
-    <small>정보처리기사 실기</small>
-  </a>
+  <!-- 헤더가 fixed 라 복기 40문항 중간에서도 「뒤로」가 늘 보인다.
+       라벨과 동작은 exam.js 가 화면에 맞춰 바꾼다 (setBack). -->
+  <div class="hdr__title" style="padding-left:8px">
+    <a href="index.html" class="js-exam-back">← 홈</a>
+    <small class="js-exam-where">모의 문제지</small>
+  </div>
   <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
 </header>
 
@@ -44,8 +46,8 @@ document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
       <footer class="footer">
         <p>
           기록은 이 브라우저에만 저장됩니다.
-          <a class="dangerlink" href="index.html">← 홈으로</a>
         </p>
+        <nav class="toolnav js-toolnav" aria-label="다른 학습 도구"></nav>
       </footer>
 
     </div>

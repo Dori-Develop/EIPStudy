@@ -479,12 +479,70 @@
       });
       acts.appendChild(again);
 
+      /* 🔒 한 건 삭제는 그 자리에서 한 번 더 묻는다.
+         confirm() 은 제목 줄에 앱 이름·도메인이 붙어 무슨 창인지 알아볼 수 없다 (T28).
+         행 안에서 「지울까요? 예 / 아니오」로 바꾸는 편이 무엇을 지우는지도 분명하다. */
+      var del = el('button', 'exam__histdel', '삭제');
+      del.type = 'button';
+      del.title = '이 회차만 지웁니다';
+      del.setAttribute('aria-label', r.at + ' 회차 삭제');
+      del.addEventListener('click', function () { askDelete(li, acts, r); });
+      acts.appendChild(del);
+
       li.appendChild(acts);
       list.appendChild(li);
     });
 
     box.appendChild(list);
     setupBox.appendChild(box);
+  }
+
+  /* 버튼 줄을 「이 회차를 지울까요? 지운다 / 그만두기」로 잠깐 바꾼다 */
+  function askDelete(li, acts, r) {
+    acts.innerHTML = '';
+    li.classList.add('is-asking');
+
+    acts.appendChild(el('span', 'exam__histask', '이 회차를 지울까요?'));
+
+    var yes = el('button', 'exam__histdel exam__histdel--go', '지운다');
+    yes.type = 'button';
+    yes.addEventListener('click', function () { deleteRound(r); });
+    acts.appendChild(yes);
+
+    var no = el('button', 'exam__histbtn', '그만두기');
+    no.type = 'button';
+    no.addEventListener('click', function () {
+      li.classList.remove('is-asking');
+      /* 원래 버튼을 되살리는 대신 다시 그린다 —
+         innerHTML 로 되돌리면 이벤트 핸들러가 안 살아난다 */
+      refreshHistory();
+    });
+    acts.appendChild(no);
+
+  }
+
+  function deleteRound(r) {
+    var hist = historyList();
+    var out = [], i;
+    for (i = 0; i < hist.length; i++) {
+      if (hist[i].seed === r.seed && hist[i].at === r.at) continue;
+      out.push(hist[i]);
+    }
+    write('exam.history', out);
+
+    /* 이력에서 사라졌으니 그 회차 답안도 함께 지운다 — 아무도 못 여는 데이터다.
+       ⚠️ 같은 seed 가 이력에 또 있으면 남긴다 (다른 날 같은 문제지를 푼 경우). */
+    var stillThere = false;
+    for (i = 0; i < out.length; i++) { if (out[i].seed === r.seed) { stillThere = true; break; } }
+    if (!stillThere) {
+      var book = answerBook();
+      if (has(book, String(r.seed))) {
+        delete book[String(r.seed)];
+        write('exam.answers', book);
+      }
+    }
+
+    refreshHistory();
   }
 
   function chapterSummary(perCh) {
@@ -533,6 +591,8 @@
       rec.at + ' · ' + rec.score + ' / ' + rec.total));
     head.appendChild(title);
     sheetBox.appendChild(head);
+
+    setBack('← 이력으로', '복기 #' + rec.seed, backToSetup);
 
     var list = el('ol', 'quiz__list exam__list');
     var missing = 0, id;
@@ -709,15 +769,18 @@
     foot.appendChild(again);
     sheetBox.appendChild(foot);
 
+    setBack("← 설정으로", "모의 문제지 #" + current.seed, backToSetup);
+
     if (current.mins) startTimer(current.mins * 60);
     window.scrollTo(0, 0);
   }
 
   function backToSetup() {
     stopTimer();
-    sheetBox.style.display = 'none';
-    sheetBox.innerHTML = '';
-    setupBox.style.display = '';
+    sheetBox.style.display = "none";
+    sheetBox.innerHTML = "";
+    setupBox.style.display = "";
+    setBack("← 홈", "모의 문제지", null);
     /* 방금 푼 회차가 이력에 보여야 한다. 설정은 건드리지 않고 이력만 다시 그린다 —
        buildSetup 을 통째로 부르면 골라 둔 범위·분포가 초기화된다. */
     refreshHistory();
@@ -729,6 +792,29 @@
     if (old) old.parentNode.removeChild(old);
     buildHistory();
   }
+
+  /* ------------------------------------------------------- 헤더 뒤로가기 */
+  /* 🔒 헤더가 fixed 라 복기 40문항 중간에서도 늘 보인다.
+     푸터까지 스크롤해야 나오는 「뒤로」는 없는 것과 같다.
+     fn 이 없으면 홈으로 가는 평범한 링크로 되돌린다. */
+  function setBack(label, where, fn) {
+    var a = document.querySelector('.js-exam-back');
+    var w = document.querySelector('.js-exam-where');
+    if (w) w.textContent = where;
+    if (!a) return;
+
+    a.textContent = label;
+    if (backHandler) { a.removeEventListener('click', backHandler); backHandler = null; }
+
+    if (fn) {
+      a.href = '#';
+      backHandler = function (e) { e.preventDefault(); fn(); };
+      a.addEventListener('click', backHandler);
+    } else {
+      a.href = 'index.html';
+    }
+  }
+  var backHandler = null;
 
   /* ------------------------------------------------------------- 타이머 */
   function startTimer(sec) {
