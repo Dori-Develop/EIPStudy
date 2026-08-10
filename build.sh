@@ -54,7 +54,8 @@ for md in "${sources[@]}"; do
 <script src=\"../assets/bank-${id}.js\"></script>
 <script src=\"../assets/wrongstore.js\"></script>
 <script src=\"../assets/qcard.js\"></script>
-<script src=\"../assets/quiz.js\"></script>"
+<script src=\"../assets/quiz.js\"></script>
+<script src=\"../assets/concept.js\"></script>"
   fi
 
   # 메모는 은행 유무와 상관없이 모든 섹션에 붙는다.

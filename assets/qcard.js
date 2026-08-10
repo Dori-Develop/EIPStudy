@@ -19,6 +19,16 @@
 (function () {
   'use strict';
 
+  /* 문항의 ch·sec 는 **숫자**다 (ch: 1, sec: 5). 화면·파일에서 쓰는 키로 바꾼다.
+     ⚠️ id('ch01-s05-03')에서 잘라 쓰지 말 것 — 앞으로 id 규칙이 바뀌면 같이 깨진다. */
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+  function chapterKey(item) {
+    return item && item.ch ? 'ch' + pad2(item.ch) : '';
+  }
+  function sectionFile(item) {
+    return item && item.sec ? 's' + pad2(item.sec) + '.html' : '';
+  }
+
   /* --------------------------------------------------------------- DOM */
   function el(tag, cls, text) {
     var n = document.createElement(tag);
@@ -172,6 +182,16 @@
             escapeHtml(answerText(item)) + '</b>'));
         }
         if (item.why) fb.appendChild(html('div', 'quiz__why', item.why));
+
+        /* 📌 개념 보기는 **채점한 뒤에만** 낸다.
+           채점 전에도 열 수 있으면 모의 문제지가 모의고사가 아니게 된다.
+           오답노트·복기는 처음부터 채점된 상태라 늘 보인다. */
+        var C = window.EIP_CONCEPT;
+        var chKey = chapterKey(item), file = sectionFile(item);
+        if (C && chKey && file && C.has(chKey, file)) {
+          fb.appendChild(C.link(chKey, file, '📖 개념 보기', 'quiz__concept'));
+        }
+
         container.appendChild(fb);
         return fb;
       }

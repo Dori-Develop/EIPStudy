@@ -1394,3 +1394,74 @@ mark, .hl {
 }
 .wpager__gap { color: var(--fg-faint); font-size: 12px; padding: 0 2px; }
 .wpager__btn { min-width: 38px; }
+
+/* ---------- 개념 겹쳐 보기 (concept.js) ---------- */
+/* 🔒 페이지를 떠나지 않고 본문을 본다 — 시험 중이면 답안이, 목록에서는
+   스크롤 위치와 필터가 그대로 남는다. 이유는 concept.js 머리글 참고. */
+.concept {
+  position: fixed; z-index: 70;
+  left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: calc(100% - 28px); max-width: 760px;
+  height: calc(100dvh - 72px);
+  display: flex; flex-direction: column;
+  background: var(--bg); color: var(--fg);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  box-shadow: 0 20px 56px rgba(0,0,0,.32);
+  overflow: hidden;
+}
+
+.concept__head {
+  flex: none;
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-elev);
+}
+.concept__titles { flex: 1 1 auto; min-width: 0; }
+.concept__sec {
+  display: block; font-size: 15px; letter-spacing: -.01em;
+  word-break: keep-all;
+}
+.concept__ch { display: block; margin-top: 2px; font-size: 11.5px; color: var(--fg-faint); }
+.concept__close {
+  flex: none;
+  width: 32px; height: 32px;
+  display: grid; place-items: center;
+  background: none; color: var(--fg-faint);
+  border: 1px solid transparent; border-radius: var(--radius-s);
+  font-size: 15px; cursor: pointer;
+}
+.concept__close:hover { border-color: var(--border); color: var(--fg); }
+
+.concept__body {
+  flex: 1 1 auto; min-height: 0;
+  overflow-y: auto; overscroll-behavior: contain;
+  padding: 4px 18px 18px;
+}
+.concept__loading { margin: 28px 0; text-align: center; color: var(--fg-faint); font-size: 13.5px; }
+.concept__raw {
+  white-space: pre-wrap; word-break: break-word;
+  font-family: var(--font-mono); font-size: 12.5px; line-height: 1.7;
+}
+/* 본문은 섹션 페이지와 같은 .doc 규칙을 그대로 쓴다 — 두 벌로 만들지 않는다 */
+.concept__doc { max-width: none; }
+.concept__doc > :first-child { margin-top: 12px; }
+
+.concept__foot {
+  flex: none;
+  padding: 11px 16px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-elev);
+  text-align: right;
+}
+.concept__go { font-size: 12.5px; color: var(--accent); text-decoration: none; }
+.concept__go:hover { text-decoration: underline; }
+
+/* 채점 결과 안의 「개념 보기」 */
+.quiz__concept {
+  display: inline-block; margin: 9px 0 0;
+  font-size: 12.5px; color: var(--accent); text-decoration: none;
+}
+.quiz__concept:hover { text-decoration: underline; }
+
+@media print { .concept, .quiz__concept { display: none !important; } }

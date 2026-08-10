@@ -441,14 +441,28 @@
 
     /* ---- 머리: 위치 + ★ ---- */
     var head = el('div', 'wcard__head');
-    var href = sectionHref(id);
-    if (href) {
-      var a = el('a', 'wcard__loc', locationText(id));
-      a.href = href;
-      a.title = '이 섹션으로 이동';
-      head.appendChild(a);
+    /* 🚨 예전에는 이 링크가 **페이지를 옮겼다.** 그러면 스크롤 위치·챕터 필터·
+       페이지 번호를 잃고, 돌아올 길은 브라우저 뒤로가기뿐이었다.
+       겹쳐 열면 제자리에 그대로 있다. */
+    var C = window.EIP_CONCEPT;
+    var loc = locate(id);
+    var chapter = loc && TOC[loc.ch];
+    var sec = chapter && (chapter.s || [])[loc.sec - 1];
+
+    if (C && sec) {
+      var link = C.link(loc.ch, sec.f, locationText(id), 'wcard__loc');
+      link.title = '개념 보기';
+      head.appendChild(link);
     } else {
-      head.appendChild(el('span', 'wcard__loc', locationText(id)));
+      var href = sectionHref(id);
+      if (href) {
+        var a = el('a', 'wcard__loc', locationText(id));
+        a.href = href;
+        a.title = '이 섹션으로 이동';
+        head.appendChild(a);
+      } else {
+        head.appendChild(el('span', 'wcard__loc', locationText(id)));
+      }
     }
 
     var fav = el('button', 'quiz__fav', '★');

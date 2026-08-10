@@ -375,11 +375,18 @@
       (sec ? ' · ' + sec.t : '');
 
     metaEl.innerHTML = '';
-    if (sec) {
-      var link = el('a', 'cmeta__where', where);
-      link.href = card.ch + '/' + sec.f;
-      link.title = '이 카드가 나온 본문으로 이동';
+    /* 🚨 예전에는 여기서 **페이지를 옮겼다.** 카드 한 장 확인하러 나갔다가
+       덱 위치와 저장함 상태를 다 잃고 돌아왔다. 겹쳐 열면 제자리다. */
+    var C = window.EIP_CONCEPT;
+    if (C && sec && C.has(card.ch, sec.f)) {
+      var link = C.link(card.ch, sec.f, where, 'cmeta__where');
+      link.title = '이 카드가 나온 본문 보기';
       metaEl.appendChild(link);
+    } else if (sec) {
+      var a = el('a', 'cmeta__where', where);
+      a.href = card.ch + '/' + sec.f;
+      a.title = '이 카드가 나온 본문으로 이동';
+      metaEl.appendChild(a);
     } else {
       metaEl.appendChild(el('span', 'cmeta__where', where));
     }
