@@ -371,7 +371,8 @@
        그러면 **섹션 → 섹션** 이동에서 뒤로가기가 챕터 목록으로 튀었다.
        둘 다 「학습 정리본」이라 같은 이름으로 보였기 때문이다.
        이름이 같다고 같은 화면인 것이 아니다 → **이름을 화면 단위로 잘게 만든다** (pageName). */
-    if (!sameSite || samePage) { restoreBack(); return; }
+    /* 「빠른 이동」으로 왔으면 여기가 **새 출발점**이다. 직전을 가리키지 않는다. */
+    if (!sameSite || samePage || takeTrailReset()) { restoreBack(); return; }
 
     setBack('← ' + pageName(ref), null, function () { history.back(); });
   }
@@ -429,6 +430,10 @@
     var host = $('.js-toolnav');
     if (!host) return;
 
+    /* 🚨 섹션 페이지는 `chNN/` 안에 있다. 상대 경로를 그대로 쓰면
+       `ch01/exam.html` 을 찾다가 **404 가 뜬다.** 한 단계 올라가야 한다. */
+    var base = (CH && CH.base) || '';
+
     /* 지금 보고 있는 페이지는 뺀다 — 제자리로 가는 링크는 눌러 볼 이유가 없다 */
     var here = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
 
@@ -442,12 +447,31 @@
     TOOLS.forEach(function (t) {
       if (t.href.toLowerCase() === here) return;
       var a = el('a', 'toolnav__item');
-      a.href = t.href;
+      a.href = base + t.href;
       a.textContent = t.label;
+      /* 💬 "빠른 이동을 누르면 여태까지의 이동 기록이 초기화 되면 돼."
+         도구를 새로 고르는 것은 **새 출발**이다. 거기서 뒤로가기가
+         방금 떠난 화면을 가리키면 「빠른 이동」이 아니라 그냥 링크가 된다. */
+      a.addEventListener('click', function () { markTrailReset(); });
       row.appendChild(a);
     });
 
     host.appendChild(row);
+  }
+
+  /* 🔒 주소를 더럽히지 않으려고 sessionStorage 에 표시만 남긴다.
+     탭을 닫으면 같이 사라지고, 다른 탭에는 영향이 없다. */
+  var TRAIL_RESET = 'eip.navreset';
+
+  function markTrailReset() {
+    try { sessionStorage.setItem(TRAIL_RESET, '1'); } catch (e) {}
+  }
+  function takeTrailReset() {
+    try {
+      if (sessionStorage.getItem(TRAIL_RESET) === null) return false;
+      sessionStorage.removeItem(TRAIL_RESET);   /* 한 번만 쓴다 */
+      return true;
+    } catch (e) { return false; }
   }
 
   /* ------------------------------------------------- 사이드바 목차 (공통) */

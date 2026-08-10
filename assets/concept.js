@@ -124,6 +124,8 @@
 
     document.documentElement.style.overflow = prevOverflow;
     document.removeEventListener('keydown', onKey);
+    document.removeEventListener('mousedown', onOutside, true);
+    document.removeEventListener('touchstart', onOutside, true);
 
     /* 열기 전에 있던 자리로 초점을 돌려준다 — 키보드로 열었으면 그 버튼으로 */
     if (lastFocus && lastFocus.focus) { try { lastFocus.focus(); } catch (e) {} }
@@ -134,6 +136,22 @@
     if (e.key === 'Escape' || e.keyCode === 27) { e.preventDefault(); close(); }
   }
 
+  /* 🚨 **바깥을 눌렀는지는 문서에서 판단한다.** 가림막(scrim) 위에서 받으면
+     쌓임 순서에 기대게 되는데, 섹션 페이지에는 사이드바·검색·라이트박스가 이미
+     겹겹이 있어 실제로 안 닫히는 자리가 생겼다.
+     "겹친 창 안에서 시작한 것이 아니면 닫는다" 는 판단은 순서와 무관하다.
+
+     ⚠️ mousedown 으로 받는다 — 누른 곳과 뗀 곳이 다르면 click 은 아예 안 난다. */
+  function onOutside(e) {
+    if (!box) return;
+    var n = e.target;
+    while (n) {
+      if (n === box) return;      /* 창 안에서 시작했다 */
+      n = n.parentNode;
+    }
+    close();
+  }
+
   function open(ch, file) {
     close();
     lastFocus = document.activeElement;
@@ -142,11 +160,6 @@
     var chapter = TOC()[ch];
 
     scrim = el('div', 'scrim is-open');
-    /* 🚨 click 만으로는 PC 에서 안 닫히는 경우가 있었다.
-       누른 곳과 뗀 곳이 다르면 click 이 안 난다. mousedown 으로도 받는다. */
-    scrim.addEventListener('mousedown', close);
-    scrim.addEventListener('click', close);
-    scrim.addEventListener('touchstart', close);
     document.body.appendChild(scrim);
 
     box = el('section', 'concept');
@@ -184,6 +197,8 @@
     document.documentElement.style.overflow = 'hidden';
 
     document.addEventListener('keydown', onKey);
+    document.addEventListener('mousedown', onOutside, true);
+    document.addEventListener('touchstart', onOutside, true);
     document.body.appendChild(box);
     closeBtn.focus();
 
