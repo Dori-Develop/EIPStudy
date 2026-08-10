@@ -592,7 +592,7 @@
     head.appendChild(title);
     sheetBox.appendChild(head);
 
-    setBack('← 이력으로', '복기 #' + rec.seed, backToSetup);
+    setBack('← 응시 이력', '문제지 복기 #' + rec.seed, backToSetup);
 
     var list = el('ol', 'quiz__list exam__list');
     var missing = 0, id;
@@ -769,7 +769,9 @@
     foot.appendChild(again);
     sheetBox.appendChild(foot);
 
-    setBack("← 모의 문제지", "#" + current.seed, backToSetup);
+    setBack('← 모의 문제지 생성',
+      (current.partial ? '틀린 것만 다시 풀기' : '문제 풀기') + ' #' + current.seed,
+      backToSetup);
 
     if (current.mins) startTimer(current.mins * 60);
     window.scrollTo(0, 0);
@@ -780,7 +782,7 @@
     sheetBox.style.display = "none";
     sheetBox.innerHTML = "";
     setupBox.style.display = "";
-    resetBack("모의 문제지");
+    resetBack("모의 문제지 생성");
     /* 방금 푼 회차가 이력에 보여야 한다. 설정은 건드리지 않고 이력만 다시 그린다 —
        buildSetup 을 통째로 부르면 골라 둔 범위·분포가 초기화된다. */
     refreshHistory();
@@ -946,6 +948,13 @@
     box.appendChild(acts);
 
     sheetBox.insertBefore(box, sheetBox.firstChild);
+
+    /* 채점이 끝나면 같은 화면이라도 성격이 달라진다 — 제목도 따라간다 */
+    setBack('← 모의 문제지 생성',
+      (current && current.partial ? '틀린 것만 다시 풀기' : '채점 결과') +
+      (current && current.seed ? ' #' + current.seed : ''),
+      backToSetup);
+
     window.scrollTo(0, 0);
   }
 

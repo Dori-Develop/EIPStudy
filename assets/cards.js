@@ -238,12 +238,13 @@
     });
     ctlEl.appendChild(chSel);
 
-    var sh = el('button', 'cctl__btn', shuffled ? '🔀 섞음' : '🔀 섞기');
+    /* 🔒 토글이 아니다. 두 번째로 누르면 원래 순서로 돌아가 「섞기」가 취소되는데,
+       그건 여기서 아무도 원하지 않는 동작이다. **누를 때마다 다시 섞는다.** */
+    var sh = el('button', 'cctl__btn', '🔀 섞기');
     sh.type = 'button';
-    sh.title = '순서 섞기';
-    sh.setAttribute('aria-pressed', shuffled ? 'true' : 'false');
+    sh.title = '순서를 다시 섞는다';
     sh.addEventListener('click', function () {
-      shuffled = !shuffled;
+      shuffled = true;
       buildDeck();
       render();
     });
@@ -283,8 +284,11 @@
         again.type = 'button';
         again.addEventListener('click', function () { buildDeck(); render(); });
         doneEl.appendChild(again);
-      } else if (chFilter) {
-        /* 빈 것이 챕터 때문이면 그 자리에서 풀 수 있게 한다 */
+      }
+
+      /* 챕터를 걸어 둔 상태면 **다 넘겼든 비었든** 여기서 풀 수 있게 한다.
+         다 넘긴 뒤 다음 행동이 대개 「다른 챕터도 보기」다. */
+      if (chFilter) {
         var all = el('button', 'cdone__btn', '전체 챕터로');
         all.type = 'button';
         all.addEventListener('click', function () {

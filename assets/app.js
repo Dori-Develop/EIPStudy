@@ -358,7 +358,11 @@
   /* 주소에서 화면 이름을 찾는다. 모르는 주소(섹션 페이지 등)면 「홈」이 아니라
      그 페이지가 무엇인지 모른다는 뜻이므로 무난하게 「이전 화면」으로 적는다. */
   function pageName(url) {
-    var file = (String(url).split('#')[0].split('?')[0].split('/').pop() || '').toLowerCase();
+    var file = String(url).split('#')[0].split('?')[0].split('/').pop().toLowerCase();
+    /* 🚨 홈은 대개 `…/EIPStudy/` 처럼 슬래시로 끝난다. 그러면 파일명이 빈 문자열이라
+       아무것도 못 찾고 「이전 화면」이 떴다. 디렉터리 주소는 index.html 이다. */
+    if (!file) file = 'index.html';
+
     var i;
     for (i = 0; i < TOOLS.length; i++) {
       if (TOOLS[i].href.toLowerCase() === file) return TOOLS[i].label;
