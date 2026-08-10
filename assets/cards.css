@@ -220,3 +220,90 @@ a.cmeta__where:hover { color: var(--accent); text-decoration: underline; }
 @media print {
   .ctabs, .cctl, .chint, .ckeys { display: none !important; }
 }
+
+/* ==========================================================================
+   화면에 고정한다 — 페이지가 아예 스크롤되지 않는다 (2026-08-10, T26)
+
+   🚨 증상이 아니라 원인을 끊는다.
+      카드가 화면보다 짧은데 페이지는 스크롤됐다. 밀려고 잡으면 페이지가 따라 움직여
+      「위아래로 밀기」 제스처와 싸웠다. 이 자리를 이미 두 번 손봤는데
+      (바깥 스크롤 따라오던 것 · 미는 범위를 블록으로) 둘 다 증상 쪽이었다.
+      **페이지가 스크롤될 수 있다는 것 자체가 원인**이다.
+
+   🔒 `.page-cards`(html 요소)로 범위를 묶는다. 다른 화면은 스크롤이 맞다 —
+      본문·퀴즈·오답노트는 목록이 원래 길다. 전역으로 새면 그쪽이 망가진다.
+
+   📌 100vh 가 아니라 100dvh 다. 모바일 주소창이 접혔다 펴질 때 vh 는 튄다.
+      dvh 를 모르는 브라우저를 위해 height: 100% 를 먼저 둔다.
+   ========================================================================== */
+.page-cards, .page-cards body {
+  height: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  overscroll-behavior: none;   /* 당겨서 새로고침도 막는다 */
+}
+
+.page-cards .layout {
+  height: 100%;
+  box-sizing: border-box;
+}
+.page-cards .main {
+  height: 100%;
+  min-height: 0;
+  box-sizing: border-box;
+  padding: 14px 16px 12px;     /* 원래 bottom 96px 은 스크롤 버튼 자리였다 — 안 뜨므로 뺀다 */
+  display: flex;
+  overflow: hidden;
+}
+.page-cards .wrap {
+  display: flex; flex-direction: column;
+  width: 100%; height: 100%; min-height: 0;
+}
+
+/* hero 는 자리를 많이 먹는다. 이 화면에서는 줄인다 */
+.page-cards .hero { margin: 0 0 12px; }
+.page-cards .hero h1 { font-size: 20px; }
+.page-cards .hero p { margin-top: 4px; font-size: 12.5px; }
+
+/* 카드가 남는 높이를 다 쓴다 */
+.page-cards #cards {
+  flex: 1 1 auto; min-height: 0;
+  display: flex; flex-direction: column;
+}
+.page-cards .cdeck {
+  flex: 1 1 auto; min-height: 0;
+  display: flex; flex-direction: column;
+}
+.page-cards .ccard {
+  flex: 1 1 auto;
+  min-height: 0;              /* 260px 하한을 푼다 — 짧은 화면에서 넘치면 안 된다 */
+}
+.page-cards .ccard__inner { height: 100%; min-height: 0; }
+
+.page-cards .ckeys { flex: none; margin-bottom: 0; }
+.page-cards .cdone { flex: none; }
+.page-cards .footer { flex: none; margin-top: 10px; padding-top: 10px; }
+
+/* 화면이 낮으면 설명부터 접는다. 같은 안내가 카드 위 좌우 힌트에 또 있다 */
+@media (max-height: 700px) {
+  .page-cards .hero p { display: none; }
+  .page-cards .footer { display: none; }
+}
+@media (max-height: 560px) {
+  .page-cards .hero { display: none; }
+}
+
+/* 위에서 min-height 하한을 풀었으므로 넓은 화면 규칙도 함께 푼다 */
+@media (min-width: 720px) {
+  .page-cards .ccard, .page-cards .ccard__inner { min-height: 0; }
+}
+
+/* 인쇄에서는 고정을 푼다 — 안 그러면 첫 화면 한 장만 찍힌다 */
+@media print {
+  .page-cards, .page-cards body,
+  .page-cards .layout, .page-cards .main, .page-cards .wrap {
+    height: auto; min-height: 0; overflow: visible; display: block;
+  }
+  .page-cards .hero, .page-cards .hero p, .page-cards .footer { display: block; }
+  .page-cards .ccard, .page-cards .ccard__inner { min-height: 260px; }
+}
