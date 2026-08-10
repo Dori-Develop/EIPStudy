@@ -115,7 +115,14 @@ document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
 
       <footer class="footer">
         <p>
-          진도·오답 기록은 이 브라우저에만 저장됩니다.
+          진도·오답·메모는 이 브라우저에만 저장됩니다.
+          기기를 옮기거나 백업하려면 파일로 내보내세요.
+        </p>
+        <p>
+          <button type="button" class="dangerlink js-export">기록 내보내기</button>
+          <button type="button" class="dangerlink js-import">기록 가져오기</button>
+        </p>
+        <p>
           <button type="button" class="dangerlink js-reset">진도만 초기화</button>
           <button type="button" class="dangerlink js-reset-all">전체 초기화</button>
         </p>
@@ -127,5 +134,8 @@ document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
 
 <script src="assets/toc.js"></script>
 <script src="assets/app.js"></script>
+<script src="assets/memo.js"></script>
+<script src="assets/merge.js"></script>
+<script src="assets/backup.js"></script>
 </body>
 </html>
