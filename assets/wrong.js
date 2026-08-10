@@ -324,23 +324,42 @@
   }
 
   /* 페이지 넘김 줄 — 목록 위아래에 같은 것을 둔다.
-     아래에만 두면 위에서 넘기려고 끝까지 내려가야 한다. */
+     아래에만 두면 위에서 넘기려고 끝까지 내려가야 한다.
+
+     🚨 넘긴 뒤에 스크롤을 옮기지 않는다. 예전에는 목록 맨 위로 옮겼는데
+        **버튼이 손 밑에서 사라져 연속으로 못 눌렀다.** 제자리에 있어야 계속 넘긴다. */
   function buildPager(total) {
     var pages = pageCount(total);
     if (pages <= 1) return null;
 
     var box = el('div', 'wpager');
 
-    var prev = el('button', 'wpager__btn', '← 이전');
+    var prev = el('button', 'wpager__btn', '←');
     prev.type = 'button';
+    prev.title = '이전 페이지';
+    prev.setAttribute('aria-label', '이전 페이지');
     prev.disabled = page <= 0;
     prev.addEventListener('click', function () { goPage(page - 1); });
     box.appendChild(prev);
 
-    box.appendChild(el('span', 'wpager__now', (page + 1) + ' / ' + pages));
+    /* 번호로 바로 간다. 페이지가 많으면 현재 둘레만 보이고 사이는 … 로 접는다 */
+    pageNumbers(pages).forEach(function (n) {
+      if (n < 0) { box.appendChild(el('span', 'wpager__gap', '…')); return; }
+      var b = el('button', 'wpager__no', String(n + 1));
+      b.type = 'button';
+      b.setAttribute('aria-label', (n + 1) + '페이지');
+      if (n === page) {
+        b.setAttribute('aria-current', 'page');
+        b.classList.add('is-now');
+      }
+      b.addEventListener('click', function () { goPage(n); });
+      box.appendChild(b);
+    });
 
-    var next = el('button', 'wpager__btn', '다음 →');
+    var next = el('button', 'wpager__btn', '→');
     next.type = 'button';
+    next.title = '다음 페이지';
+    next.setAttribute('aria-label', '다음 페이지');
     next.disabled = page >= pages - 1;
     next.addEventListener('click', function () { goPage(page + 1); });
     box.appendChild(next);
@@ -348,12 +367,27 @@
     return box;
   }
 
+  /* 보여 줄 번호들. -1 은 「…」 자리 */
+  function pageNumbers(pages) {
+    var out = [], i;
+    if (pages <= 7) {
+      for (i = 0; i < pages; i++) out.push(i);
+      return out;
+    }
+    var from = Math.max(1, page - 1);
+    var to = Math.min(pages - 2, page + 1);
+
+    out.push(0);
+    if (from > 1) out.push(-1);
+    for (i = from; i <= to; i++) out.push(i);
+    if (to < pages - 2) out.push(-1);
+    out.push(pages - 1);
+    return out;
+  }
+
   function goPage(n) {
     page = n;
     renderList();
-    /* 넘긴 뒤에는 목록 맨 위로 — 안 그러면 이전 페이지의 스크롤 위치에 남는다 */
-    if (listEl.scrollIntoView) listEl.scrollIntoView({ block: 'start' });
-    else window.scrollTo(0, 0);
   }
 
   function renderList() {

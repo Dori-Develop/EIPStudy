@@ -309,6 +309,34 @@
 
      📌 exam.js 는 한 페이지 안에서 화면이 바뀌므로 자기 setBack 으로 덮어쓴다.
         여기서는 첫 상태만 정한다. */
+  /* 🚨 뒤로가기 링크의 **주인은 여기 하나다.**
+     app.js 와 exam.js 가 각각 핸들러를 걸었더니, exam.js 가 자기 것만 떼고
+     app.js 것은 그대로 둬서 **둘 다 실행됐다.** history.back() 이 이겨
+     「← 모의 문제지」를 눌러도 홈으로 갔다.
+     핸들러를 하나만 두고 setBack 이 매번 갈아 끼운다. */
+  var backHandler = null;
+
+  function setBack(label, where, fn) {
+    var a = $('.js-back');
+    var w = $('.js-where');
+    if (w && where != null) w.textContent = where;
+    if (!a) return;
+
+    if (backHandler) { a.removeEventListener('click', backHandler); backHandler = null; }
+    a.textContent = label;
+
+    if (fn) {
+      a.href = '#';
+      backHandler = function (e) { e.preventDefault(); fn(); };
+      a.addEventListener('click', backHandler);
+    } else {
+      a.href = 'index.html';
+    }
+  }
+
+  /* 페이지를 열었을 때의 기본 상태.
+     직전이 우리 사이트면 **그 화면으로 돌아간다.** 아니면 갈 데가 없으므로 홈이다 —
+     주소를 직접 치거나 새 탭으로 열면 history 가 비어 있어 back() 이 사이트 밖으로 나간다. */
   function initBackLink() {
     var a = $('.js-back');
     if (!a) return;
@@ -319,14 +347,8 @@
     /* 같은 페이지를 새로고침한 것은 「직전」이 아니다 */
     var samePage = ref.split('#')[0] === location.href.split('#')[0];
 
-    if (!sameSite || samePage) return;   /* 기본값 「← 홈」 그대로 둔다 */
-
-    a.textContent = '← 뒤로';
-    a.href = '#';
-    a.addEventListener('click', function (e) {
-      e.preventDefault();
-      history.back();
-    });
+    if (!sameSite || samePage) { setBack('← 홈', null, null); return; }
+    setBack('← 뒤로', null, function () { history.back(); });
   }
 
   function initToolNav() {
@@ -337,16 +359,21 @@
     var here = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
 
     host.innerHTML = '';
-    /* 💬 "그냥 해시태그인줄 알았네" — 무엇인지 알려 주는 말이 앞에 있어야 한다 */
-    host.appendChild(el('span', 'toolnav__title', '바로가기'));
+    /* 💬 "바로가기라는 말이 좀 애매해" · "제목같지 않고 뭔가 이상해"
+       칩과 같은 줄에 두니 칩 하나로 보였다. **줄을 나눠 제목 자리를 준다.** */
+    host.appendChild(el('h2', 'toolnav__title', '빠른 이동'));
+
+    var row = el('div', 'toolnav__row');
 
     TOOLS.forEach(function (t) {
       if (t.href.toLowerCase() === here) return;
       var a = el('a', 'toolnav__item');
       a.href = t.href;
       a.textContent = t.label;
-      host.appendChild(a);
+      row.appendChild(a);
     });
+
+    host.appendChild(row);
   }
 
   /* ------------------------------------------------- 사이드바 목차 (공통) */
@@ -1046,5 +1073,5 @@
 
   /* exam.js 는 한 페이지 안에서 화면이 바뀌므로 「← 홈」 상태로 되돌릴 때
      같은 규칙(직전이 우리 사이트면 뒤로)을 다시 적용해야 한다. */
-  window.EIP = { store: store, theme: theme, initBack: initBackLink };
+  window.EIP = { store: store, theme: theme, initBack: initBackLink, setBack: setBack };
 })();

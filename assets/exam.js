@@ -780,7 +780,7 @@
     sheetBox.style.display = "none";
     sheetBox.innerHTML = "";
     setupBox.style.display = "";
-    setBack("← 홈", "모의 문제지", null);
+    resetBack("모의 문제지");
     /* 방금 푼 회차가 이력에 보여야 한다. 설정은 건드리지 않고 이력만 다시 그린다 —
        buildSetup 을 통째로 부르면 골라 둔 범위·분포가 초기화된다. */
     refreshHistory();
@@ -794,29 +794,18 @@
   }
 
   /* ------------------------------------------------------- 헤더 뒤로가기 */
-  /* 🔒 헤더가 fixed 라 복기 40문항 중간에서도 늘 보인다.
-     푸터까지 스크롤해야 나오는 「뒤로」는 없는 것과 같다.
-     fn 이 없으면 홈으로 가는 평범한 링크로 되돌린다. */
+  /* 🚨 **링크의 주인은 app.js 하나다.** 여기서 따로 핸들러를 걸었더니
+     app.js 것과 둘 다 실행돼 「← 모의 문제지」를 눌러도 홈으로 갔다.
+     한 페이지 안에서 화면이 바뀌는 것만 여기서 알려 준다. */
   function setBack(label, where, fn) {
-    var a = document.querySelector('.js-exam-back');
-    var w = document.querySelector('.js-exam-where');
-    if (w) w.textContent = where;
-    if (!a) return;
-
-    a.textContent = label;
-    if (backHandler) { a.removeEventListener('click', backHandler); backHandler = null; }
-
-    if (fn) {
-      a.href = '#';
-      backHandler = function (e) { e.preventDefault(); fn(); };
-      a.addEventListener('click', backHandler);
-    } else {
-      a.href = 'index.html';
-      /* 직전이 우리 사이트면 「← 뒤로」로 바꿔 준다 — 규칙은 app.js 한 곳에만 있다 */
-      if (window.EIP && window.EIP.initBack) window.EIP.initBack();
-    }
+    if (window.EIP && window.EIP.setBack) window.EIP.setBack(label, where, fn);
   }
-  var backHandler = null;
+  /* 화면 전환이 끝나고 「처음 상태」로 돌아갈 때 — 직전이 우리 사이트면 그리로 간다 */
+  function resetBack(where) {
+    var w = document.querySelector('.js-where');
+    if (w) w.textContent = where;
+    if (window.EIP && window.EIP.initBack) window.EIP.initBack();
+  }
 
   /* ------------------------------------------------------------- 타이머 */
   function startTimer(sec) {
