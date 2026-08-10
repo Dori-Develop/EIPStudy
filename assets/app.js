@@ -139,34 +139,76 @@
     return CH.base + CH.id + '/' + file;
   }
 
-  /* ======================================================== 홈(index.html) */
+  /* ============================ 진도 요약 (index.html · chapters.html 공통) */
+  /* 챕터별 진도는 chapters.html 에만 있고, 홈에는 카드가 없다.
+     그래서 총계는 **카드 DOM 이 아니라 EIP_TOC 로** 센다 — 홈에서도 값이 나와야 한다.
+     toc.js 에 12챕터의 섹션 목록이 있어 카드 없이도 총 섹션 수를 알 수 있다.
+
+     ⚠️ 실제 총계는 eip.meta.chNN(그 챕터를 한 번이라도 연 기록)을 우선한다.
+        toc 는 빌드 시점의 값이고 meta 는 사용자가 실제로 본 페이지의 값이라
+        둘이 어긋나면 meta 가 맞다. */
+  function chapterIds() {
+    var out = [], k;
+    if (window.EIP_TOC) {
+      for (k in window.EIP_TOC) {
+        if (Object.prototype.hasOwnProperty.call(window.EIP_TOC, k)) out.push(k);
+      }
+      out.sort();
+    }
+    return out;
+  }
+
+  function chapterTotal(id) {
+    var meta = store.get('meta.' + id, null);
+    if (meta && meta.total) return meta.total;
+    var toc = window.EIP_TOC && window.EIP_TOC[id];
+    return (toc && toc.s) ? toc.s.length : 0;
+  }
+
+  function chapterDone(id) {
+    var raw = store.get('done.' + id, []);
+    return (Object.prototype.toString.call(raw) === '[object Array]' ? raw : []).length;
+  }
+
   function initHome() {
     var host = $('.js-chapters');
-    if (!host) return;
+    var ids = chapterIds();
+    var totalAll = 0, doneAll = 0, i, id, total, done;
 
-    var totalAll = 0, doneAll = 0;
+    /* 챕터 카드가 있는 페이지(chapters.html)에서는 카드마다 진도를 그린다 */
+    if (host) {
+      $$('.js-progress', host).forEach(function (node) {
+        var cid = node.getAttribute('data-chapter');
+        var t = chapterTotal(cid);
+        var d = chapterDone(cid);
+        var pct = t ? Math.round(d / t * 100) : 0;
+        var card = node.closest('.card') || node.parentNode;
+        var bar = $('.bar > i', card);
+        var lbl = $('.js-progress-label', node);
+        if (bar) bar.style.width = pct + '%';
+        if (lbl) {
+          lbl.textContent = t ? d + ' / ' + t + '개 섹션 · ' + pct + '%' : '아직 열어보지 않음';
+        }
+      });
+    }
 
-    $$('.js-progress', host).forEach(function (node) {
-      var id = node.getAttribute('data-chapter');
-      var meta = store.get('meta.' + id, null);
-      var raw = store.get('done.' + id, []);
-      var done = (Object.prototype.toString.call(raw) === '[object Array]' ? raw : []).length;
-      var total = meta && meta.total ? meta.total : 0;
-
-      totalAll += total;
-      doneAll += Math.min(done, total || done);
-
-      var pct = total ? Math.round(done / total * 100) : 0;
-      var card = node.closest('.card') || node.parentNode;
-      var bar = $('.bar > i', card);
-      var lbl = $('.js-progress-label', node);
-      if (bar) bar.style.width = pct + '%';
-      if (lbl) {
-        lbl.textContent = total
-          ? done + ' / ' + total + '개 섹션 · ' + pct + '%'
-          : '아직 열어보지 않음';
+    /* 총계는 카드 유무와 무관하게 센다 */
+    if (ids.length) {
+      for (i = 0; i < ids.length; i++) {
+        id = ids[i];
+        total = chapterTotal(id);
+        done = chapterDone(id);
+        totalAll += total;
+        doneAll += Math.min(done, total || done);
       }
-    });
+    } else if (host) {
+      /* toc.js 가 없는 페이지를 위한 대비 — 카드에서 센다 */
+      $$('.js-progress', host).forEach(function (node) {
+        var cid = node.getAttribute('data-chapter');
+        totalAll += chapterTotal(cid);
+        doneAll += chapterDone(cid);
+      });
+    }
 
     var pctAll = totalAll ? Math.round(doneAll / totalAll * 100) : 0;
     var oBar = $('.js-overall-bar');
@@ -180,6 +222,13 @@
         : '챕터를 한 번 열면 진도 추적이 시작됩니다';
     }
 
+    /* 홈의 「학습 정리본」 카드 — 들어가지 않아도 진도가 보이게 */
+    var sum = $('.js-summary-sections');
+    if (sum) {
+      sum.textContent = totalAll
+        ? doneAll + ' / ' + totalAll + '개 섹션 · ' + pctAll + '%'
+        : '챕터를 한 번 열면 진도가 보입니다';
+    }
   }
 
   /* ------------------------------------------------------------- 초기화 버튼 */

@@ -27,7 +27,7 @@ document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
 
 <div class="layout">
   <main class="main">
-    <div class="wrap js-chapters">
+    <div class="wrap">
 
       <section class="hero">
         <h1>정보처리기사 실기</h1>
@@ -42,217 +42,22 @@ document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
         <div class="bar"><i class="js-overall-bar"></i></div>
       </section>
 
-      <h2 class="sectitle">학습 정리본</h2>
       <div class="cards">
 
-        <a class="card" href="ch01.html">
+        <a class="card" href="chapters.html">
           <div class="card__top">
-            <span class="card__badge">CH 01</span>
-            <span class="card__title">요구사항 확인</span>
+            <span class="card__badge">정리본</span>
+            <span class="card__title">학습 정리본</span>
           </div>
           <p class="card__desc">
-            소프트웨어 생명 주기 · 애자일/스크럼/XP · 요구사항 개발 프로세스 ·
-            DFD와 자료 사전 · UML 다이어그램 13종 · 개발 방법론 · 비용 산정 ·
-            CMMI/SPICE · 테일러링 · 개발 프레임워크
+            12개 단원 200개 섹션. 도해와 표로 정리한 본문을 챕터별로 읽습니다.
+            섹션마다 개념 퀴즈가 붙어 있고, 읽은 곳은 자동으로 진도에 기록됩니다.
           </p>
-          <div class="bar"><i></i></div>
-          <div class="card__meta js-progress" data-chapter="ch01">
-            <span class="js-progress-label">아직 열어보지 않음</span>
-            <span>31개 섹션</span>
+          <div class="card__meta">
+            <span class="js-summary-sections">챕터를 한 번 열면 진도가 보입니다</span>
+            <span>12개 단원 →</span>
           </div>
         </a>
-
-        <a class="card" href="ch02.html">
-          <div class="card__top">
-            <span class="card__badge">CH 02</span>
-            <span class="card__title">데이터 입·출력 구현</span>
-          </div>
-          <p class="card__desc">
-            데이터 전환·검증·정제 · 데이터베이스 설계 · E-R 모델 · 키와 무결성 ·
-            관계대수 · 정규화와 반정규화 · 트랜잭션과 인덱스 · 분산 DB ·
-            스토리지 · 자료 구조와 정렬
-          </p>
-          <div class="bar"><i></i></div>
-          <div class="card__meta js-progress" data-chapter="ch02">
-            <span class="js-progress-label">아직 열어보지 않음</span>
-            <span>33개 섹션</span>
-          </div>
-        </a>
-
-        <a class="card" href="ch03.html">
-          <div class="card__top">
-            <span class="card__badge">CH 03</span>
-            <span class="card__title">통합 구현</span>
-          </div>
-          <p class="card__desc">
-            연계 요구사항 분석 · 연계 데이터 식별과 표준화 · 연계 메커니즘 ·
-            EAI와 ESB · 장애·오류 처리 · 연계 데이터 보안 ·
-            XML/SOAP/WSDL · 연계 테스트
-          </p>
-          <div class="bar"><i></i></div>
-          <div class="card__meta js-progress" data-chapter="ch03">
-            <span class="js-progress-label">아직 열어보지 않음</span>
-            <span>10개 섹션</span>
-          </div>
-        </a>
-
-        <a class="card" href="ch04.html">
-          <div class="card__top">
-            <span class="card__badge">CH 04</span>
-            <span class="card__title">서버 프로그램 구현</span>
-          </div>
-          <p class="card__desc">
-            개발 환경 구축 · 소프트웨어 아키텍처 · 아키텍처 패턴 · 객체 지향과 SOLID ·
-            럼바우 분석 · 결합도와 응집도 · 코드 · GoF 디자인 패턴 23종 ·
-            서버 개발 · 배치 프로그램
-          </p>
-          <div class="bar"><i></i></div>
-          <div class="card__meta js-progress" data-chapter="ch04">
-            <span class="js-progress-label">아직 열어보지 않음</span>
-            <span>15개 섹션</span>
-          </div>
-        </a>
-
-        <a class="card" href="ch05.html">
-          <div class="card__top">
-            <span class="card__badge">CH 05</span>
-            <span class="card__title">인터페이스 구현</span>
-          </div>
-          <p class="card__desc">
-            시스템 인터페이스 요구사항 분석·검증 · 송수신 데이터 식별 ·
-            미들웨어 솔루션 · 인터페이스 구현과 예외 처리 ·
-            인터페이스 보안 · 구현 검증 도구
-          </p>
-          <div class="bar"><i></i></div>
-          <div class="card__meta js-progress" data-chapter="ch05">
-            <span class="js-progress-label">아직 열어보지 않음</span>
-            <span>14개 섹션</span>
-          </div>
-        </a>
-
-        <a class="card" href="ch06.html">
-          <div class="card__top">
-            <span class="card__badge">CH 06</span>
-            <span class="card__title">화면 설계</span>
-          </div>
-          <p class="card__desc">
-            사용자 인터페이스와 UI 기본 원칙 · UI 표준과 지침 ·
-            와이어프레임/목업/프로토타입 · 품질 요구사항(ISO/IEC 9126) ·
-            UI 설계서 · HCI·UX·감성공학
-          </p>
-          <div class="bar"><i></i></div>
-          <div class="card__meta js-progress" data-chapter="ch06">
-            <span class="js-progress-label">아직 열어보지 않음</span>
-            <span>8개 섹션</span>
-          </div>
-        </a>
-
-        <a class="card" href="ch07.html">
-          <div class="card__top">
-            <span class="card__badge">CH 07</span>
-            <span class="card__title">애플리케이션 테스트 관리</span>
-          </div>
-          <p class="card__desc">
-            테스트 기본 원리 · 화이트박스와 블랙박스 · V-모델 ·
-            통합 테스트(스텁·드라이버) · 테스트 오라클 · 결함 관리 ·
-            테스트 하네스 · 순환 복잡도 · 클린 코드
-          </p>
-          <div class="bar"><i></i></div>
-          <div class="card__meta js-progress" data-chapter="ch07">
-            <span class="js-progress-label">아직 열어보지 않음</span>
-            <span>15개 섹션</span>
-          </div>
-        </a>
-
-        <a class="card" href="ch08.html">
-          <div class="card__top">
-            <span class="card__badge">CH 08</span>
-            <span class="card__title">SQL 응용</span>
-          </div>
-          <p class="card__desc">
-            DDL·DML·DCL · SELECT와 그룹 함수 · 하위 질의 · JOIN ·
-            WINDOW 함수 · 프로시저·트리거·사용자 정의 함수 · 커서 ·
-            ORM · 쿼리 성능 최적화
-          </p>
-          <div class="bar"><i></i></div>
-          <div class="card__meta js-progress" data-chapter="ch08">
-            <span class="js-progress-label">아직 열어보지 않음</span>
-            <span>18개 섹션</span>
-          </div>
-        </a>
-
-        <a class="card" href="ch09.html">
-          <div class="card__top">
-            <span class="card__badge">CH 09</span>
-            <span class="card__title">소프트웨어 개발 보안 구축</span>
-          </div>
-          <p class="card__desc">
-            Secure SDLC · 7가지 보안 약점 · 암호화 알고리즘(대칭·비대칭·해시) ·
-            DoS/DDoS와 침해 공격 유형 · 서버 인증 · 로그 분석 ·
-            보안 솔루션 · 취약점 분석
-          </p>
-          <div class="bar"><i></i></div>
-          <div class="card__meta js-progress" data-chapter="ch09">
-            <span class="js-progress-label">아직 열어보지 않음</span>
-            <span>16개 섹션</span>
-          </div>
-        </a>
-
-        <a class="card" href="ch10.html">
-          <div class="card__top">
-            <span class="card__badge">CH 10</span>
-            <span class="card__title">프로그래밍 언어 활용</span>
-          </div>
-          <p class="card__desc">
-            데이터 타입과 연산자 · 제어문 · 배열과 포인터 · 구조체 ·
-            사용자 정의 함수 · Java 클래스와 상속 · Python 활용 ·
-            언어 분류 · 라이브러리 · 예외 처리
-          </p>
-          <div class="bar"><i></i></div>
-          <div class="card__meta js-progress" data-chapter="ch10">
-            <span class="js-progress-label">아직 열어보지 않음</span>
-            <span>14개 섹션</span>
-          </div>
-        </a>
-
-        <a class="card" href="ch11.html">
-          <div class="card__top">
-            <span class="card__badge">CH 11</span>
-            <span class="card__title">응용 SW 기초 기술 활용</span>
-          </div>
-          <p class="card__desc">
-            운영체제 · 기억장치와 가상기억장치 · 페이지 교체 알고리즘 ·
-            프로세스와 스케줄링 · IP 주소와 서브네팅 · OSI 7계층 · TCP/IP ·
-            신기술 용어 · 병행 제어 · 교착 상태
-          </p>
-          <div class="bar"><i></i></div>
-          <div class="card__meta js-progress" data-chapter="ch11">
-            <span class="js-progress-label">아직 열어보지 않음</span>
-            <span>16개 섹션</span>
-          </div>
-        </a>
-
-        <a class="card" href="ch12.html">
-          <div class="card__top">
-            <span class="card__badge">CH 12</span>
-            <span class="card__title">제품 소프트웨어 패키징</span>
-          </div>
-          <p class="card__desc">
-            소프트웨어 패키징 · 릴리즈 노트 · 디지털 저작권 관리(DRM) ·
-            설치·사용자 매뉴얼 · 형상 관리와 버전 등록 ·
-            버전 관리 도구 · Git 명령어 · 빌드 자동화 도구
-          </p>
-          <div class="bar"><i></i></div>
-          <div class="card__meta js-progress" data-chapter="ch12">
-            <span class="js-progress-label">아직 열어보지 않음</span>
-            <span>10개 섹션</span>
-          </div>
-        </a>
-
-      </div>
-
-      <h2 class="sectitle">학습 도구</h2>
-      <div class="cards">
 
         <a class="card" href="exam.html">
           <div class="card__top">
@@ -318,6 +123,7 @@ document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
   </main>
 </div>
 
+<script src="assets/toc.js"></script>
 <script src="assets/app.js"></script>
 </body>
 </html>

@@ -154,7 +154,7 @@ window.EIP_CHAPTER = {${meta_js},base:"${base}",${extra},sections:[${sections_js
 <header class="hdr">
   <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
   <div class="hdr__title">
-    <a href="${base}index.html">← EIP Study</a>
+    <a href="${base}chapters.html">← 학습 정리본</a>
     <small>${subtitle}</small>
   </div>
   <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
