@@ -149,7 +149,28 @@
       if (n === box) return;      /* 창 안에서 시작했다 */
       n = n.parentNode;
     }
+    /* 🚨 닫기만 하면 **이어지는 click 이 뒤에 있던 것에 가서 닿는다.**
+       창을 닫으려고 눌렀을 뿐인데 그 자리의 링크·버튼이 함께 눌린다.
+       그 한 번을 삼킨다. */
+    swallowNextClick();
     close();
+  }
+
+  /* 다음 click 한 번만 막고 스스로 물러난다.
+     ⚠️ 클릭이 끝내 안 올 수도 있다 (끌다가 뗀 경우) — 시간이 지나면 걷어낸다. */
+  function swallowNextClick() {
+    var timer = null;
+    function off() {
+      document.removeEventListener('click', eat, true);
+      if (timer) { clearTimeout(timer); timer = null; }
+    }
+    function eat(ev) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      off();
+    }
+    document.addEventListener('click', eat, true);
+    timer = setTimeout(off, 500);
   }
 
   function open(ch, file) {
