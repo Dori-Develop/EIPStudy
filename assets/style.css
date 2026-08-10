@@ -1316,10 +1316,7 @@ mark, .hl {
 
 /* ---------- 빠른 이동 (app.js initToolNav) ---------- */
 /* 🔒 고정 하단 탭바가 아니라 푸터 안의 블록이다 — 이유는 app.js TOOLS 주석 참고 */
-.toolnav {
-  margin: 20px 0 0; padding: 15px 0 0;
-  border-top: 1px solid var(--border);
-}
+.toolnav { margin: 18px 0 0; }
 /* 🚨 제목을 칩과 같은 줄에 두었더니 칩 하나로 읽혔다.
    줄을 나누고 크기·자간·색을 달리해 「이름표」로 보이게 한다. */
 .toolnav__title {

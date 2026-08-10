@@ -307,15 +307,28 @@ a.cmeta__where:hover { color: var(--accent); text-decoration: underline; }
   .page-cards .ccard, .page-cards .ccard__inner { min-height: 260px; }
 }
 
-/* 바로가기는 이 화면에서 한 줄로 눕힌다 — 자리가 없어 감추면 안 된다.
-   넘치면 가로로 민다. 이 화면은 세로로 스크롤되지 않으므로 줄이 늘면 카드가 줄어든다. */
-.page-cards .toolnav { margin-top: 10px; padding-top: 10px; }
-.page-cards .toolnav__title { margin-bottom: 6px; }
-.page-cards .toolnav__row {
-  flex-wrap: nowrap;
-  overflow-x: auto; -webkit-overflow-scrolling: touch;
-  padding-bottom: 2px;
-  scrollbar-width: none;
+
+/* 🚨 `hidden` 속성은 UA 기본값(display:none)이라 **display 를 지정한 규칙에 진다.**
+   위에서 .cdeck 에 display:flex 를 준 탓에 「다 넘긴 뒤」 화면과 카드가 겹쳐 보였다.
+   T26 에서 만든 버그다. hidden 이 이기도록 명시한다. */
+.page-cards .cdeck[hidden], .page-cards .cdone[hidden] { display: none; }
+
+/* ---------- 카드 자리를 넓힌다 (2026-08-10) ----------
+   모바일에서 위쪽이 낭비되고, 챕터 선택창이 길어 「섞기」 다음이 줄바꿈됐다.
+   조작 줄이 두 줄이 되면 그만큼 카드가 줄어든다. */
+.page-cards .ctabs { margin-bottom: 7px; }
+.page-cards .cctl { margin-bottom: 12px; gap: 6px; }
+.page-cards .ctab { padding: 5px 12px; font-size: 12.5px; }
+.page-cards .cctl__sel, .page-cards .cctl__btn { padding: 5px 8px; font-size: 12px; }
+
+/* 선택창 너비는 가장 긴 항목이 정한다. 잘라서 한 줄에 들어가게 한다 —
+   고른 챕터는 어차피 카드 위 「어디서 온 카드인가」 줄에 다시 나온다. */
+.page-cards .cctl__sel {
+  max-width: 8.5em;
+  text-overflow: ellipsis;
 }
-.page-cards .toolnav__row::-webkit-scrollbar { display: none; }
-.page-cards .toolnav__item { flex: none; }
+@media (min-width: 520px) { .page-cards .cctl__sel { max-width: 14em; } }
+
+.page-cards .cmeta { margin-bottom: 6px; }
+.page-cards .chint { margin-bottom: 6px; }
+.page-cards .ckeys { margin-top: 8px; }

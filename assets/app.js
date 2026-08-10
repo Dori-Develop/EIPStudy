@@ -336,7 +336,11 @@
 
   /* 페이지를 열었을 때의 기본 상태.
      직전이 우리 사이트면 **그 화면으로 돌아간다.** 아니면 갈 데가 없으므로 홈이다 —
-     주소를 직접 치거나 새 탭으로 열면 history 가 비어 있어 back() 이 사이트 밖으로 나간다. */
+     주소를 직접 치거나 새 탭으로 열면 history 가 비어 있어 back() 이 사이트 밖으로 나간다.
+
+     🔒 **라벨은 「어디로 가는가」로 적는다.** 「← 뒤로」는 어디로 갈지 안 알려 준다.
+        직전이 「모의 문제지」면 그렇게 적고, 모르면 홈이다.
+        한 페이지 안에서 화면만 바뀔 때(exam.js)도 같은 규칙이다. */
   function initBackLink() {
     var a = $('.js-back');
     if (!a) return;
@@ -348,7 +352,19 @@
     var samePage = ref.split('#')[0] === location.href.split('#')[0];
 
     if (!sameSite || samePage) { setBack('← 홈', null, null); return; }
-    setBack('← 뒤로', null, function () { history.back(); });
+    setBack('← ' + pageName(ref), null, function () { history.back(); });
+  }
+
+  /* 주소에서 화면 이름을 찾는다. 모르는 주소(섹션 페이지 등)면 「홈」이 아니라
+     그 페이지가 무엇인지 모른다는 뜻이므로 무난하게 「이전 화면」으로 적는다. */
+  function pageName(url) {
+    var file = (String(url).split('#')[0].split('?')[0].split('/').pop() || '').toLowerCase();
+    var i;
+    for (i = 0; i < TOOLS.length; i++) {
+      if (TOOLS[i].href.toLowerCase() === file) return TOOLS[i].label;
+    }
+    if (/^s\d\d\.html$/.test(file) || /^ch\d\d\.html$/.test(file)) return '학습 정리본';
+    return '이전 화면';
   }
 
   function initToolNav() {

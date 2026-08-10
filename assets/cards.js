@@ -98,15 +98,32 @@
   }
 
   /* --------------------------------------------------------------- 덱 */
+  /* 🚨 지금 단계에서 **실제로 카드가 있는 챕터만** 돌려준다.
+     저장함(2단계)에서 담긴 것이 없는 챕터를 고를 수 있으면
+     고르는 족족 빈 화면이 나온다. 고를 수 없게 하는 편이 맞다. */
   function chapters() {
-    var seen = {}, out = [], i, k;
-    for (i = 0; i < CARDS.length; i++) seen[CARDS[i].ch] = 1;
+    var seen = {}, out = [], i, k, c;
+    for (i = 0; i < CARDS.length; i++) {
+      c = CARDS[i];
+      if (stage === 2 && !saved[c.id]) continue;
+      seen[c.ch] = 1;
+    }
     for (k in seen) { if (has(seen, k)) out.push(k); }
     out.sort();
     return out;
   }
 
+  /* 단계를 바꾸면 고른 챕터가 그 단계에 없을 수 있다 (저장함에 그 챕터가 안 담겼다).
+     그대로 두면 **선택창은 「전체 챕터」인데 목록은 비어 있는** 어긋난 상태가 된다. */
+  function normalizeFilter() {
+    if (!chFilter) return;
+    var list = chapters(), i;
+    for (i = 0; i < list.length; i++) { if (list[i] === chFilter) return; }
+    chFilter = '';
+  }
+
   function buildDeck() {
+    normalizeFilter();
     var out = [], i, c;
     for (i = 0; i < CARDS.length; i++) {
       c = CARDS[i];
@@ -259,10 +276,24 @@
           '저장함에 ' + savedCount() + '장 담겨 있습니다.'));
       }
 
-      var again = el('button', 'cdone__btn', '처음부터 다시');
-      again.type = 'button';
-      again.addEventListener('click', function () { buildDeck(); render(); });
-      doneEl.appendChild(again);
+      /* 🚨 처음부터 넘길 카드가 없었으면 「처음부터 다시」는 아무 일도 안 한다.
+         눌러도 같은 화면이 나와 고장으로 읽힌다. 다 넘긴 경우에만 보여 준다. */
+      if (deck.length) {
+        var again = el('button', 'cdone__btn', '처음부터 다시');
+        again.type = 'button';
+        again.addEventListener('click', function () { buildDeck(); render(); });
+        doneEl.appendChild(again);
+      } else if (chFilter) {
+        /* 빈 것이 챕터 때문이면 그 자리에서 풀 수 있게 한다 */
+        var all = el('button', 'cdone__btn', '전체 챕터로');
+        all.type = 'button';
+        all.addEventListener('click', function () {
+          chFilter = '';
+          buildDeck();
+          render();
+        });
+        doneEl.appendChild(all);
+      }
 
       if (stage === 1 && savedCount()) {
         var go = el('button', 'cdone__btn', '저장함으로 →');
