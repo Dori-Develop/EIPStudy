@@ -174,6 +174,12 @@
   }
 
   function initHome() {
+    /* 🚨 챕터·섹션 페이지에서는 손대지 않는다.
+       거기의 `.js-overall-*` 은 **그 챕터의 진도**를 보여 주는 자리고
+       paintProgress() 가 맡는다. 둘이 같은 요소에 쓰면 순서 싸움이 된다 —
+       toc.js 를 섹션 페이지에도 싣게 되면서 실제로 부딪히기 시작했다. */
+    if (CH) return;
+
     var host = $('.js-chapters');
     var oBar = $('.js-overall-bar');
     var oPct = $('.js-overall-pct');
@@ -358,17 +364,16 @@
     /* 같은 페이지를 새로고침한 것은 「직전」이 아니다 */
     var samePage = ref.split('#')[0] === location.href.split('#')[0];
 
-    /* 🚨 **자기 자신을 가리키면 루프가 된다.**
-       챕터 목록(chapters.html)에 섹션 페이지에서 들어오면 직전 이름이 「학습 정리본」인데,
-       그건 지금 이 페이지 이름이다. 눌러도 섹션 → 목록 → 섹션 을 오갈 뿐이다.
-       그럴 때는 **HTML 에 적혀 있는 기본 링크를 그대로 둔다.** */
-    var from = pageName(ref);
-    if (!sameSite || samePage || from === pageName(location.href)) {
-      restoreBack();
-      return;
-    }
+    /* 🔒 **원칙 하나.** 같은 사이트에서 왔으면 **언제나 직전 화면으로 돌아간다.**
+       예외를 두지 않는다 — 예외가 곧 루프였다.
 
-    setBack('← ' + from, null, function () { history.back(); });
+       한때 "갈 곳 이름이 자기 이름과 같으면 기본 링크로" 라는 조건을 뒀는데,
+       그러면 **섹션 → 섹션** 이동에서 뒤로가기가 챕터 목록으로 튀었다.
+       둘 다 「학습 정리본」이라 같은 이름으로 보였기 때문이다.
+       이름이 같다고 같은 화면인 것이 아니다 → **이름을 화면 단위로 잘게 만든다** (pageName). */
+    if (!sameSite || samePage) { restoreBack(); return; }
+
+    setBack('← ' + pageName(ref), null, function () { history.back(); });
   }
 
   /* HTML 에 적혀 있던 그대로 되돌린다 (섹션 페이지는 「← 학습 정리본」, 도구는 「← 홈」) */
@@ -382,8 +387,12 @@
 
   /* 주소에서 화면 이름을 찾는다. 모르는 주소(섹션 페이지 등)면 「홈」이 아니라
      그 페이지가 무엇인지 모른다는 뜻이므로 무난하게 「이전 화면」으로 적는다. */
+  /* 🔒 **화면 하나에 이름 하나.** 뒤로가기 라벨이 「어디로 가는가」를 말하려면
+     섹션 200장이 전부 「학습 정리본」이어서는 안 된다. 섹션은 제 제목을 쓴다.
+     그래야 **섹션 → 섹션** 이동에서도 어디로 돌아가는지 보인다. */
   function pageName(url) {
-    var file = String(url).split('#')[0].split('?')[0].split('/').pop().toLowerCase();
+    var path = String(url).split('#')[0].split('?')[0];
+    var file = path.split('/').pop().toLowerCase();
     /* 🚨 홈은 대개 `…/EIPStudy/` 처럼 슬래시로 끝난다. 그러면 파일명이 빈 문자열이라
        아무것도 못 찾고 「이전 화면」이 떴다. 디렉터리 주소는 index.html 이다. */
     if (!file) file = 'index.html';
@@ -392,9 +401,27 @@
     for (i = 0; i < TOOLS.length; i++) {
       if (TOOLS[i].href.toLowerCase() === file) return TOOLS[i].label;
     }
-    /* 섹션·챕터 목차 페이지는 전부 「학습 정리본」 한 덩어리로 본다 —
-       챕터 목록(chapters.html)의 라벨과 같은 이름이라, 위에서 루프를 끊는 근거가 된다 */
-    if (/^s\d\d\.html$/.test(file) || /^ch\d\d\.html$/.test(file)) return '학습 정리본';
+
+    var toc = window.EIP_TOC || {};
+
+    /* 섹션 페이지 — .../chNN/sMM.html */
+    var m = /\/(ch\d\d)\/(s\d\d\.html)$/i.exec(path);
+    if (m) {
+      var c = toc[m[1].toLowerCase()];
+      var list = (c && c.s) || [];
+      for (i = 0; i < list.length; i++) {
+        if (list[i].f === m[2].toLowerCase()) return list[i].t;
+      }
+      return '학습 정리본';
+    }
+
+    /* 챕터 목차 페이지 — chNN.html */
+    var m2 = /^(ch\d\d)\.html$/.exec(file);
+    if (m2) {
+      var c2 = toc[m2[1]];
+      return (c2 && c2.t) || '학습 정리본';
+    }
+
     return '이전 화면';
   }
 

@@ -219,7 +219,8 @@ HEAD
 
 <script src="${MARKED_CDN}"></script>
 <script src="${MERMAID_CDN}"></script>
-<script src="${base}assets/app.js"></script>${extra}
+<script src="${base}assets/app.js"></script>
+<script src="${base}assets/toc.js"></script>${extra}
 </body>
 </html>
 TAIL

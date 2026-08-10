@@ -1322,9 +1322,9 @@ mark, .hl {
 .toolnav__title {
   margin: 0 0 10px;
   font-size: 11px; font-weight: 700; letter-spacing: .09em;
-  color: var(--fg-faint);
+  color: var(--fg-faint); text-align: center;
 }
-.toolnav__row { display: flex; flex-wrap: wrap; gap: 7px; }
+.toolnav__row { display: flex; flex-wrap: wrap; justify-content: center; gap: 7px; }
 .toolnav__item {
   padding: 7px 14px;
   background: var(--bg-elev); color: var(--fg-muted);
