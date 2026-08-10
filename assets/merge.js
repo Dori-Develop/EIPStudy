@@ -15,7 +15,7 @@
    memo.chNN    {파일: {t,u}}           → 🚨 손실 0 (아래)
    quiz.chNN    {섹션번호: {score,total,at}} → at 최신 쪽
    meta.chNN    {total,title,updated}   → updated 최신 쪽
-   exam.history [{seed,at,score,…}]     → 합쳐서 at 내림차순 20개
+   exam.history [{seed,at,score,…}]     → 합쳐서 at 내림차순 EXAM_HISTORY_KEEP 개
    exam.recent  [[문항 id,…], …]        → 앞에서부터 번갈아, 최대 RECENT_KEEP
    theme        → **아예 옮기지 않는다** (학습 기록이 아니다)
 
@@ -25,8 +25,9 @@
 (function () {
   'use strict';
 
-  var EXAM_HISTORY_KEEP = 20;   /* exam.js 와 같은 값 */
-  var EXAM_RECENT_KEEP = 5;
+  /* 🚨 exam.js 와 같은 값이어야 한다. 어긋나면 합친 뒤 개수가 화면과 달라진다. */
+  var EXAM_HISTORY_KEEP = 200;   /* exam.js HISTORY_KEEP */
+  var EXAM_RECENT_KEEP = 3;      /* exam.js RECENT_KEEP */
 
   function has(o, k) { return Object.prototype.hasOwnProperty.call(o, k); }
   function isArr(v) { return Object.prototype.toString.call(v) === '[object Array]'; }

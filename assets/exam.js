@@ -70,6 +70,28 @@
   function read(k, d) { var s = store(); return s ? s.get(k, d) : d; }
   function write(k, v) { var s = store(); if (s) s.set(k, v); }
 
+  /* 응시 이력 상한. 하루 한 판씩 반년을 봐도 180회라 사실상 무제한이다.
+     한 건이 400바이트쯤이라 200회는 80KB — localStorage 한도(보통 5MB)에 여유가 크다.
+
+     🚨 그래도 상한을 없애지는 않는다. localStorage 가 꽉 차면 **조용히 실패**하는데,
+        그러면 이력만이 아니라 **진도·오답·메모까지 저장이 안 된다.**
+        학습 기록 전체를 잃는 쪽이 오래된 이력을 잃는 쪽보다 훨씬 나쁘다. */
+  var HISTORY_KEEP = 200;
+
+  /* 넣어 보고, 안 들어갔으면 절반으로 줄여 다시 넣는다.
+     app.js 의 store.set 은 예외를 삼키므로 **읽어서 확인하는 수밖에 없다.** */
+  function writeHistory(hist) {
+    var n = hist.length;
+    while (n > 1) {
+      write('exam.history', hist.slice(0, n));
+      var back = read('exam.history', null);
+      if (back && back.length === n) return n;
+      n = Math.floor(n / 2);
+    }
+    write('exam.history', hist.slice(0, 1));
+    return 1;
+  }
+
   /* 최근 K회 문제지에 나온 문항 — 중복 회피용. [[id,…], …] 최신이 앞 */
   var RECENT_KEEP = 3;
   function recentRounds() {
@@ -560,8 +582,8 @@
       total: current.items.length,
       chapters: perCh
     });
-    while (hist.length > 20) hist.pop();
-    write('exam.history', hist);
+    while (hist.length > HISTORY_KEEP) hist.pop();
+    writeHistory(hist);
   }
 
   function renderResult(score, perCh, wrongItems, byTimeout) {

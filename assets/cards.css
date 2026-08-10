@@ -66,13 +66,10 @@
    🔒 밀기를 받는 범위는 카드 요소가 아니라 이 블록 전체다
    (위치 표시 · 좌우 힌트 · 카드 · 조작 안내).
 
-   모바일에서 넘기는 축이 세로라 브라우저 스크롤과 같은 축이다.
-   축을 나눠 가지려던 pan-y 방식은 비스듬히 밀 때마다 페이지가 흔들려 실패했고,
-   카드 요소만 잡았더니 이번에는 **카드 위아래 여백을 짚었을 때** 바깥이 따라왔다.
+   카드 요소만 잡았더니 카드 둘레 여백을 짚었을 때 밀기가 안 먹었다.
    눈에는 다 "카드 있는 자리"인데 손끝 몇 px 차이로 갈리면 고장으로 읽힌다.
 
-   ⚠️ 대신 이 블록 위에서는 페이지가 스크롤되지 않는다.
-      블록 바깥(챕터 선택 줄 위쪽, 푸터 아래쪽)으로 스크롤한다.
+   📌 축을 좌우로 되돌린 뒤에도 이 범위는 그대로다 — 밀기를 놓치는 문제는 축과 무관하다.
    📌 touch-action 은 선언일 뿐이고 실제로 끊는 것은 cards.js 의 preventDefault 다. */
 .cdeck { touch-action: none; }
 
@@ -114,11 +111,9 @@ a.cmeta__where:hover { color: var(--accent); text-decoration: underline; }
 /* 미는 동안에는 손가락을 그대로 따라와야 하므로 전환을 끈다 */
 .ccard.is-dragging { transition: none; }
 
-/* 민 방향으로 날아간다 — PC 는 좌우, 모바일은 위아래 */
+/* 민 방향으로 날아간다 */
 .ccard.is-out-left  { transform: translateX(-120%) rotate(-12deg); opacity: 0; }
 .ccard.is-out-right { transform: translateX(120%) rotate(12deg); opacity: 0; }
-.ccard.is-out-up    { transform: translateY(-115%); opacity: 0; }
-.ccard.is-out-down  { transform: translateY(115%); opacity: 0; }
 
 .ccard__inner {
   position: relative;
@@ -226,9 +221,11 @@ a.cmeta__where:hover { color: var(--accent); text-decoration: underline; }
 
    🚨 증상이 아니라 원인을 끊는다.
       카드가 화면보다 짧은데 페이지는 스크롤됐다. 밀려고 잡으면 페이지가 따라 움직여
-      「위아래로 밀기」 제스처와 싸웠다. 이 자리를 이미 두 번 손봤는데
+      당시의 「위아래로 밀기」 제스처와 싸웠다. 이 자리를 이미 두 번 손봤는데
       (바깥 스크롤 따라오던 것 · 미는 범위를 블록으로) 둘 다 증상 쪽이었다.
       **페이지가 스크롤될 수 있다는 것 자체가 원인**이다.
+
+   📌 이걸 막고 나니 축을 세로로 옮겼던 이유도 사라져 **좌우로 되돌렸다** (cards.js ②).
 
    🔒 `.page-cards`(html 요소)로 범위를 묶는다. 다른 화면은 스크롤이 맞다 —
       본문·퀴즈·오답노트는 목록이 원래 길다. 전역으로 새면 그쪽이 망가진다.

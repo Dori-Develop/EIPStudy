@@ -8,11 +8,17 @@
         2단계 저장함    :  남긴다 = 계속 보관   흘려보낸다 = 소거(다 외웠다)
       저장함을 넘기며 비워 나가는 것이 이 기능의 핵심이다.
 
-   ② 축은 기기마다 다르다.
-        PC     : 좌 = 남긴다 · 우 = 흘려보낸다   (좌·우 끝 클릭 · 키보드 ← →)
-        모바일 : 위 = 남긴다 · 아래 = 흘려보낸다 (위아래로 밀기)
-      모바일에서 좌우로 밀면 페이지 세로 스크롤과 계속 부딪힌다.
-      축을 세로로 옮기고 카드가 세로 제스처를 통째로 가져가는 편이 깨끗하다.
+   ② 축은 기기와 상관없이 좌우 하나다.
+        좌 = 남긴다 · 우 = 흘려보낸다   (PC: 좌·우 끝 클릭 · ← → / 모바일: 좌우로 밀기)
+
+      📌 한때 모바일만 세로였다. 좌우로 밀면 페이지 세로 스크롤과 부딪혔기 때문이다.
+         **T26 에서 이 화면을 100dvh · overflow:hidden 으로 묶어 페이지가 아예
+         스크롤되지 않게 되면서 그 제약이 사라졌다.** 축을 하나로 되돌린다.
+         기기마다 방향이 다르면 PC 와 모바일을 오갈 때 손이 매번 헷갈린다.
+
+      ⚠️ iOS 는 화면 **맨 왼쪽 가장자리**에서 시작하는 가로 스와이프를 「뒤로 가기」로
+         가져간다. 카드에 좌우 여백이 있어 대개 그 구역 밖에서 시작하지만,
+         가장자리를 정확히 짚으면 브라우저가 이긴다. 막을 방법이 없다.
 
    ③ 우클릭(contextmenu)은 입력으로 쓰지 않는다. 브라우저 메뉴가 뜨고,
       preventDefault 로 막으면 "붙여넣기가 안 되는 페이지"가 되어 사용자가 당황한다.
@@ -37,19 +43,19 @@
   var ZONE = 0.34;         /* 카드 좌·우 끝 34% 가 넘김 구역, 가운데 32% 가 뒤집기 */
   var OUT_MS = 190;        /* 날아가는 동안 */
 
-  /* 단계별로 "남긴다(keep)"·"흘려보낸다(pass)"가 무엇인지.
-     화면 문구와 동작이 한곳에서 나오도록 묶어 둔다.
-     pc/touch 는 같은 뜻을 축만 바꿔 적은 것이다. */
+  /* 단계별로 "남긴다"·"흘려보낸다"가 무엇인지. 화면 문구와 동작이 한곳에서 나오도록 묶는다.
+     📌 축이 기기마다 다르던 시절에는 라벨도 두 벌(pc/touch)이었다.
+        이제 좌우 하나라 한 벌이다. */
   var STAGES = {
     1: {
       name: '전체 카드',
-      left: { pc: '← 저장', touch: '↑ 저장', act: 'save' },
-      right: { pc: '넘김 →', touch: '넘김 ↓', act: 'skip' }
+      left: { label: '← 저장', act: 'save' },
+      right: { label: '넘김 →', act: 'skip' }
     },
     2: {
       name: '저장함',
-      left: { pc: '← 계속 보관', touch: '↑ 계속 보관', act: 'keep' },
-      right: { pc: '외웠다 →', touch: '외웠다 ↓', act: 'drop' }
+      left: { label: '← 계속 보관', act: 'keep' },
+      right: { label: '외웠다 →', act: 'drop' }
     }
   };
 
@@ -127,9 +133,9 @@
   function current() { return deck[pos] || null; }
 
   /* ------------------------------------------------------------- 동작 */
-  /* side 는 뜻('left' 남긴다 · 'right' 흘려보낸다), vertical 은 날아가는 방향.
+  /* side 는 뜻이자 방향이다 — 'left' 남긴다 · 'right' 흘려보낸다.
      민 방향으로 날아가야 방금 무엇을 했는지 손이 기억한다. */
-  function act(side, vertical) {
+  function act(side) {
     if (busy) return;
     var card = current();
     if (!card) return;
@@ -142,11 +148,9 @@
     if (spec.act === 'drop') { delete saved[card.id]; persist(); }
 
     busy = true;
-    cardEl.classList.add(vertical
-      ? (side === 'left' ? 'is-out-up' : 'is-out-down')
-      : (side === 'left' ? 'is-out-left' : 'is-out-right'));
+    cardEl.classList.add(side === 'left' ? 'is-out-left' : 'is-out-right');
     setTimeout(function () {
-      cardEl.classList.remove('is-out-left', 'is-out-right', 'is-out-up', 'is-out-down');
+      cardEl.classList.remove('is-out-left', 'is-out-right');
       busy = false;
       pos++;
       flipped = false;
@@ -274,16 +278,12 @@
     deckEl.hidden = false;
     doneEl.hidden = true;
 
-    /* PC 용·모바일 용을 둘 다 그려 두고 CSS 미디어 쿼리가 하나만 보여 준다.
-       JS 로 기기를 판별해 하나만 그리면, 노트북에 마우스를 꽂았다 뺐다 할 때
-       화면이 안 따라온다. 판별은 CSS 에 맡기는 편이 정확하다. */
+    /* 축이 좌우 하나가 되면서 라벨도 한 벌이 됐다.
+       기기별로 갈리는 것은 「어떻게 조작하는가」뿐이라 그쪽(.ckeys)에만 남아 있다. */
     var spec = STAGES[stage];
     hintEl.innerHTML = '';
     ['left', 'right'].forEach(function (k) {
-      var box = el('span', 'chint__side');
-      box.appendChild(el('span', 'only-pc', spec[k].pc));
-      box.appendChild(el('span', 'only-touch', spec[k].touch));
-      hintEl.appendChild(box);
+      hintEl.appendChild(el('span', 'chint__side', spec[k].label));
     });
 
     /* 어느 챕터 어느 섹션에서 온 카드인지. 그 섹션으로 바로 갈 수 있게 링크로 둔다 —
@@ -338,9 +338,11 @@
       if (z === 'mid') flip(); else act(z);
     });
 
-    /* --- 터치: 위아래로 밀기 ---
-       카드 위 제스처는 통째로 우리가 받는다. 좌우로 밀 때 페이지가 같이 흔들리던
-       문제를 축을 옮겨 근본에서 없앴다.
+    /* --- 터치: 좌우로 밀기 ---
+       카드 위 제스처는 통째로 우리가 받는다.
+       한때 여기가 세로였다. 좌우로 밀면 페이지 세로 스크롤과 부딪혔기 때문인데,
+       T26 에서 이 화면을 100dvh · overflow:hidden 으로 묶어 **페이지가 아예
+       스크롤되지 않게 되면서** 그 이유가 사라졌다. 축을 좌우로 되돌렸다.
 
        🚨 CSS 의 touch-action: none 만 믿으면 안 된다. 실제로 바깥 스크롤이 따라왔다.
           .ccard__face 가 overflow-y: auto 라 스크롤 컨테이너가 되고, 브라우저마다
@@ -348,7 +350,7 @@
           touchmove 를 passive: false 로 열어 두고 직접 preventDefault 로 끊는다.
           passive 로 두면 막을 수단 자체가 없다.
 
-       ⚠️ 대신 카드 위에서는 페이지가 스크롤되지 않는다. 카드 위아래 여백으로 스크롤한다. */
+       📌 이 화면은 어차피 페이지 전체가 스크롤되지 않는다 (cards.css 의 .page-cards). */
     function endDrag() {
       dragging = false;
       cardEl.classList.remove('is-dragging');
@@ -365,9 +367,9 @@
     }
 
     /* 🚨 카드 요소가 아니라 카드 블록(deckEl)에서 받는다.
-       카드만 잡고 있으면 카드 위아래 여백이나 힌트 줄을 짚었을 때
-       바깥 스크롤이 그대로 따라온다. 눈에는 다 "카드 있는 자리"로 보이는데
-       손끝 몇 px 차이로 동작이 갈리면 고장으로 읽힌다. */
+       카드만 잡고 있으면 카드 둘레 여백이나 힌트 줄을 짚었을 때 밀기가 안 먹는다.
+       눈에는 다 "카드 있는 자리"로 보이는데 손끝 몇 px 차이로 동작이 갈리면
+       고장으로 읽힌다. */
     deckEl.addEventListener('touchstart', function (e) {
       if (busy || e.touches.length !== 1) return;
       if (startsOnLink(e.target)) return;
@@ -382,20 +384,20 @@
     deckEl.addEventListener('touchmove', function (e) {
       if (!dragging) return;
       if (e.cancelable) e.preventDefault();   /* 바깥 스크롤을 끊는다 */
-      var dy = e.touches[0].clientY - startY;
-      cardEl.style.transform = 'translateY(' + dy + 'px)';
+      var dx = e.touches[0].clientX - startX;
+      cardEl.style.transform = 'translateX(' + dx + 'px)';
     }, { passive: false });
 
     deckEl.addEventListener('touchend', function (e) {
       if (!dragging) return;
       endDrag();
       var t = e.changedTouches[0] || {};
-      var dy = t.clientY - startY;
       var dx = t.clientX - startX;
-      /* 가로로 더 많이 갔으면 넘기려던 것이 아니다 — 제자리로 돌아간다 */
-      if (Math.abs(dy) >= SWIPE_MIN && Math.abs(dy) > Math.abs(dx)) {
+      var dy = t.clientY - startY;
+      /* 세로로 더 많이 갔으면 넘기려던 것이 아니다 — 제자리로 돌아간다 */
+      if (Math.abs(dx) >= SWIPE_MIN && Math.abs(dx) > Math.abs(dy)) {
         swiped = true;
-        act(dy < 0 ? 'left' : 'right', true);   /* 위로 = 남긴다 · 아래로 = 흘려보낸다 */
+        act(dx < 0 ? 'left' : 'right');   /* 왼쪽 = 남긴다 · 오른쪽 = 흘려보낸다 */
       }
     });
 
@@ -468,7 +470,7 @@
       '가운데를 눌러 뒤집기 · 좌우 끝을 눌러 넘기기' +
       '   ·   Space 뒤집기 · ← → 넘기기 · Backspace 되돌리기'));
     keys.appendChild(el('span', 'only-touch',
-      '눌러서 뒤집기 · 위아래로 밀어 넘기기'));
+      '눌러서 뒤집기 · 좌우로 밀어 넘기기'));
     deckEl.appendChild(keys);
 
     root.appendChild(deckEl);
