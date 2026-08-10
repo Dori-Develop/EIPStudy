@@ -309,8 +309,12 @@
           '저장함에 ' + savedCount() + '장 담겨 있습니다.'));
       }
 
+      /* 🔒 버튼 기호 규칙 — **하나도 빠뜨리지 않는다.**
+           되돌리는 것 : 기호를 **앞**에   ↻ 처음부터 다시 · ↩ 되돌리기
+           옮겨 가는 것 : 화살표를 **뒤**에  전체 챕터로 → · 저장함으로 →
+         방향이 다른 동작을 같은 모양으로 적으면 어느 쪽이 「나가는 것」인지 안 보인다. */
       if (againN) {
-        var again = el('button', 'cdone__btn', '처음부터 다시');
+        var again = el('button', 'cdone__btn', '↻ 처음부터 다시');
         again.type = 'button';
         again.addEventListener('click', function () { buildDeck(); render(); });
         doneEl.appendChild(again);
@@ -318,7 +322,7 @@
 
       /* 챕터를 풀면 볼 것이 있을 때만 낸다 — 풀어도 비어 있으면 낼 이유가 없다 */
       if (chFilter && noFilterN) {
-        var all = el('button', 'cdone__btn', '전체 챕터로');
+        var all = el('button', 'cdone__btn', '전체 챕터로 →');
         all.type = 'button';
         all.addEventListener('click', function () {
           chFilter = '';

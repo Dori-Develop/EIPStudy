@@ -464,7 +464,7 @@
 
       /* 답안이 남아 있는 회차만 복기할 수 있다 — 상한을 넘겨 밀려난 것은 못 연다 */
       if (has(book, String(r.seed))) {
-        var rev = el('button', 'exam__histbtn', '복기');
+        var rev = el('button', 'exam__histbtn', '복기 →');
         rev.type = 'button';
         rev.addEventListener('click', function () { renderReview(r); });
         acts.appendChild(rev);
@@ -472,7 +472,7 @@
         acts.appendChild(el('span', 'exam__histnone', '답안 없음'));
       }
 
-      var again = el('button', 'exam__histbtn', '같은 문제지 다시 풀기');
+      var again = el('button', 'exam__histbtn', '↻ 같은 문제지 다시 풀기');
       again.type = 'button';
       again.addEventListener('click', function () {
         generate({ scope: 'all', mode: 'real', n: r.total, mins: 0, boost: false, seed: r.seed });
@@ -624,7 +624,7 @@
     back.addEventListener('click', backToSetup);
     foot.appendChild(back);
 
-    var again = el('button', 'quiz__grade', '같은 문제지 다시 풀기');
+    var again = el('button', 'quiz__grade', '↻ 같은 문제지 다시 풀기');
     again.type = 'button';
     again.addEventListener('click', function () {
       generate({ scope: 'all', mode: 'real', n: rec.total, mins: 0, boost: false, seed: rec.seed });
@@ -763,7 +763,7 @@
     submitBtn.addEventListener('click', function () { doSubmit(false); });
     foot.appendChild(submitBtn);
 
-    var again = el('button', 'exam__ghost', '다른 문제지 만들기');
+    var again = el('button', 'exam__ghost', '↩ 다른 문제지 만들기');
     again.type = 'button';
     again.addEventListener('click', backToSetup);
     foot.appendChild(again);
@@ -799,13 +799,49 @@
   /* 🚨 **링크의 주인은 app.js 하나다.** 여기서 따로 핸들러를 걸었더니
      app.js 것과 둘 다 실행돼 「← 모의 문제지」를 눌러도 홈으로 갔다.
      한 페이지 안에서 화면이 바뀌는 것만 여기서 알려 준다. */
+  /* 🔒 버튼 기호 규칙 — cards.js 와 같다.
+       되돌리는 것 : 기호를 **앞**에   ↩ 새 문제지 · ↻ 같은 문제지 다시 풀기
+       옮겨 가는 것 : 화살표를 **뒤**에  복기 → · 오답노트 보기 →
+       그냥 동작인 것 : 기호 없음        제출하기 · 채점하기
+     ⚠️ 모든 버튼에 붙이면 오히려 안 보인다. **화면을 옮기는 것에만** 붙인다. */
+
+  /* 제목은 두 곳에 뜬다 — 헤더의 작은 글씨와 화면 위 큰 제목.
+     💬 "그 제목들이 실제로 페이지 내에서도 뜨면 좋겠어."
+     헤더만으로는 지금 어느 화면인지 눈에 잘 안 들어온다. 한 번에 같이 바꾼다. */
+  var HERO = {
+    '모의 문제지 생성':
+      '최근 7회분 기출의 단원별 출제 비율을 그대로 재현해 문제를 뽑습니다. ' +
+      '회차마다 구성이 달라지므로 매번 다른 시험지가 나옵니다.',
+    '문제 풀기': '다 풀고 아래 「제출하기」를 누르면 채점합니다.',
+    '틀린 것만 다시 풀기': '이 회차는 응시 이력에 남지 않습니다. 원래 기록을 지키기 위해서입니다.',
+    '채점 결과': '틀린 문제는 오답노트에 쌓였습니다.',
+    '문제지 복기': '그때 쓴 답과 정답을 나란히 봅니다.'
+  };
+
+  function setHero(where) {
+    var t = document.querySelector('.js-exam-title');
+    var d = document.querySelector('.js-exam-desc');
+    if (t) t.textContent = where;
+    if (d) {
+      /* 「채점 결과 #48213」처럼 뒤에 번호가 붙어도 설명은 찾아지게 앞부분으로 맞춘다 */
+      var key, hit = '';
+      for (key in HERO) {
+        if (Object.prototype.hasOwnProperty.call(HERO, key) && where.indexOf(key) === 0) hit = HERO[key];
+      }
+      d.textContent = hit;
+      d.style.display = hit ? '' : 'none';
+    }
+  }
+
   function setBack(label, where, fn) {
     if (window.EIP && window.EIP.setBack) window.EIP.setBack(label, where, fn);
+    if (where != null) setHero(where);
   }
   /* 화면 전환이 끝나고 「처음 상태」로 돌아갈 때 — 직전이 우리 사이트면 그리로 간다 */
   function resetBack(where) {
     var w = document.querySelector('.js-where');
     if (w) w.textContent = where;
+    setHero(where);
     if (window.EIP && window.EIP.initBack) window.EIP.initBack();
   }
 
@@ -924,7 +960,7 @@
 
     var acts = el('div', 'exam__acts');
     if (wrongItems.length) {
-      var re = el('button', 'quiz__grade', '틀린 것만 다시 풀기 (' + wrongItems.length + ')');
+      var re = el('button', 'quiz__grade', '↻ 틀린 것만 다시 풀기 (' + wrongItems.length + ')');
       re.type = 'button';
       re.addEventListener('click', function () {
         current = {
@@ -937,12 +973,12 @@
       });
       acts.appendChild(re);
     }
-    var nw = el('button', 'exam__ghost', '새 문제지');
+    var nw = el('button', 'exam__ghost', '↩ 새 문제지');
     nw.type = 'button';
     nw.addEventListener('click', backToSetup);
     acts.appendChild(nw);
 
-    var toWrong = el('a', 'exam__ghost', '오답노트 보기');
+    var toWrong = el('a', 'exam__ghost', '오답노트 보기 →');
     toWrong.href = 'wrong.html';
     acts.appendChild(toWrong);
     box.appendChild(acts);

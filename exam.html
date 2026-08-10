@@ -32,9 +32,11 @@ document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
   <main class="main">
     <div class="wrap">
 
+      <!-- 제목과 설명은 화면마다 exam.js 가 바꾼다 (setBack 과 한 벌).
+           헤더의 작은 글씨만으로는 지금 어느 화면인지 눈에 잘 안 들어온다. -->
       <section class="hero">
-        <h1>모의 문제지</h1>
-        <p>
+        <h1 class="js-exam-title">모의 문제지 생성</h1>
+        <p class="js-exam-desc">
           최근 7회분 기출의 <strong>단원별 출제 비율</strong>을 그대로 재현해 문제를 뽑습니다.
           회차마다 구성이 달라지므로 매번 다른 시험지가 나옵니다.
           틀린 문제는 오답노트에 자동으로 쌓입니다.
