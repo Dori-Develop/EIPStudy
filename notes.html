@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="섹션마다 적어 둔 메모를 한곳에서 — 정보처리기사 실기 학습 사이트">
+<title>메모 모아보기 · EIP Study</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <a class="hdr__title" href="index.html" style="padding-left:8px">
+    EIP Study
+    <small>정보처리기사 실기</small>
+  </a>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="layout">
+  <main class="main">
+    <div class="wrap">
+
+      <section class="hero">
+        <h1>메모 모아보기</h1>
+        <p>
+          섹션마다 적어 둔 메모를 챕터 순으로 모았습니다.
+          제목을 누르면 그 섹션으로 갑니다.
+        </p>
+      </section>
+
+      <div id="notes"></div>
+
+      <footer class="footer">
+        <p>
+          메모는 이 브라우저에만 저장됩니다.
+          <a class="dangerlink" href="index.html">← 홈으로</a>
+        </p>
+      </footer>
+
+    </div>
+  </main>
+</div>
+
+<script src="assets/app.js"></script>
+<script src="assets/toc.js"></script>
+<script src="assets/memo.js"></script>
+<script src="assets/notes.js"></script>
+</body>
+</html>

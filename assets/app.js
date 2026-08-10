@@ -139,10 +139,13 @@
     return CH.base + CH.id + '/' + file;
   }
 
-  /* ============================ 진도 요약 (index.html · chapters.html 공통) */
-  /* 챕터별 진도는 chapters.html 에만 있고, 홈에는 카드가 없다.
-     그래서 총계는 **카드 DOM 이 아니라 EIP_TOC 로** 센다 — 홈에서도 값이 나와야 한다.
-     toc.js 에 12챕터의 섹션 목록이 있어 카드 없이도 총 섹션 수를 알 수 있다.
+  /* ==================================== 진도 요약 (chapters.html 전용) */
+  /* 📌 **홈에는 진도를 그리지 않는다** (2026-08-10, 사용자 결정).
+     같은 숫자를 두 곳에서 보여 줄 이유가 없고, 홈은 도구를 고르는 자리다.
+     그래서 이 함수는 홈에서 그릴 것을 하나도 못 찾고 조용히 끝난다.
+
+     총계는 **카드 DOM 이 아니라 EIP_TOC 로** 센다. 카드가 없어도 값이 나오고,
+     카드 12장의 합과도 어긋나지 않는다.
 
      ⚠️ 실제 총계는 eip.meta.chNN(그 챕터를 한 번이라도 연 기록)을 우선한다.
         toc 는 빌드 시점의 값이고 meta 는 사용자가 실제로 본 페이지의 값이라
@@ -172,6 +175,11 @@
 
   function initHome() {
     var host = $('.js-chapters');
+    var oBar = $('.js-overall-bar');
+    var oPct = $('.js-overall-pct');
+    var oTxt = $('.js-overall-text');
+    if (!host && !oBar && !oPct && !oTxt) return;   /* 홈·도구 페이지 — 그릴 것이 없다 */
+
     var ids = chapterIds();
     var totalAll = 0, doneAll = 0, i, id, total, done;
 
@@ -211,23 +219,12 @@
     }
 
     var pctAll = totalAll ? Math.round(doneAll / totalAll * 100) : 0;
-    var oBar = $('.js-overall-bar');
-    var oPct = $('.js-overall-pct');
-    var oTxt = $('.js-overall-text');
     if (oBar) oBar.style.width = pctAll + '%';
     if (oPct) oPct.textContent = pctAll + '%';
     if (oTxt) {
       oTxt.textContent = totalAll
         ? doneAll + ' / ' + totalAll + '개 섹션 완료'
         : '챕터를 한 번 열면 진도 추적이 시작됩니다';
-    }
-
-    /* 홈의 「학습 정리본」 카드 — 들어가지 않아도 진도가 보이게 */
-    var sum = $('.js-summary-sections');
-    if (sum) {
-      sum.textContent = totalAll
-        ? doneAll + ' / ' + totalAll + '개 섹션 · ' + pctAll + '%'
-        : '챕터를 한 번 열면 진도가 보입니다';
     }
   }
 
@@ -253,7 +250,7 @@
     if (reset) {
       reset.addEventListener('click', function () {
         if (!confirm('섹션 학습 완료 표시를 모두 지웁니다.\n' +
-                     '오답노트와 저장한 문제는 그대로 남습니다.\n\n계속할까요?')) return;
+                     '오답노트·저장한 문제·메모는 그대로 남습니다.\n\n계속할까요?')) return;
         store.keys().forEach(function (k) {
           if (k.indexOf('done.') === 0) store.remove(k);
         });
@@ -268,7 +265,8 @@
                      '  · 섹션 학습 진도\n' +
                      '  · 오답노트 (틀린 횟수 · 분류)\n' +
                      '  · ★ 저장한 문제\n' +
-                     '  · 저장한 암기 카드\n\n' +
+                     '  · 저장한 암기 카드\n' +
+                     '  · 섹션마다 적어 둔 메모\n\n' +
                      '되돌릴 수 없습니다. 계속할까요?')) return;
         store.keys().forEach(function (k) {
           if (!isKept(k)) store.remove(k);

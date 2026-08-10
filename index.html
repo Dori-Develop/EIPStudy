@@ -34,14 +34,6 @@ document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
         <p>12개 단원 200개 섹션 · 도해와 표로 정리한 학습 노트 · 진도는 이 기기에 자동 저장됩니다</p>
       </section>
 
-      <section class="overall">
-        <div class="overall__top">
-          <span class="js-overall-text">챕터를 한 번 열면 진도 추적이 시작됩니다</span>
-          <span class="overall__pct js-overall-pct">0%</span>
-        </div>
-        <div class="bar"><i class="js-overall-bar"></i></div>
-      </section>
-
       <div class="cards">
 
         <a class="card" href="chapters.html">
@@ -53,10 +45,7 @@ document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
             12개 단원 200개 섹션. 도해와 표로 정리한 본문을 챕터별로 읽습니다.
             섹션마다 개념 퀴즈가 붙어 있고, 읽은 곳은 자동으로 진도에 기록됩니다.
           </p>
-          <div class="card__meta">
-            <span class="js-summary-sections">챕터를 한 번 열면 진도가 보입니다</span>
-            <span>12개 단원 →</span>
-          </div>
+          <div class="card__meta"><span>12개 단원 200개 섹션 →</span></div>
         </a>
 
         <a class="card" href="exam.html">
@@ -93,6 +82,19 @@ document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
           <p class="card__desc">
             틀린 문제가 자동으로 모입니다. 한번 틀림 · 틀렸다 맞음 · 여러번 틀림으로
             나뉘고, 다시 풀어 맞히면 분류가 저절로 옮겨 갑니다. ★ 로 따로 담아 둘 수도 있습니다.
+          </p>
+          <div class="card__meta"><span>바로 가기 →</span></div>
+        </a>
+
+        <a class="card" href="notes.html">
+          <div class="card__top">
+            <span class="card__badge">메모</span>
+            <span class="card__title">메모 모아보기</span>
+          </div>
+          <p class="card__desc">
+            섹션마다 적어 둔 메모를 챕터 순으로 모아 봅니다.
+            검색으로 좁히거나 전체를 마크다운으로 복사할 수 있고,
+            제목을 누르면 그 섹션으로 바로 갑니다.
           </p>
           <div class="card__meta"><span>바로 가기 →</span></div>
         </a>

@@ -57,6 +57,12 @@ for md in "${sources[@]}"; do
 <script src=\"../assets/quiz.js\"></script>"
   fi
 
+  # 메모는 은행 유무와 상관없이 모든 섹션에 붙는다.
+  # 🚨 quiz.js 뒤여야 한다 — 둘 다 "학습 완료" 버튼 앞에 끼워 넣는 방식이라
+  #    먼저 실린 쪽이 위로 간다. 메모 카드는 퀴즈 아래에 와야 한다.
+  sec_scripts="${quiz_scripts}
+<script src=\"../assets/memo.js\"></script>"
+
   # 본문에 </script> 가 있으면 인라인 삽입이 깨진다
   if grep -q '</script>' "$md"; then
     echo "!! $md 에 </script> 가 있어 빌드를 중단합니다."
@@ -259,7 +265,7 @@ MID2
       cat "$secfile"
       printf '</'
       printf 'script>\n'
-      shell_tail "../" "$quiz_scripts"
+      shell_tail "../" "$sec_scripts"
     } > "${id}/${page}"
   done
 
