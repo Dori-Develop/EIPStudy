@@ -133,7 +133,47 @@
 
   function onEsc(e) { if (e.key === 'Escape' || e.keyCode === 27) closeDialog(); }
 
-  function openDialog(parsed, filename, sum) {
+  /* 지금 · 파일 · 합친 뒤 를 나란히 보여 준다.
+     🔒 「합친 뒤」는 merge.js 의 dryRun 으로 실제 합쳐 본 값이라 결과와 어긋나지 않는다. */
+  function statsTable(now, file, after) {
+    var rows = [
+      ['읽은 섹션', 'sections'],
+      ['메모', 'memos'],
+      ['오답 기록', 'wrongs'],
+      ['★ 저장한 문제', 'favs'],
+      ['암기 카드', 'cards'],
+      ['응시 이력', 'exams']
+    ];
+
+    var t = el('table', 'bkdlg__stats');
+    var thead = el('thead');
+    var htr = el('tr');
+    htr.appendChild(el('th', null, ''));
+    htr.appendChild(el('th', null, '지금'));
+    htr.appendChild(el('th', null, '파일'));
+    if (after) htr.appendChild(el('th', 'is-after', '합친 뒤'));
+    thead.appendChild(htr);
+    t.appendChild(thead);
+
+    var tb = el('tbody');
+    var any = false;
+    rows.forEach(function (r) {
+      var k = r[1];
+      var a = now[k] || 0, b = file[k] || 0, c = after ? (after[k] || 0) : 0;
+      if (!a && !b && !c) return;
+      any = true;
+      var tr = el('tr');
+      tr.appendChild(el('th', null, r[0]));
+      tr.appendChild(el('td', null, String(a)));
+      tr.appendChild(el('td', null, String(b)));
+      if (after) tr.appendChild(el('td', 'is-after', String(c)));
+      tb.appendChild(tr);
+    });
+    t.appendChild(tb);
+    return any ? t : null;
+  }
+
+  function shell(title, subtitle) {
     closeDialog();
 
     scrim = el('div', 'scrim is-open');
@@ -143,56 +183,76 @@
     box = el('div', 'bkdlg');
     box.setAttribute('role', 'dialog');
     box.setAttribute('aria-modal', 'true');
-    box.setAttribute('aria-label', '학습 기록 가져오기');
+    box.setAttribute('aria-label', title);
+    box.appendChild(el('h2', 'bkdlg__title', title));
+    if (subtitle) box.appendChild(el('p', 'bkdlg__file', subtitle));
 
-    box.appendChild(el('h2', 'bkdlg__title', '이 기록을 가져옵니다'));
-    box.appendChild(el('p', 'bkdlg__file', filename + ' · ' + dateText(parsed.at) + ' 에 내보냄'));
+    document.addEventListener('keydown', onEsc);
+    document.body.appendChild(box);
+    return box;
+  }
 
-    var rows = [
-      ['읽은 섹션', sum.sections],
-      ['메모', sum.memos],
-      ['오답 기록', sum.wrongs],
-      ['★ 저장한 문제', sum.favs],
-      ['저장한 암기 카드', sum.cards],
-      ['모의 문제지 응시 이력', sum.exams]
-    ];
-    var list = el('dl', 'bkdlg__stats');
-    rows.forEach(function (r) {
-      if (!r[1]) return;
-      list.appendChild(el('dt', null, r[0]));
-      list.appendChild(el('dd', null, r[1] + '개'));
-    });
-    box.appendChild(list);
+  /* 1단계 — 무엇이 들어오는지 보여 준다 */
+  function openDialog(parsed, filename, fileSum) {
+    var s = store(), m = M();
+    if (!s || !m) return;
 
-    /* 합치기 */
+    var nowSum = m.summarize(m.exportable(s));
+    var afterSum = m.summarize(m.dryRun(s, parsed.data));
+
+    shell('이 기록을 가져옵니다', filename + ' · ' + dateText(parsed.at) + ' 에 내보냄');
+
+    var t = statsTable(nowSum, fileSum, afterSum);
+    if (t) box.appendChild(t);
+
     var merge = el('button', 'bkdlg__go', '지금 기록과 합치기');
     merge.type = 'button';
+    merge.addEventListener('click', function () { run(parsed, 'merge'); });
     box.appendChild(merge);
     box.appendChild(el('p', 'bkdlg__hint',
       '읽은 섹션·오답·저장한 것은 양쪽을 모두 남깁니다. ' +
       '같은 섹션에 메모가 둘이면 이어 붙여 하나도 잃지 않습니다.'));
 
-    /* 덮어쓰기 */
     var replace = el('button', 'bkdlg__go bkdlg__go--danger', '지금 기록을 지우고 덮어쓰기');
     replace.type = 'button';
+    replace.addEventListener('click', function () { confirmReplace(parsed, filename, nowSum, fileSum); });
     box.appendChild(replace);
     box.appendChild(el('p', 'bkdlg__hint',
-      '이 파일의 상태로 되돌립니다. 파일에 없는 기록은 사라지고 되돌릴 수 없습니다.'));
+      '「파일」 열의 상태로 되돌립니다. 파일에 없는 기록은 사라집니다.'));
 
     var cancel = el('button', 'bkdlg__cancel', '취소');
     cancel.type = 'button';
     cancel.addEventListener('click', closeDialog);
     box.appendChild(cancel);
 
-    merge.addEventListener('click', function () { run(parsed, 'merge'); });
-    replace.addEventListener('click', function () {
-      if (!confirm('지금 이 브라우저의 학습 기록을 전부 지우고\n파일의 내용으로 바꿉니다.\n\n되돌릴 수 없습니다. 계속할까요?')) return;
-      run(parsed, 'replace');
-    });
-
-    document.addEventListener('keydown', onEsc);
-    document.body.appendChild(box);
     merge.focus();
+  }
+
+  /* 2단계 — 덮어쓰기만 한 번 더 묻는다.
+     📌 브라우저 confirm() 을 쓰지 않는다. 제목 줄에 앱 이름이나 도메인이 붙어
+        (VS Code 내장 브라우저에서는 "Code") 무슨 창인지 알아보기 어렵다. */
+  function confirmReplace(parsed, filename, nowSum, fileSum) {
+    shell('정말 덮어쓸까요?', filename);
+
+    box.appendChild(el('p', 'bkdlg__warn',
+      '지금 이 브라우저의 학습 기록이 사라지고 파일의 기록만 남습니다. 되돌릴 수 없습니다.'));
+
+    var t = statsTable(nowSum, fileSum, null);
+    if (t) box.appendChild(t);
+
+    var go = el('button', 'bkdlg__go bkdlg__go--danger', '지우고 덮어쓰기');
+    go.type = 'button';
+    go.addEventListener('click', function () { run(parsed, 'replace'); });
+    box.appendChild(go);
+
+    var back = el('button', 'bkdlg__cancel', '← 뒤로');
+    back.type = 'button';
+    back.addEventListener('click', function () {
+      openDialog(parsed, filename, fileSum);
+    });
+    box.appendChild(back);
+
+    back.focus();
   }
 
   function run(parsed, mode) {

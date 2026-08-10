@@ -1204,16 +1204,31 @@ mark, .hl {
 .bkdlg__title { margin: 0; font-size: 16px; letter-spacing: -.01em; }
 .bkdlg__file { margin: 5px 0 0; font-size: 12px; color: var(--fg-faint); }
 
+/* 지금 · 파일 · 합친 뒤 를 나란히 */
 .bkdlg__stats {
-  display: grid; grid-template-columns: 1fr auto; gap: 5px 12px;
-  margin: 15px 0 18px; padding: 12px 13px;
-  background: var(--bg-sunken); border-radius: var(--radius-s);
-  font-size: 13px;
+  width: 100%; border-collapse: collapse;
+  margin: 15px 0 18px;
+  font-size: 12.5px; font-variant-numeric: tabular-nums;
 }
-.bkdlg__stats dt { color: var(--fg-muted); }
-.bkdlg__stats dd {
-  margin: 0; text-align: right;
-  font-weight: 700; font-variant-numeric: tabular-nums;
+.bkdlg__stats th, .bkdlg__stats td {
+  padding: 6px 4px;
+  border-bottom: 1px solid var(--border);
+  text-align: right; font-weight: 400; color: var(--fg-muted);
+}
+.bkdlg__stats thead th {
+  padding-top: 0;
+  font-size: 11px; color: var(--fg-faint);
+}
+.bkdlg__stats tbody th { text-align: left; }
+.bkdlg__stats tbody td { color: var(--fg); }
+/* 합친 결과가 이 화면의 요점이라 눈에 먼저 들어와야 한다 */
+.bkdlg__stats .is-after { color: var(--accent); font-weight: 700; }
+.bkdlg__stats tr:last-child th, .bkdlg__stats tr:last-child td { border-bottom: 0; }
+
+.bkdlg__warn {
+  margin: 14px 0 0; padding: 11px 12px;
+  background: var(--bg-sunken); border-radius: var(--radius-s);
+  font-size: 13px; line-height: 1.65; color: var(--warn);
 }
 
 .bkdlg__go {

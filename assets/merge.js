@@ -289,29 +289,46 @@
       return out;
     },
 
-    /* 합치기 — 지금 저장소에 incoming 을 얹는다. 바뀐 키 수를 돌려준다 */
-    apply: function (store, incoming, mode) {
-      var changed = 0;
+    /* 합친 결과를 저장소에 쓰지 않고 만들어 본다.
+       🔒 미리보기와 실제 결과가 어긋나지 않도록 apply 가 이것을 그대로 쓴다. */
+    dryRun: function (store, incoming) {
+      var out = {};
+      store.keys().forEach(function (k) {
+        if (isSkipped(k)) return;
+        var v = store.get(k, null);
+        if (v !== null && v !== undefined) out[k] = v;
+      });
       keys(incoming).forEach(function (k) {
         if (isSkipped(k)) return;
-        var next;
-        if (mode === 'replace') {
-          next = incoming[k];
-        } else {
-          next = mergeKey(k, store.get(k, null), incoming[k]);
-        }
-        store.set(k, next);
-        changed++;
+        out[k] = mergeKey(k, has(out, k) ? out[k] : null, incoming[k]);
       });
+      return out;
+    },
 
-      /* 덮어쓰기는 "이 파일의 상태로 되돌린다" 는 뜻이므로
-         파일에 없는 학습 기록 키는 지운다. 백업 복구가 그런 동작이다. */
+    /* 저장소에 반영한다. 바뀐 키 수를 돌려준다 */
+    apply: function (store, incoming, mode) {
+      var changed = 0;
+
+      /* 덮어쓰기는 "이 파일의 상태로 되돌린다" 는 뜻이다.
+         파일에 없는 학습 기록 키는 지운다 — 백업 복구가 그런 동작이다. */
       if (mode === 'replace') {
+        keys(incoming).forEach(function (k) {
+          if (isSkipped(k)) return;
+          store.set(k, incoming[k]);
+          changed++;
+        });
         store.keys().forEach(function (k) {
           if (isSkipped(k)) return;
           if (!has(incoming, k)) { store.remove(k); changed++; }
         });
+        return changed;
       }
+
+      var merged = this.dryRun(store, incoming);
+      keys(merged).forEach(function (k) {
+        store.set(k, merged[k]);
+        changed++;
+      });
       return changed;
     }
   };
