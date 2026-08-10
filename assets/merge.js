@@ -17,6 +17,7 @@
    meta.chNN    {total,title,updated}   → updated 최신 쪽
    exam.history [{seed,at,score,…}]     → 합쳐서 at 내림차순 EXAM_HISTORY_KEEP 개
    exam.recent  [[문항 id,…], …]        → 앞에서부터 번갈아, 최대 RECENT_KEEP
+   exam.answers {seed: {at, a}}          → 회차마다 at 최신 쪽, 최대 ANSWERS_KEEP
    theme        → **아예 옮기지 않는다** (학습 기록이 아니다)
 
    ⚠️ ES5 문법으로 작성한다.
@@ -28,6 +29,7 @@
   /* 🚨 exam.js 와 같은 값이어야 한다. 어긋나면 합친 뒤 개수가 화면과 달라진다. */
   var EXAM_HISTORY_KEEP = 200;   /* exam.js HISTORY_KEEP */
   var EXAM_RECENT_KEEP = 3;      /* exam.js RECENT_KEEP */
+  var EXAM_ANSWERS_KEEP = 40;    /* exam.js ANSWERS_KEEP */
 
   function has(o, k) { return Object.prototype.hasOwnProperty.call(o, k); }
   function isArr(v) { return Object.prototype.toString.call(v) === '[object Array]'; }
@@ -222,6 +224,30 @@
     return out.slice(0, EXAM_HISTORY_KEEP);
   }
 
+  /* 회차별 답안 — {seed: {at, a:{문항id: 내가 쓴 답}}}.
+     회차는 seed 로 갈리므로 겹치면 **나중에 푼 쪽**을 쓴다.
+     🚨 이력에 없는 회차의 답안은 exam.js 가 지운다. 여기서는 개수만 맞춘다. */
+  function mergeExamAnswers(mine, theirs) {
+    var out = {}, k;
+    if (isObj(mine)) { for (k in mine) { if (has(mine, k)) out[k] = mine[k]; } }
+    if (isObj(theirs)) {
+      for (k in theirs) {
+        if (!has(theirs, k)) continue;
+        if (!has(out, k)) { out[k] = theirs[k]; continue; }
+        var a = out[k], b = theirs[k];
+        if (((b && b.at) || 0) > ((a && a.at) || 0)) out[k] = b;
+      }
+    }
+
+    /* 최신 at 순으로 상한까지만 남긴다 */
+    var ks = keys(out);
+    if (ks.length <= EXAM_ANSWERS_KEEP) return out;
+    ks.sort(function (x, y) { return ((out[y] && out[y].at) || 0) - ((out[x] && out[x].at) || 0); });
+    var cut = {}, i;
+    for (i = 0; i < EXAM_ANSWERS_KEEP; i++) cut[ks[i]] = out[ks[i]];
+    return cut;
+  }
+
   /* 최근 회차 문항 목록 — 중복 출제를 피하려는 것이라 양쪽을 번갈아 담는다 */
   function mergeExamRecent(mine, theirs) {
     var a = isArr(mine) ? mine : [];
@@ -250,6 +276,7 @@
     if (key === 'card.saved') return unionArray(mine, theirs);
     if (key === 'exam.history') return mergeExamHistory(mine, theirs);
     if (key === 'exam.recent') return mergeExamRecent(mine, theirs);
+    if (key === 'exam.answers') return mergeExamAnswers(mine, theirs);
 
     /* 모르는 키 — 새 기능이 만든 것일 수 있다. 배열이면 합치고 아니면 상대 것을 쓴다.
        🚨 새 키를 만들면 위에 규칙을 추가할 것. 여기 떨어지면 조용히 덮인다. */

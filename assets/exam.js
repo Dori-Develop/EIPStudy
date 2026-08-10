@@ -78,6 +78,10 @@
         학습 기록 전체를 잃는 쪽이 오래된 이력을 잃는 쪽보다 훨씬 나쁘다. */
   var HISTORY_KEEP = 200;
 
+  /* 답안은 이력보다 훨씬 무겁다 — 회차당 2KB 쯤이라 이력의 다섯 배다.
+     그래서 상한을 따로, 더 짧게 잡는다. 복기는 최근 것을 주로 본다. */
+  var ANSWERS_KEEP = 40;
+
   /* 넣어 보고, 안 들어갔으면 절반으로 줄여 다시 넣는다.
      app.js 의 store.set 은 예외를 삼키므로 **읽어서 확인하는 수밖에 없다.** */
   function writeHistory(hist) {
@@ -90,6 +94,42 @@
     }
     write('exam.history', hist.slice(0, 1));
     return 1;
+  }
+
+  function historyList() {
+    var h = read('exam.history', []);
+    return (Object.prototype.toString.call(h) === '[object Array]') ? h : [];
+  }
+  function answerBook() {
+    var a = read('exam.answers', {});
+    return (a && typeof a === 'object' && !a.length) ? a : {};
+  }
+
+  /* 회차의 답안을 넣고, 이력에서 사라진 회차의 답안은 함께 지운다.
+     🚨 안 지우면 아무도 못 여는 고아 데이터가 계속 쌓인다. */
+  function saveAnswers(seed, map) {
+    var all = answerBook();
+    all[String(seed)] = { at: (new Date()).getTime(), a: map };
+
+    var live = {}, hist = historyList(), i, n = 0;
+    for (i = 0; i < hist.length && n < ANSWERS_KEEP; i++) {
+      if (!live[String(hist[i].seed)]) { live[String(hist[i].seed)] = 1; n++; }
+    }
+    var out = {}, k;
+    for (k in all) { if (has(all, k) && live[k]) out[k] = all[k]; }
+
+    write('exam.answers', out);
+  }
+
+  function has(o, k) { return Object.prototype.hasOwnProperty.call(o, k); }
+
+  /* 문항 id → 문항. 은행은 boot 에서 전부 실려 있다 */
+  function itemById(id) {
+    var ch = String(id).slice(0, 4);
+    var bank = window['EIP_BANK_' + ch] || [];
+    var i;
+    for (i = 0; i < bank.length; i++) { if (bank[i].id === id) return bank[i]; }
+    return null;
   }
 
   /* 최근 K회 문제지에 나온 문항 — 중복 회피용. [[id,…], …] 최신이 앞 */
@@ -376,6 +416,174 @@
       ? '문제 은행이 준비된 단원은 ' + have + '/' + all + ' 개입니다. 나머지 단원은 아직 출제되지 않습니다.'
       : '전 단원 문제 은행이 준비되어 있습니다.';
     setupBox.appendChild(note);
+
+    buildHistory();
+  }
+
+  /* ------------------------------------------------------------ 응시 이력 */
+  /* 📌 이력은 예전부터 쌓이고 있었는데 보여 주는 화면이 없었다.
+     그래서 「저장이 안 된다」로 보였다. 데이터는 그대로 쓰고 화면만 붙인다. */
+  function buildHistory() {
+    var hist = historyList();
+    if (!hist.length) return;
+
+    var box = el('section', 'exam__hist');
+
+    var head = el('div', 'exam__histhead');
+    head.appendChild(el('h2', 'exam__histtitle', '응시 이력'));
+    head.appendChild(el('span', 'exam__histn', hist.length + '회'));
+    var clear = el('button', 'exam__histclear', '이력 지우기');
+    clear.type = 'button';
+    clear.addEventListener('click', clearHistory);
+    head.appendChild(clear);
+    box.appendChild(head);
+
+    var book = answerBook();
+    var list = el('ol', 'exam__histlist');
+
+    hist.forEach(function (r) {
+      var li = el('li', 'exam__histrow');
+
+      var top = el('div', 'exam__histtop');
+      top.appendChild(el('span', 'exam__histat', r.at));
+      top.appendChild(el('span', 'exam__histseed', '#' + r.seed));
+      var pct = r.total ? Math.round(r.score / r.total * 100) : 0;
+      top.appendChild(el('strong', 'exam__histscore', r.score + ' / ' + r.total));
+      top.appendChild(el('span', 'exam__histpct', pct + '%'));
+      li.appendChild(top);
+
+      var bar = el('div', 'bar');
+      var fill = el('i');
+      fill.style.width = pct + '%';
+      bar.appendChild(fill);
+      li.appendChild(bar);
+
+      li.appendChild(el('div', 'exam__histch', chapterSummary(r.chapters)));
+
+      var acts = el('div', 'exam__histacts');
+
+      /* 답안이 남아 있는 회차만 복기할 수 있다 — 상한을 넘겨 밀려난 것은 못 연다 */
+      if (has(book, String(r.seed))) {
+        var rev = el('button', 'exam__histbtn', '복기');
+        rev.type = 'button';
+        rev.addEventListener('click', function () { renderReview(r); });
+        acts.appendChild(rev);
+      } else {
+        acts.appendChild(el('span', 'exam__histnone', '답안 없음'));
+      }
+
+      var again = el('button', 'exam__histbtn', '같은 문제지 다시 풀기');
+      again.type = 'button';
+      again.addEventListener('click', function () {
+        generate({ scope: 'all', mode: 'real', n: r.total, mins: 0, boost: false, seed: r.seed });
+      });
+      acts.appendChild(again);
+
+      li.appendChild(acts);
+      list.appendChild(li);
+    });
+
+    box.appendChild(list);
+    setupBox.appendChild(box);
+  }
+
+  function chapterSummary(perCh) {
+    if (!perCh) return '';
+    var nums = [], c;
+    for (c in perCh) { if (has(perCh, c)) nums.push(parseInt(c, 10)); }
+    nums.sort(function (a, b) { return a - b; });
+    return nums.map(function (n) {
+      return String(n) + '단원 ' + perCh[n].ok + '/' + perCh[n].total;
+    }).join(' · ');
+  }
+
+  function clearHistory() {
+    if (!confirmClear()) return;
+    var s = store();
+    if (s) { s.remove('exam.history'); s.remove('exam.answers'); }
+    refreshHistory();
+  }
+
+  /* T28 에서 화면 안 대화상자로 바꿀 자리 — 지금은 confirm 이다 */
+  function confirmClear() {
+    return confirm('응시 이력과 저장된 답안을 모두 지웁니다.\n' +
+                   '오답노트와 진도는 그대로 남습니다.\n\n' +
+                   '지우기 전에 홈에서 「기록 내보내기」로 백업해 두면 되돌릴 수 있습니다.\n\n계속할까요?');
+  }
+
+  /* ------------------------------------------------------------ 복기 */
+  /* 🔒 채점 위젯(qcard)을 그대로 쓴다. 답을 채워 넣고 잠근 뒤 결과를 그린다 —
+     복기 전용 렌더를 따로 만들면 채점 화면과 생김새가 갈린다. */
+  function renderReview(rec) {
+    var book = answerBook();
+    var saved = book[String(rec.seed)];
+    if (!saved || !saved.a) return;
+
+    stopTimer();
+    setupBox.style.display = 'none';
+    sheetBox.innerHTML = '';
+    sheetBox.style.display = '';
+    cards = [];
+    current = null;
+
+    var head = el('div', 'exam__head');
+    var title = el('div', 'exam__headmain');
+    title.appendChild(el('strong', null, '복기 — 모의 문제지 #' + rec.seed));
+    title.appendChild(el('span', 'exam__headsub',
+      rec.at + ' · ' + rec.score + ' / ' + rec.total));
+    head.appendChild(title);
+    sheetBox.appendChild(head);
+
+    var list = el('ol', 'quiz__list exam__list');
+    var missing = 0, id;
+
+    for (id in saved.a) {
+      if (!has(saved.a, id)) continue;
+      var item = itemById(id);
+      if (!item) { missing++; continue; }
+
+      var li = el('li', 'quiz__item');
+      var card = window.EIP_QCARD.create(item, li);
+      var mine = saved.a[id];
+      var ok = matchesSaved(item, mine);
+      card.lock();
+      card.showResult({ ok: ok, mine: mine });
+      li.className = 'quiz__item ' + (ok ? 'is-ok' : 'is-no');
+      list.appendChild(li);
+    }
+    sheetBox.appendChild(list);
+
+    if (missing) {
+      sheetBox.appendChild(el('p', 'exam__note',
+        '문항 ' + missing + '개는 은행에서 찾지 못했습니다. 그 사이 문항이 바뀐 것입니다.'));
+    }
+
+    var foot = el('div', 'exam__acts');
+    var back = el('button', 'exam__ghost', '← 이력으로');
+    back.type = 'button';
+    back.addEventListener('click', backToSetup);
+    foot.appendChild(back);
+
+    var again = el('button', 'quiz__grade', '같은 문제지 다시 풀기');
+    again.type = 'button';
+    again.addEventListener('click', function () {
+      generate({ scope: 'all', mode: 'real', n: rec.total, mins: 0, boost: false, seed: rec.seed });
+    });
+    foot.appendChild(again);
+    sheetBox.appendChild(foot);
+
+    window.scrollTo(0, 0);
+  }
+
+  /* 저장된 답이 정답이었는지 — 채점 규칙은 qcard 것을 그대로 쓴다.
+     ⚠️ 규칙을 여기서 다시 짜지 말 것. 정규화가 어긋나면 복기 결과가 그때와 달라진다. */
+  function matchesSaved(item, mine) {
+    var Q = window.EIP_QCARD;
+    if (!Q || !Q.matchText) return false;
+    if (mine === '(무응답)') return false;
+    if (item.t === 'ox') return (mine === 'O') === !!item.a;
+    if (item.t === 'choice') return mine === (item.c || [])[item.a];
+    return Q.matchText(mine, item.a, item.t === 'code');
   }
 
   function field(label, control) {
@@ -510,7 +718,16 @@
     sheetBox.style.display = 'none';
     sheetBox.innerHTML = '';
     setupBox.style.display = '';
+    /* 방금 푼 회차가 이력에 보여야 한다. 설정은 건드리지 않고 이력만 다시 그린다 —
+       buildSetup 을 통째로 부르면 골라 둔 범위·분포가 초기화된다. */
+    refreshHistory();
     window.scrollTo(0, 0);
+  }
+
+  function refreshHistory() {
+    var old = setupBox.querySelector('.exam__hist');
+    if (old) old.parentNode.removeChild(old);
+    buildHistory();
   }
 
   /* ------------------------------------------------------------- 타이머 */
@@ -544,12 +761,15 @@
     var score = 0;
     var perCh = {};      /* 단원 번호 → {ok, total} */
     var wrongItems = [];
+    var answers = {};    /* 문항 id → 내가 쓴 답 */
 
     cards.forEach(function (row) {
       var res = row.card.judge();
       row.card.lock();
       row.card.showResult(res);
       row.li.className = 'quiz__item ' + (res.ok ? 'is-ok' : 'is-no');
+
+      answers[row.item.id] = res.mine;
 
       var c = row.item.ch;
       if (!perCh[c]) perCh[c] = { ok: 0, total: 0 };
@@ -561,7 +781,14 @@
       if (window.EIP_WRONG) window.EIP_WRONG.record(row.item.id, res.ok);
     });
 
-    saveHistory(score, perCh);
+    /* 🚨 「틀린 것만 다시 풀기」는 기록하지 않는다.
+       seed 가 원래 회차와 같아서 답안을 덮어써 버리고 (그 회차 복기가 12문항짜리로 줄어든다),
+       이력에도 「12문항 중 12점」 같은 왜곡된 줄이 남는다.
+       원래 회차의 기록을 지키는 쪽이 맞다. */
+    if (!current.partial) {
+      saveHistory(score, perCh);
+      saveAnswers(current.seed, answers);
+    }
     renderResult(score, perCh, wrongItems, byTimeout);
   }
 
@@ -624,7 +851,8 @@
         current = {
           seed: current.seed, items: wrongItems.slice(0), mins: 0,
           scope: current.scope, mode: current.mode, n: wrongItems.length,
-          boost: current.boost, roundKey: null
+          boost: current.boost, roundKey: null,
+          partial: true   /* 이력·답안에 남기지 않는다 — doSubmit 주석 참고 */
         };
         renderSheet();
       });
