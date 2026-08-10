@@ -341,9 +341,16 @@
      🔒 **라벨은 「어디로 가는가」로 적는다.** 「← 뒤로」는 어디로 갈지 안 알려 준다.
         직전이 「모의 문제지」면 그렇게 적고, 모르면 홈이다.
         한 페이지 안에서 화면만 바뀔 때(exam.js)도 같은 규칙이다. */
+  /* HTML 에 적혀 있던 기본 링크. 되돌릴 자리가 필요하다 —
+     🚨 exam.js 처럼 화면마다 라벨을 바꾸는 곳에서 「처음 상태로」를 부르면
+        그냥 빠져나가서는 안 된다. 직전 화면의 라벨이 그대로 남는다. */
+  var authored = null;
+
   function initBackLink() {
     var a = $('.js-back');
     if (!a) return;
+
+    if (!authored) authored = { label: a.textContent, href: a.getAttribute('href') };
 
     var ref = document.referrer || '';
     var sameSite = ref.indexOf(location.protocol + '//' + location.host) === 0 ||
@@ -351,8 +358,26 @@
     /* 같은 페이지를 새로고침한 것은 「직전」이 아니다 */
     var samePage = ref.split('#')[0] === location.href.split('#')[0];
 
-    if (!sameSite || samePage) { setBack('← 홈', null, null); return; }
-    setBack('← ' + pageName(ref), null, function () { history.back(); });
+    /* 🚨 **자기 자신을 가리키면 루프가 된다.**
+       챕터 목록(chapters.html)에 섹션 페이지에서 들어오면 직전 이름이 「학습 정리본」인데,
+       그건 지금 이 페이지 이름이다. 눌러도 섹션 → 목록 → 섹션 을 오갈 뿐이다.
+       그럴 때는 **HTML 에 적혀 있는 기본 링크를 그대로 둔다.** */
+    var from = pageName(ref);
+    if (!sameSite || samePage || from === pageName(location.href)) {
+      restoreBack();
+      return;
+    }
+
+    setBack('← ' + from, null, function () { history.back(); });
+  }
+
+  /* HTML 에 적혀 있던 그대로 되돌린다 (섹션 페이지는 「← 학습 정리본」, 도구는 「← 홈」) */
+  function restoreBack() {
+    var a = $('.js-back');
+    if (!a || !authored) return;
+    if (backHandler) { a.removeEventListener('click', backHandler); backHandler = null; }
+    a.textContent = authored.label;
+    a.href = authored.href;
   }
 
   /* 주소에서 화면 이름을 찾는다. 모르는 주소(섹션 페이지 등)면 「홈」이 아니라
@@ -367,6 +392,8 @@
     for (i = 0; i < TOOLS.length; i++) {
       if (TOOLS[i].href.toLowerCase() === file) return TOOLS[i].label;
     }
+    /* 섹션·챕터 목차 페이지는 전부 「학습 정리본」 한 덩어리로 본다 —
+       챕터 목록(chapters.html)의 라벨과 같은 이름이라, 위에서 루프를 끊는 근거가 된다 */
     if (/^s\d\d\.html$/.test(file) || /^ch\d\d\.html$/.test(file)) return '학습 정리본';
     return '이전 화면';
   }

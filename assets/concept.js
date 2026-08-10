@@ -97,6 +97,22 @@
     } catch (e) { return null; }
   }
 
+  /* 🚨 **창 전체가 좌우로 밀리면 안 된다.** 좁은 화면에서 특히 못 본다.
+     넓은 것(표)은 **자기 상자 안에서만** 가로로 스크롤시킨다.
+     app.js 가 섹션 페이지에서 하는 일과 같은데, 여기는 app.js 를 안 거치므로 직접 한다. */
+  function wrapWide(root) {
+    var tables = root.getElementsByTagName('table');
+    var list = [], i;
+    for (i = 0; i < tables.length; i++) list.push(tables[i]);
+    for (i = 0; i < list.length; i++) {
+      var t = list[i];
+      if (t.parentNode && t.parentNode.className === 'tablewrap') continue;
+      var box = el('div', 'tablewrap');
+      t.parentNode.insertBefore(box, t);
+      box.appendChild(t);
+    }
+  }
+
   /* ------------------------------------------------------------------ 화면 */
   var scrim = null, box = null, lastFocus = null, prevOverflow = '';
 
@@ -126,7 +142,11 @@
     var chapter = TOC()[ch];
 
     scrim = el('div', 'scrim is-open');
+    /* 🚨 click 만으로는 PC 에서 안 닫히는 경우가 있었다.
+       누른 곳과 뗀 곳이 다르면 click 이 안 난다. mousedown 으로도 받는다. */
+    scrim.addEventListener('mousedown', close);
     scrim.addEventListener('click', close);
+    scrim.addEventListener('touchstart', close);
     document.body.appendChild(scrim);
 
     box = el('section', 'concept');
@@ -178,6 +198,7 @@
         if (out) {
           var art = el('article', 'doc concept__doc');
           art.innerHTML = out;
+          wrapWide(art);
           body.appendChild(art);
         } else if (md) {
           /* marked 가 없으면 원문이라도 보여 준다 — 아무것도 안 보이는 것보다 낫다 */

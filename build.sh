@@ -161,8 +161,8 @@ window.EIP_CHAPTER = {${meta_js},base:"${base}",${extra},sections:[${sections_js
 <header class="hdr">
   <button type="button" class="iconbtn js-menu" aria-label="목차 열기">☰</button>
   <div class="hdr__title">
-    <a href="${base}chapters.html">← 학습 정리본</a>
-    <small>${subtitle}</small>
+    <a href="${base}chapters.html" class="js-back">← 학습 정리본</a>
+    <small class="js-where">${subtitle}</small>
   </div>
   <button type="button" class="iconbtn js-search" aria-label="검색 (단축키 /)" title="검색  /">🔍</button>
   <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
@@ -244,6 +244,9 @@ MID
     cat <<'MID2'
       </div>
       <nav class="seclist js-seclist" aria-label="섹션 목록"></nav>
+      <footer class="footer">
+        <nav class="toolnav js-toolnav" aria-label="다른 학습 도구"></nav>
+      </footer>
     </article>
 MID2
     shell_tail ""
@@ -261,7 +264,10 @@ MID2
       printf '    <article class="wrap doc" id="doc">\n'
       printf '      <p style="color:var(--fg-faint)">본문을 불러오는 중…</p>\n'
       printf '    </article>\n'
-      printf '    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>\n'
+      printf '    <nav class="pagenav js-pagenav" aria-label="이전·다음 섹션"></nav>
+    <footer class="footer">
+      <nav class="toolnav js-toolnav" aria-label="다른 학습 도구"></nav>
+    </footer>\n'
       printf '<script type="text/markdown" id="markdown-source">\n'
       cat "$secfile"
       printf '</'

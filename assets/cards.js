@@ -366,30 +366,20 @@
       hintEl.appendChild(el('span', 'chint__side', spec[k].label));
     });
 
-    /* 어느 챕터 어느 섹션에서 온 카드인지. 그 섹션으로 바로 갈 수 있게 링크로 둔다 —
-       카드만 봐서는 이해가 안 될 때 본문을 열어 보는 것이 유일한 다음 행동이다. */
+    /* 어느 챕터에서 온 카드인지.
+       📌 섹션 이름은 붙이지 않는다 — 언제나 「📌 부록 — 핵심 암기 요약」이라
+          알려 주는 것이 없다. card.s 도 그 부록을 가리킨다. */
     var chapter = TOC[card.ch];
-    var sec = chapter && (chapter.s || [])[card.s];
     var where = card.ch.slice(2) +
-      (chapter ? ' · ' + chapter.t.replace(/^\d+\.\s*/, '') : '') +
-      (sec ? ' · ' + sec.t : '');
+      (chapter ? ' · ' + chapter.t.replace(/^\d+\.\s*/, '') : '');
 
     metaEl.innerHTML = '';
-    /* 🚨 예전에는 여기서 **페이지를 옮겼다.** 카드 한 장 확인하러 나갔다가
-       덱 위치와 저장함 상태를 다 잃고 돌아왔다. 겹쳐 열면 제자리다. */
-    var C = window.EIP_CONCEPT;
-    if (C && sec && C.has(card.ch, sec.f)) {
-      var link = C.link(card.ch, sec.f, where, 'cmeta__where');
-      link.title = '이 카드가 나온 본문 보기';
-      metaEl.appendChild(link);
-    } else if (sec) {
-      var a = el('a', 'cmeta__where', where);
-      a.href = card.ch + '/' + sec.f;
-      a.title = '이 카드가 나온 본문으로 이동';
-      metaEl.appendChild(a);
-    } else {
-      metaEl.appendChild(el('span', 'cmeta__where', where));
-    }
+    /* 🚨 **링크를 걸지 않는다.**
+       카드는 챕터 끝의 「📌 부록 — 핵심 암기 요약」 표에서 뽑은 것이라
+       card.s 가 가리키는 곳은 **언제나 그 부록**이다. 개념이 설명된 섹션이 아니다.
+       눌러 봐야 방금 본 카드와 같은 표가 나온다.
+       → 개념 섹션으로 잇는 일은 따로 해야 한다 (TODO T34). */
+    metaEl.appendChild(el('span', 'cmeta__where', where));
     if (saved[card.id]) metaEl.appendChild(el('span', 'cmeta__saved', '★ 저장됨'));
     metaEl.appendChild(el('span', 'cmeta__pos', (pos + 1) + ' / ' + deck.length));
 

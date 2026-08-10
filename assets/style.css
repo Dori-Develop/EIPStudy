@@ -1435,9 +1435,14 @@ mark, .hl {
 
 .concept__body {
   flex: 1 1 auto; min-height: 0;
-  overflow-y: auto; overscroll-behavior: contain;
-  padding: 4px 18px 18px;
+  overflow-y: auto;
+  /* 🚨 창 전체가 좌우로 밀리면 안 된다. 넓은 것은 자기 상자 안에서만 스크롤한다 */
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  padding: 4px 16px 18px;
 }
+.concept__body pre, .concept__body .tablewrap { max-width: 100%; overflow-x: auto; }
+.concept__body img, .concept__body table { max-width: 100%; }
 .concept__loading { margin: 28px 0; text-align: center; color: var(--fg-faint); font-size: 13.5px; }
 .concept__raw {
   white-space: pre-wrap; word-break: break-word;
@@ -1454,14 +1459,26 @@ mark, .hl {
   background: var(--bg-elev);
   text-align: right;
 }
-.concept__go { font-size: 12.5px; color: var(--accent); text-decoration: none; }
-.concept__go:hover { text-decoration: underline; }
+.concept__go {
+  display: inline-block; padding: 7px 14px;
+  background: var(--accent); color: #fff;
+  border-radius: 999px;
+  font-size: 12.5px; font-weight: 700; text-decoration: none;
+}
+.concept__go:hover { filter: brightness(1.08); }
 
 /* 채점 결과 안의 「개념 보기」 */
 .quiz__concept {
-  display: inline-block; margin: 9px 0 0;
-  font-size: 12.5px; color: var(--accent); text-decoration: none;
+  display: inline-flex; align-items: center;
+  margin: 10px 0 0; padding: 6px 12px;
+  background: var(--bg-elev); color: var(--fg-muted);
+  border: 1px solid var(--border); border-radius: 999px;
+  font-size: 12.5px; text-decoration: none;
+  transition: border-color .15s, color .15s, background .15s;
 }
-.quiz__concept:hover { text-decoration: underline; }
+.quiz__concept:hover {
+  border-color: var(--accent); color: var(--accent);
+  background: var(--accent-weak);
+}
 
 @media print { .concept, .quiz__concept { display: none !important; } }
