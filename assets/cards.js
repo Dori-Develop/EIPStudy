@@ -101,7 +101,7 @@
   /* 🚨 지금 단계에서 **실제로 카드가 있는 챕터만** 돌려준다.
      저장함(2단계)에서 담긴 것이 없는 챕터를 고를 수 있으면
      고르는 족족 빈 화면이 나온다. 고를 수 없게 하는 편이 맞다. */
-  function chapters() {
+  function availableChapters() {
     var seen = {}, out = [], i, k, c;
     for (i = 0; i < CARDS.length; i++) {
       c = CARDS[i];
@@ -113,24 +113,44 @@
     return out;
   }
 
+  /* 선택창에 넣을 목록.
+     🚨 **지금 걸려 있는 챕터는 비어도 남긴다.** 저장함에서 그 챕터를 다 「외웠다」로
+     넘기면 목록에서 빠지는데, 그러면 **선택창은 「전체 챕터」로 보이는데
+     실제로는 그 챕터만 보고 있는** 어긋난 상태가 된다. */
+  function chapters() {
+    var out = availableChapters(), i;
+    if (!chFilter) return out;
+    for (i = 0; i < out.length; i++) { if (out[i] === chFilter) return out; }
+    out.push(chFilter);
+    out.sort();
+    return out;
+  }
+
   /* 단계를 바꾸면 고른 챕터가 그 단계에 없을 수 있다 (저장함에 그 챕터가 안 담겼다).
-     그대로 두면 **선택창은 「전체 챕터」인데 목록은 비어 있는** 어긋난 상태가 된다. */
+     덱을 다시 만들 때 그런 필터는 푼다 — 안 그러면 영영 빈 화면이다. */
   function normalizeFilter() {
     if (!chFilter) return;
-    var list = chapters(), i;
+    var list = availableChapters(), i;
     for (i = 0; i < list.length; i++) { if (list[i] === chFilter) return; }
     chFilter = '';
   }
 
-  function buildDeck() {
-    normalizeFilter();
+  /* 조건에 맞는 카드를 고른다. 덱을 만들 때도, **다시 만들면 몇 장이 나오는지**
+     미리 볼 때도 같은 함수를 쓴다 — 규칙이 두 벌이면 화면과 실제가 어긋난다. */
+  function pick(ch, st) {
     var out = [], i, c;
     for (i = 0; i < CARDS.length; i++) {
       c = CARDS[i];
-      if (chFilter && c.ch !== chFilter) continue;
-      if (stage === 2 && !saved[c.id]) continue;
+      if (ch && c.ch !== ch) continue;
+      if (st === 2 && !saved[c.id]) continue;
       out.push(c);
     }
+    return out;
+  }
+
+  function buildDeck() {
+    normalizeFilter();
+    var out = pick(chFilter, stage);
     if (shuffled) shuffle(out);
     deck = out;
     pos = 0;
@@ -266,10 +286,22 @@
       doneEl.hidden = false;
       doneEl.innerHTML = '';
 
+      /* 🔒 버튼은 **"지금 조건으로 다시 만들면 무엇이 나오는가"** 로 정한다.
+         방금 넘긴 덱 크기로 정하면 안 된다 — 저장함에서 다 「외웠다」로 넘기면
+         덱은 있었는데 지금은 아무것도 없다. 그때 「처음부터 다시」를 내면
+         눌러도 같은 화면이거나 엉뚱한 목록이 나온다. */
+      var againN = pick(chFilter, stage).length;    /* 같은 조건으로 다시 만들면 */
+      var noFilterN = chFilter ? pick('', stage).length : againN;  /* 챕터를 풀면 */
+      var boxEmpty = stage === 2 && !savedCount(); /* 저장함이 통째로 비었나 */
+
       if (!deck.length) {
         doneEl.appendChild(el('p', 'cdone__msg', stage === 2
           ? '저장함이 비어 있습니다. 「전체 카드」에서 왼쪽으로 넘겨 담아 두세요.'
           : '이 챕터에는 카드가 없습니다.'));
+      } else if (boxEmpty) {
+        doneEl.appendChild(el('p', 'cdone__msg', '저장함을 다 비웠습니다.'));
+        doneEl.appendChild(el('p', 'cdone__sub',
+          '외운 것으로 넘긴 카드는 「전체 카드」에서 다시 담을 수 있습니다.'));
       } else {
         doneEl.appendChild(el('p', 'cdone__msg',
           deck.length + '장을 다 넘겼습니다.'));
@@ -277,18 +309,15 @@
           '저장함에 ' + savedCount() + '장 담겨 있습니다.'));
       }
 
-      /* 🚨 처음부터 넘길 카드가 없었으면 「처음부터 다시」는 아무 일도 안 한다.
-         눌러도 같은 화면이 나와 고장으로 읽힌다. 다 넘긴 경우에만 보여 준다. */
-      if (deck.length) {
+      if (againN) {
         var again = el('button', 'cdone__btn', '처음부터 다시');
         again.type = 'button';
         again.addEventListener('click', function () { buildDeck(); render(); });
         doneEl.appendChild(again);
       }
 
-      /* 챕터를 걸어 둔 상태면 **다 넘겼든 비었든** 여기서 풀 수 있게 한다.
-         다 넘긴 뒤 다음 행동이 대개 「다른 챕터도 보기」다. */
-      if (chFilter) {
+      /* 챕터를 풀면 볼 것이 있을 때만 낸다 — 풀어도 비어 있으면 낼 이유가 없다 */
+      if (chFilter && noFilterN) {
         var all = el('button', 'cdone__btn', '전체 챕터로');
         all.type = 'button';
         all.addEventListener('click', function () {
@@ -297,6 +326,18 @@
           render();
         });
         doneEl.appendChild(all);
+      }
+
+      /* 저장함이 통째로 비었으면 여기서 할 수 있는 것이 없다. 전체 카드로 보낸다. */
+      if (boxEmpty) {
+        var back1 = el('button', 'cdone__btn', '전체 카드로 →');
+        back1.type = 'button';
+        back1.addEventListener('click', function () {
+          stage = 1;
+          buildDeck();
+          render();
+        });
+        doneEl.appendChild(back1);
       }
 
       if (stage === 1 && savedCount()) {
