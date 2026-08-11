@@ -96,7 +96,10 @@
     head.appendChild(el('span', 'quiz__count', items.length + '문항'));
     card.appendChild(head);
 
-    if (Q.memoToggle) card.appendChild(Q.memoToggle());
+    /* 🚨 「메모 보기」 토글을 여기엔 안 붙인다 (2026-08-11).
+       섹션당 3~5문항뿐이라 **한꺼번에 펼 것이 없다.** 메모가 없는 섹션에서는
+       눌러도 아무 일이 안 일어나 먹통으로 보였다 — 사용자가 짚었다.
+       🔒 모의 문제지·오답노트에는 그대로 둔다. 거기는 문항이 많아 값이 있다. */
 
     list = el('ol', 'quiz__list');
     var k;
