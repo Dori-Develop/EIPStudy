@@ -1140,6 +1140,77 @@ mark, .hl {
 }
 .memo__clear:hover { border-color: var(--warn); color: var(--warn); }
 
+/* ---------- 문항 메모 (섹션 퀴즈 · 모의 문제지 · 오답노트) ----------
+   섹션 메모(.memo)보다 작고 조용하다. 문항마다 하나씩 붙으므로
+   같은 무게로 그리면 목록이 메모 카드 더미로 보인다. */
+.qmemo {
+  margin: 10px 0 0;
+  border: 1px dashed var(--border); border-radius: var(--radius-s);
+  overflow: hidden;
+}
+.qmemo.has-memo { border-style: solid; border-color: var(--accent); }
+
+.qmemo__head {
+  display: flex; align-items: center; gap: 8px;
+  width: 100%; padding: 7px 10px;
+  background: none; border: 0;
+  font-family: inherit; font-size: 12.5px; color: var(--fg-muted);
+  text-align: left; cursor: pointer;
+}
+.qmemo__head:hover { background: var(--bg-sunken); color: var(--fg); }
+.qmemo__title { flex: none; font-weight: 600; }
+.qmemo__state {
+  flex: 1 1 auto; min-width: 0;
+  font-size: 11.5px; color: var(--fg-faint);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.qmemo__caret { flex: none; color: var(--fg-faint); font-size: 11px; transition: transform .15s; }
+.qmemo__head[aria-expanded="true"] .qmemo__caret { transform: rotate(180deg); }
+
+.qmemo__body { padding: 0 10px 10px; }
+/* 🚨 [hidden] 은 어떤 author display 규칙에도 진다. 접힘이 안 먹는 것을 막는다 */
+.qmemo__body[hidden] { display: none; }
+.qmemo__ta {
+  display: block; width: 100%; box-sizing: border-box;
+  min-height: 64px; padding: 8px 10px;
+  background: var(--bg); color: var(--fg);
+  border: 1px solid var(--border); border-radius: var(--radius-s);
+  font-family: inherit; font-size: 13px; line-height: 1.65;
+  resize: vertical;
+}
+.qmemo__ta:focus { outline: none; border-color: var(--accent); }
+.qmemo__ta::placeholder { color: var(--fg-faint); }
+
+.qmemo__foot { display: flex; align-items: center; gap: 8px; margin-top: 7px; }
+.qmemo__saved { flex: 1 1 auto; font-size: 11px; color: var(--good); }
+.qmemo__clear {
+  padding: 4px 8px;
+  background: none; color: var(--fg-faint);
+  border: 1px solid var(--border); border-radius: var(--radius-s);
+  font-family: inherit; font-size: 11.5px; cursor: pointer;
+}
+.qmemo__clear:hover { border-color: var(--warn); color: var(--warn); }
+
+/* 문항 목록 위의 「메모 보기」 */
+.qmemo__toggle {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 9px;
+  margin: 0 0 12px;
+}
+.qmemo__tbtn {
+  padding: 6px 11px;
+  background: var(--bg-elev); color: var(--fg-muted);
+  border: 1px solid var(--border); border-radius: 999px;
+  font-family: inherit; font-size: 12.5px; cursor: pointer;
+}
+.qmemo__tbtn:hover { border-color: var(--accent); color: var(--fg); }
+.qmemo__tbtn[aria-pressed="true"] {
+  background: var(--accent-weak); border-color: var(--accent); color: var(--accent);
+  font-weight: 600;
+}
+.qmemo__tnote { font-size: 11.5px; color: var(--fg-faint); }
+/* 켜져 있을 때의 안내는 경고에 가깝다 — 답이 샐 수 있다는 뜻이다 */
+.qmemo__tbtn[aria-pressed="true"] + .qmemo__tnote { color: var(--warn); }
+
 /* ---------- 메모 모아보기 (notes.html) ---------- */
 .nctl {
   display: flex; flex-wrap: wrap; align-items: center; gap: 8px;

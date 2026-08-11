@@ -13,12 +13,13 @@
    card.saved   암기 카드 id 배열       → 합집합
    wrong.all    {w,o,last,at,cat}       → w·o 는 더하고, last·cat 은 at 최신 쪽
    memo.chNN    {파일: {t,u}}           → 🚨 손실 0 (아래)
+   memo.q       {문항id: {t,u}}         → 🚨 같은 규칙. 구조가 같아 memo. 로 함께 걸린다
    quiz.chNN    {섹션번호: {score,total,at}} → at 최신 쪽
    meta.chNN    {total,title,updated}   → updated 최신 쪽
    exam.history [{seed,at,score,…}]     → 합쳐서 at 내림차순 EXAM_HISTORY_KEEP 개
    exam.recent  [[문항 id,…], …]        → 앞에서부터 번갈아, 최대 RECENT_KEEP
    exam.answers {seed: {at, a}}          → 회차마다 at 최신 쪽, 최대 ANSWERS_KEEP
-   theme        → **아예 옮기지 않는다** (학습 기록이 아니다)
+   theme · ui.* → **아예 옮기지 않는다** (학습 기록이 아니라 이 기기의 화면 설정이다)
 
    ⚠️ ES5 문법으로 작성한다.
       화살표 함수 · const/let · 템플릿 리터럴 금지. JScript(ES3) 검사를 통과해야 한다.
@@ -42,8 +43,10 @@
 
   /* ------------------------------------------------------- 옮기지 않는 키 */
   /* 학습 기록이 아닌 것. 초기화의 KEEP 목록과 같은 기준이다.
-     📌 T8 의 sync.* (6자리 코드)도 생기면 여기 넣을 것 — 남의 코드를 받아 오면 안 된다. */
-  var SKIP = ['theme', 'sync'];
+     📌 T8 의 sync.* (6자리 코드)도 생기면 여기 넣을 것 — 남의 코드를 받아 오면 안 된다.
+     📌 `ui.*` 는 이 기기의 화면 설정이다 (`ui.qmemo` = 문항 메모를 펼쳐 두는가).
+        **PC 에서 켜 둔 것이 시험 중인 폰에서 켜지면 답이 샌다.** theme 과 같은 이유. */
+  var SKIP = ['theme', 'sync', 'ui'];
 
   function isSkipped(key) {
     var i;

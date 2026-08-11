@@ -1,10 +1,19 @@
 /* ==========================================================================
-   EIP Study — 섹션 메모
+   EIP Study — 메모 저장 규칙 (섹션 · 문항)
 
-   섹션 페이지(chNN/sMM.html)에 접이식 메모 카드를 붙인다.
-   모아보기(notes.html)와 저장 형식을 공유하므로 읽고 쓰는 규칙은 여기 한 벌만 둔다.
+   섹션 페이지(chNN/sMM.html)에 접이식 메모 카드를 붙이고,
+   문항 메모의 읽고 쓰는 규칙도 여기 둔다 (위젯은 qcard.js).
+   모아보기(notes.html)·병합(merge.js)이 같은 형식을 쓰므로 규칙은 여기 한 벌만 둔다.
 
-   eip.memo.chNN = { "s01.html": { t: "메모 본문", u: 1754530000000 } }
+   eip.memo.chNN = { "s01.html":     { t: "메모 본문", u: 1754530000000 } }   섹션
+   eip.memo.q    = { "ch01-s05-03":  { t: "메모 본문", u: 1754530000000 } }   문항
+
+   📌 **문항 메모는 챕터로 나누지 않는다.** 섹션 메모는 섹션 페이지에서 그 챕터만
+      읽으면 되지만, 문항 메모는 오답노트가 **여러 챕터를 한 화면에 섞어** 보여 준다.
+      챕터로 쪼개면 그 화면이 12개 키를 다 읽어야 한다.
+
+   🚨 두 키의 값 구조가 같아야 한다 — merge.js 가 `memo.` 로 시작하는 키를
+      **하나의 규칙(손실 0)** 으로 합친다. 문항 메모도 사람이 손으로 쓴 글이다.
 
    🚨 u(수정 시각)를 처음부터 넣는다.
       T8 기기 간 동기화가 "어느 쪽이 최신인가"를 판정할 근거가 이것뿐이다.
@@ -39,6 +48,52 @@
     return null;
   }
 
+  /* 🔒 쓰기 규칙 한 벌 — 섹션 메모와 문항 메모가 같은 함수를 쓴다.
+     빈 문자열(공백만인 것 포함)이면 지우고, 내용이 그대로면 시각도 건드리지 않는다.
+     남은 것이 없으면 키 자체를 지운다 — 빈 객체가 쌓이면 내보내기 파일만 커진다.
+     저장한 시각을 돌려준다 (지웠거나 안 바뀌었으면 0 또는 이전 시각). */
+  function writeInto(storeKey, all, field, text) {
+    var s = box();
+    if (!s) return 0;
+
+    var body = String(text == null ? '' : text);
+    var stamp = 0;
+
+    if (body.replace(/^\s+|\s+$/g, '') === '') {
+      if (!has(all, field)) return 0;
+      delete all[field];
+    } else {
+      var prev = has(all, field) ? entry(all[field]) : null;
+      if (prev && prev.t === body) return prev.u;   /* 내용이 같으면 시각도 그대로 */
+      stamp = now();
+      all[field] = { t: body, u: stamp };
+    }
+
+    var left = 0, k;
+    for (k in all) { if (has(all, k)) left++; }
+    if (left) s.set(storeKey, all);
+    else s.remove(storeKey);
+
+    return stamp;
+  }
+
+  /* 값이 있는 것만 {t,u} 로 정리해 돌려준다 */
+  function cleaned(all) {
+    var out = {}, k, e;
+    for (k in all) {
+      if (!has(all, k)) continue;
+      e = entry(all[k]);
+      if (e && e.t) out[k] = e;
+    }
+    return out;
+  }
+
+  function qMemos() {
+    var s = box();
+    var v = s ? s.get('memo.q', null) : null;
+    return (v && typeof v === 'object') ? v : {};
+  }
+
   var MEMO = {
 
     /* 한 섹션의 메모 — 없으면 null */
@@ -47,51 +102,46 @@
       return has(all, file) ? entry(all[file]) : null;
     },
 
-    /* 빈 문자열(공백만인 것 포함)이면 지운다. 저장한 시각을 돌려준다 (지웠으면 0) */
     set: function (ch, file, text) {
-      var s = box();
-      if (!s) return 0;
+      return writeInto('memo.' + ch, chapterMemos(ch), file, text);
+    },
 
-      var all = chapterMemos(ch);
-      var body = String(text == null ? '' : text);
-      var stamp = 0;
-
-      if (body.replace(/^\s+|\s+$/g, '') === '') {
-        if (!has(all, file)) return 0;
-        delete all[file];
-      } else {
-        var prev = has(all, file) ? entry(all[file]) : null;
-        if (prev && prev.t === body) return prev.u;   /* 내용이 같으면 시각도 그대로 */
-        stamp = now();
-        all[file] = { t: body, u: stamp };
+    /* ------------------------------------------------------------ 문항 메모 */
+    /* 문항 id 하나에 메모 하나. 같은 문항이 섹션 퀴즈·모의 문제지·오답노트
+       어디에 나오든 **같은 메모가 보인다** — 그러라고 회차가 아닌 문항에 붙였다. */
+    q: {
+      get: function (id) {
+        var all = qMemos();
+        return has(all, id) ? entry(all[id]) : null;
+      },
+      set: function (id, text) {
+        return writeInto('memo.q', qMemos(), id, text);
+      },
+      all: function () { return cleaned(qMemos()); },
+      count: function () {
+        var all = cleaned(qMemos()), n = 0, k;
+        for (k in all) { if (has(all, k)) n++; }
+        return n;
       }
-
-      var left = 0, k;
-      for (k in all) { if (has(all, k)) left++; }
-      if (left) s.set('memo.' + ch, all);
-      else s.remove('memo.' + ch);
-
-      return stamp;
     },
 
     /* 챕터 하나의 메모 전체 — { 파일명: {t,u} } */
     chapter: function (ch) {
-      var all = chapterMemos(ch), out = {}, k, e;
-      for (k in all) {
-        if (!has(all, k)) continue;
-        e = entry(all[k]);
-        if (e && e.t) out[k] = e;
-      }
-      return out;
+      return cleaned(chapterMemos(ch));
     },
 
-    /* 메모가 있는 챕터 id 목록 (정렬됨) */
+    /* 메모가 있는 챕터 id 목록 (정렬됨)
+       🚨 `memo.q`(문항 메모)를 'q' 라는 챕터로 내주면 안 된다.
+          모아보기가 그것을 챕터로 알고 빈 묶음을 하나 그린다. */
     chapters: function () {
       var s = box();
       if (!s) return [];
       var out = [];
       s.keys().forEach(function (k) {
-        if (k.indexOf('memo.') === 0) out.push(k.slice(5));
+        if (k.indexOf('memo.') !== 0) return;
+        var id = k.slice(5);
+        if (id === 'q') return;
+        out.push(id);
       });
       out.sort();
       return out;

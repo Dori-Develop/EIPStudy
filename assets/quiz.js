@@ -96,6 +96,8 @@
     head.appendChild(el('span', 'quiz__count', items.length + '문항'));
     card.appendChild(head);
 
+    if (Q.memoToggle) card.appendChild(Q.memoToggle());
+
     list = el('ol', 'quiz__list');
     var k;
     for (k = 0; k < items.length; k++) {

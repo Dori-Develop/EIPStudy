@@ -594,6 +594,8 @@
 
     setBack('← 응시 이력', '문제지 복기 #' + rec.seed, backToSetup);
 
+    if (window.EIP_QCARD.memoToggle) sheetBox.appendChild(window.EIP_QCARD.memoToggle());
+
     var list = el('ol', 'quiz__list exam__list');
     var missing = 0, id;
 
@@ -747,6 +749,8 @@
       head.appendChild(t);
     }
     sheetBox.appendChild(head);
+
+    if (window.EIP_QCARD.memoToggle) sheetBox.appendChild(window.EIP_QCARD.memoToggle());
 
     var list = el('ol', 'quiz__list exam__list');
     current.items.forEach(function (item) {

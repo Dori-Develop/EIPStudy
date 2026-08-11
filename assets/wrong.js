@@ -565,6 +565,7 @@
     emptyEl.hidden = true;
     root.appendChild(tabsEl);
     root.appendChild(ctlEl);
+    if (Q.memoToggle) root.appendChild(Q.memoToggle());
     root.appendChild(emptyEl);
     root.appendChild(listEl);
 
