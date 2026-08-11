@@ -561,6 +561,15 @@
     render();
   }
 
+  /* 되살아난 화면 — 저장 상태만 다시 읽고 그린다.
+     🔒 buildDeck 을 부르지 않는다. 덱과 보던 위치는 메모리에 그대로 있고,
+        다시 만들면 몇 장째였는지를 잃는다. */
+  document.addEventListener('eip:revive', function () {
+    if (!root) return;
+    saved = loadSaved();
+    render();
+  });
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', start);
   } else {

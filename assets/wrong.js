@@ -577,6 +577,13 @@
     });
   }
 
+  /* 되살아난 화면 — 섹션 퀴즈에서 문제를 풀고 돌아오면 분류·개수가 바뀌어 있다.
+     app.js 가 pageshow 를 한 번 듣고 이것을 쏜다. */
+  document.addEventListener('eip:revive', function () {
+    if (!W) return;
+    refresh();
+  });
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', start);
   } else {

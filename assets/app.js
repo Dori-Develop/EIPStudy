@@ -585,6 +585,7 @@
       var isDone = done.indexOf(sec.f) >= 0;
 
       var row = el('div', 'seclist__item' + (isDone ? ' is-done' : ''));
+      row.setAttribute('data-sec', sec.f);   /* 되살아났을 때 이 행이 어느 섹션인지 */
 
       var a = el('a', 'seclist__link');
       a.href = sectionHref(sec.f);
@@ -615,13 +616,35 @@
     paintProgress();
   }
 
+  /* 「학습 완료」 표시가 나오는 곳을 **한 번에** 저장소와 맞춘다.
+     사이드바 목차 · 챕터 목차의 섹션 행 · 섹션 페이지의 완료 버튼 셋이다.
+
+     🔒 세 곳을 각자 갱신하면 반드시 한 곳이 빠진다. 실제로 그랬다 —
+        bfcache 로 되살아났을 때 진도 막대만 고치고 **행의 체크는 옛날 그대로**였다.
+     🚨 initChapterIndex() 를 다시 부르는 것으로는 못 고친다. 그쪽은 목록을
+        host 에 덧붙이는 방식이라 섹션이 두 벌로 늘어난다. */
   function refreshSidebarDone() {
+    if (!CH) return;
     var done = doneList();
+    function isDone(f) { return done.indexOf(f) >= 0; }
+
     var links = $$('#toc > ul.toc > li > .toc__row > a');
     links.forEach(function (a, idx) {
       if (!CH.sections[idx]) return;
-      a.classList.toggle('done', done.indexOf(CH.sections[idx].f) >= 0);
+      a.classList.toggle('done', isDone(CH.sections[idx].f));
     });
+
+    $$('.js-seclist .seclist__item').forEach(function (row) {
+      var f = row.getAttribute('data-sec');
+      if (!f) return;
+      row.classList.toggle('is-done', isDone(f));
+      var box = $('.seclist__check', row);
+      if (box) box.setAttribute('aria-pressed', isDone(f) ? 'true' : 'false');
+    });
+
+    var here = CH.sections[CH.index];
+    var mine = $('.sectiondone');
+    if (here && mine) mine.setAttribute('aria-pressed', isDone(here.f) ? 'true' : 'false');
   }
 
   /* ============================================== 섹션 페이지 (chNN/sMM.html) */
@@ -1143,6 +1166,27 @@
   }
 
   /* ----------------------------------------------------------------- 시작 */
+  /* ============================ 되살아난 화면 (bfcache) */
+  /* 🚨 뒤로가기로 돌아오면 브라우저가 페이지를 **통째로 되살린다.**
+     `DOMContentLoaded` 가 다시 나지 않으므로 `boot()` 도, 진도 그리기도 안 돈다.
+     섹션에서 「학습 완료」를 누르고 돌아오면 **저장은 됐는데 화면만 옛 값**이었다.
+
+     🔒 화면마다 `pageshow` 를 달면 또 흩어진다. **여기서 한 번 듣고**
+        `document` 에 `eip:revive` 를 쏜다 — `themechange` 와 같은 방식이다.
+        각 화면(오답노트·메모 모아보기·모의 문제지…)은 그것만 구독하면 된다. */
+  function initRevive() {
+    window.addEventListener('pageshow', function (e) {
+      if (!e.persisted) return;   /* 새로 연 것이면 boot() 가 이미 그렸다 */
+
+      initHome();                 /* 홈·챕터 목록 — CH 가 있으면 스스로 빠진다 */
+      if (CH) {
+        paintProgress();          /* 챕터 목차·섹션의 진도 막대 */
+        refreshSidebarDone();     /* 사이드바 목차의 완료 표시 */
+      }
+      document.dispatchEvent(new CustomEvent('eip:revive'));
+    });
+  }
+
   function boot() {
     theme.init();
     initSidebar();
@@ -1151,6 +1195,7 @@
     initBackLink();
     initToolNav();
     initScrollNav();
+    initRevive();
 
     if (CH && CH.page === 'index') {
       buildSidebar(null);

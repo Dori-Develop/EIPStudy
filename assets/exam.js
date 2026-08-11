@@ -1014,6 +1014,12 @@
     });
   }
 
+  /* 되살아난 화면 — 설정 화면일 때만 이력을 다시 그린다.
+     시험지·복기 중이면 건드리지 않는다 (답안이 화면에 그대로 있다) */
+  document.addEventListener('eip:revive', function () {
+    if (setupBox && setupBox.style.display !== 'none') refreshHistory();
+  });
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', boot);
   } else {

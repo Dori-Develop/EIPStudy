@@ -218,6 +218,11 @@
     renderList();
   }
 
+  /* 되살아난 화면 — 섹션에서 메모를 쓰고 돌아오면 목록이 달라져 있다 */
+  document.addEventListener('eip:revive', function () {
+    if (root) render();
+  });
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', render);
   } else {

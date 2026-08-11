@@ -270,6 +270,10 @@
     return a;
   }
 
+  /* 되살아난 화면 — 창이 열린 채로 떠났다가 돌아오면 닫는다.
+     🚨 안 닫으면 스크롤 잠금(documentElement.overflow)이 걸린 채로 남는다. */
+  document.addEventListener('eip:revive', close);
+
   window.EIP_CONCEPT = {
     open: open,
     link: link,
