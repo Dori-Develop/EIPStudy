@@ -36,6 +36,10 @@ document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
         <h1>정보처리기사 실기</h1>
       </section>
 
+      <!-- 공부 전략 띠 (T49). assets/strategy.js 가 채운다 —
+           데이터를 여기 적지 말 것. 근거는 exam-archive/chapters.md 다. -->
+      <div id="strategy"></div>
+
       <div class="cards">
 
         <a class="card" href="chapters.html">
@@ -135,6 +139,8 @@ document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
 </div>
 
 <script src="assets/toc.js"></script>
+<!-- 🔒 toc.js 다음이어야 한다 — 챕터 제목을 EIP_TOC 에서 가져온다 -->
+<script src="assets/strategy.js"></script>
 <script src="assets/app.js"></script>
 <script src="assets/memo.js"></script>
 <script src="assets/merge.js"></script>
