@@ -1571,19 +1571,19 @@ mark, .hl {
 }
 
 /* 🔑 결론 — 이 카드에서 가장 큰 글자.
-   🔒 칩과 글을 한 덩어리로 둔다 — 나누면 두 조각으로 읽힌다 */
+   🔒 칩은 단원 번호에만 씌운다. 줄 전체를 칠하면 띠가 무거워진다 (되돌림) */
 .strat__must {
-  margin: 0; padding: 10px 14px;
-  background: var(--accent); color: var(--accent-fg);
-  border-radius: var(--radius-s);
-  font-size: 19px; line-height: 1.45; letter-spacing: -.02em; font-weight: 700;
+  margin: 0; font-size: 19px; line-height: 1.5; letter-spacing: -.02em;
+  color: var(--fg);
 }
 .strat__must-k {
-  font-variant-numeric: tabular-nums; white-space: nowrap;
-  opacity: .92;
+  display: inline-block; margin-right: 6px;
+  padding: 2px 11px; border-radius: var(--radius-s);
+  background: var(--accent); color: var(--accent-fg);
+  font-size: 19px; font-variant-numeric: tabular-nums; white-space: nowrap;
 }
 .strat__must-sub {
-  margin: 9px 0 0; color: var(--fg); font-size: 14px; font-weight: 700;
+  margin: 7px 0 0; color: var(--fg); font-size: 14px; font-weight: 700;
 }
 
 .strat__plus {
