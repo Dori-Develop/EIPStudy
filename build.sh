@@ -220,7 +220,9 @@ HEAD
 <script src="${MARKED_CDN}"></script>
 <script src="${MERMAID_CDN}"></script>
 <script src="${base}assets/app.js"></script>
-<script src="${base}assets/toc.js"></script>${extra}
+<script src="${base}assets/toc.js"></script>
+<!-- 🔒 섹션별 출제 빈도 (T50). EIP_CHAPTER 이 있어야 하므로 app.js 다음 -->
+<script src="${base}assets/secrank.js"></script>${extra}
 </body>
 </html>
 TAIL

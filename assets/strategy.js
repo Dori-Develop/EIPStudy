@@ -14,19 +14,19 @@
      hint: 그 장에서 무엇부터 볼지 한 줄. 없으면 생략한다. */
   var CH = [
     { id: 'ch10', pct: 33.3, pick: true
-    , hint: '제어문 · 포인터 · 구조체 · 사용자 정의 함수부터' }
-  , { id: 'ch11', pct: 14.0, pick: true
-    , hint: '스케줄링 · 메모리 · OSI 7계층 · 서브네팅' }
-  , { id: 'ch08', pct: 11.5, pick: true
-    , hint: 'SELECT · JOIN · GROUP BY · DDL/DML/DCL' }
+    , hint: '배열과 문자열 · Python · Java 상속 · 제어문 · 구조체 · 포인터' }
+  , { id: 'ch11', pct: 14.3, pick: true
+    , hint: 'IP 주소와 서브네팅 · 경로 제어 · TCP/IP · 신기술 · 스케줄링' }
   , { id: 'ch09', pct: 10.5, pick: true
-    , hint: '암호 알고리즘 · 서비스 거부 공격 · 접근 통제' }
-  , { id: 'ch02', pct: 8.0, pick: true
-    , hint: '정규화 · 이상현상 · 키 · E-R 다이어그램' }
+    , hint: '서비스 공격 유형 · 보안 솔루션 · 암호 알고리즘 · 서버 인증' }
+  , { id: 'ch02', pct: 10.5, pick: true
+    , hint: '관계 대수 · 릴레이션 용어 · 무결성 · 정규화' }
+  , { id: 'ch08', pct: 8.8, pick: true
+    , hint: 'SELECT · JOIN · GROUP BY · 하위 질의' }
   , { id: 'ch07', pct: 8.0, pick: true
-    , hint: '커버리지 · 블랙박스 기법 · 스텁과 드라이버' }
-  , { id: 'ch04', pct: 6.5, hint: '응집도 · 결합도 · 디자인 패턴' }
-  , { id: 'ch01', pct: 3.3, hint: 'UML · 개발 방법론' }
+    , hint: '화이트박스 커버리지 · 블랙박스 기법 · 스텁과 드라이버' }
+  , { id: 'ch04', pct: 6.5, hint: '디자인 패턴 · 결합도와 응집도 — 이 두 절이 92%' }
+  , { id: 'ch01', pct: 3.3, hint: 'UML 관계 · 패키지 다이어그램' }
   , { id: 'ch05', pct: 1.5 }
   , { id: 'ch06', pct: 1.3 }
   , { id: 'ch12', pct: 1.3 }
@@ -58,9 +58,10 @@
 
   /* ── 🔑 결론 — 접어도 이것만은 보인다 ────────────────────────────
      20회차 400문항 비율을 20문항으로 환산해 큰 단원부터 쌓은 값이다.
-       10장 6.7 → 11장 2.8 → 8장 2.3 → 9장 2.1  = 13.9문항(69점)
-       + 2장 1.6 + 7장 1.6                      = 17.1문항(85점)
-     🚨 세 단원(10·11·8)까지는 11.8문항(59점)이라 **한 문항 모자란다.** */
+       10장 6.65 → 11장 2.85 → 9장 2.10 → 2장 2.10 = 13.7문항(68.5점)
+       + 8장 1.75 + 7장 1.60                       = 17.1문항(85점)
+     🚨 T50 의 재분류로 넷째 자리가 **8장 → 2장** 으로 바뀌었다
+        (DB 이론 11문항이 8장에 잘못 붙어 있었다) → exam-archive/chapters.md 3장 */
   var head = el('div', 'strat__head');
 
   /* 눈썹 — 맥락만 얹는다. 제목 노릇은 아래 결론이 한다 */
@@ -70,25 +71,25 @@
      📌 단원은 **번호 순**으로 적는다 (8 · 9 · 10 · 11).
         출제량 순(10·11·8·9)은 아래 막대가 이미 보여 준다. */
   var must = el('h2', 'strat__must');
-  must.appendChild(el('b', 'strat__must-k', '8 · 9 · 10 · 11'));
+  must.appendChild(el('b', 'strat__must-k', '2 · 9 · 10 · 11'));
   must.appendChild(document.createTextNode(' 네 단원을 완벽하게'));
   head.appendChild(must);
 
   head.appendChild(el('p', 'strat__must-sub',
-    '이 넷만으로 평균 13.9문항 — 69점입니다.'));
+    '이 넷만으로 평균 13.7문항 — 68점입니다.'));
 
   var plus = el('p', 'strat__plus');
-  plus.appendChild(el('b', 'strat__plus-k', '+ 2 · 7'));
+  plus.appendChild(el('b', 'strat__plus-k', '+ 7 · 8'));
   plus.appendChild(document.createTextNode(
-    ' 을 더하면 17.1문항 · 85점. 네 단원만 하면 그 안에서 87%를 맞혀야 하지만, ' +
+    ' 을 더하면 17.1문항 · 85점. 네 단원만 하면 그 안에서 88%를 맞혀야 하지만, ' +
     '여섯 단원이면 70%로 충분합니다.'));
   head.appendChild(plus);
 
   /* 각주 — 강조하지 않는다.
      🔑 「넷 중 하나만 빠져도 안 된다」가 네 단원을 고른 근거다.
-        8장 빼면 57.8 · 9장 빼면 58.8 · 11장 빼면 55.3 · 10장 빼면 36점. */
+        2장 빼면 58.0 · 9장 빼면 58.0 · 11장 빼면 54.3 · 10장 빼면 35.3점. */
   head.appendChild(el('p', 'strat__note',
-    '넷 중 하나만 빠져도 55~59점 — 60점에 못 미칩니다.'));
+    '넷 중 하나만 빠져도 54~58점 — 60점에 못 미칩니다.'));
 
   card.appendChild(head);
 

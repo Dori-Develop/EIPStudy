@@ -1687,3 +1687,28 @@ mark, .hl {
   .strat__bar { display: none; }
   .strat__hint { grid-column: 1 / -1; margin: 0 0 2px; }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   섹션별 출제 빈도 (T50) — assets/secrank.js 가 붙인다
+   🔑 별은 **제목을 밀어내지 않는다.** 목록에서 줄이 밀리면 훑기가 나빠진다
+   ══════════════════════════════════════════════════════════════ */
+.srank {
+  margin-left: 6px;
+  font-size: 11px; letter-spacing: -.5px; white-space: nowrap;
+  vertical-align: 1px;
+}
+.srank--1 { color: var(--fg-faint); }
+.srank--2 { color: var(--accent); opacity: .75; }
+.srank--3 { color: var(--accent); }
+
+/* 사이드바는 더 좁다 — 한 단계 작게 */
+.toc__row .srank { font-size: 10px; margin-left: 4px; }
+
+/* 섹션 페이지 머리 한 줄 */
+.srankline {
+  margin: -4px 0 18px;
+  color: var(--fg-muted); font-size: 12.5px; line-height: 1.5;
+}
+.srankline b { margin-right: 5px; color: var(--accent); letter-spacing: -.5px; }
+.srankline--1 b { color: var(--fg-faint); }
+.srankline--2 b { opacity: .75; }
