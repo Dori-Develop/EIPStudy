@@ -390,17 +390,41 @@
 
      📌 다른 사이트에서 들어왔으면 밖으로 나갈 수 있다. 그것이 브라우저 뒤로가기의
         본래 동작이고, **이 버튼은 그것을 그대로 꺼내 놓은 것**이다. */
+  /* 🔒 **몇 번째 화면인가**를 히스토리 항목에 직접 새긴다.
+
+     `history.length` 는 **탭 전체**를 세고 앞으로 갈 항목까지 포함한다 —
+     「내 뒤에 화면이 있나」를 못 말한다. `document.referrer` 는 `file://`·새 탭에서 빈다.
+     🔑 **둘 다 짐작이었다.** 여기서는 페이지마다 `history.replaceState` 로 번호를 박는다.
+
+       첫 화면 0 → 다음 1 → 다음 2 …   **0 이면 뒤에 아무것도 없다.**
+
+     뒤로 오면 그 항목에 박아 둔 번호가 **그대로 살아 돌아온다.** 그래서 어긋나지 않는다. */
+  var NAV_D = 'eip.nav.depth';
+
+  function navDepth() {
+    var s = history.state;
+    var d;
+    if (s && typeof s.eipD === 'number') {
+      d = s.eipD;                       /* 뒤로·앞으로 와서 되살아난 항목 */
+    } else {
+      var prev = null;
+      try { prev = sessionStorage.getItem(NAV_D); } catch (e) {}
+      d = prev === null ? 0 : parseInt(prev, 10) + 1;
+      try { history.replaceState({ eipD: d }, ''); } catch (e) {}
+    }
+    try { sessionStorage.setItem(NAV_D, String(d)); } catch (e) {}
+    return d;
+  }
+
   function initBackNav() {
     /* 🚨 bfcache 로 되살아나면 다시 불린다. **두 개가 되면 안 된다.** */
     if ($('.backnav')) return;
-    /* 「빠른 이동」으로 왔으면 여기가 **새 출발점**이다. 직전을 가리키지 않는다. */
-    if (takeTrailReset()) return;
-    if (!window.history || history.length <= 1) return;
+    if (!window.history || navDepth() < 1) return;
 
     var nav = el('div', 'backnav');
     var btn = el('button', 'backbtn', '←');
     btn.type = 'button';
-    /* 🔒 **글자는 넣지 않는다** (사용자 요청). 도구 툴팁에만 갈 곳 이름을 적는다 —
+    /* 🔒 **글자는 넣지 않는다** (사용자 요청). 툴팁에만 갈 곳 이름을 적는다 —
        버튼이 커지면 본문을 가리고, 왼쪽 아래는 좁은 화면에서 특히 빠듯하다. */
     var ref = document.referrer || '';
     var name = ref ? pageName(ref) : '';
@@ -485,30 +509,28 @@
       var a = el('a', 'toolnav__item');
       a.href = base + t.href;
       a.textContent = t.label;
-      /* 💬 "빠른 이동을 누르면 여태까지의 이동 기록이 초기화 되면 돼."
-         도구를 새로 고르는 것은 **새 출발**이다. 거기서 뒤로가기가
-         방금 떠난 화면을 가리키면 「빠른 이동」이 아니라 그냥 링크가 된다. */
-      a.addEventListener('click', function () { markTrailReset(); });
       row.appendChild(a);
     });
 
     host.appendChild(row);
   }
 
-  /* 🔒 주소를 더럽히지 않으려고 sessionStorage 에 표시만 남긴다.
-     탭을 닫으면 같이 사라지고, 다른 탭에는 영향이 없다. */
-  var TRAIL_RESET = 'eip.navreset';
+  /* 🔒 **「빠른 이동은 발자취를 지운다」를 걷어냈다** (2026-08-12).
 
-  function markTrailReset() {
-    try { sessionStorage.setItem(TRAIL_RESET, '1'); } catch (e) {}
-  }
-  function takeTrailReset() {
-    try {
-      if (sessionStorage.getItem(TRAIL_RESET) === null) return false;
-      sessionStorage.removeItem(TRAIL_RESET);   /* 한 번만 쓴다 */
-      return true;
-    } catch (e) { return false; }
-  }
+     > 💬 *"그냥 페이지 이동에서는 (뒤로가기 버튼이) 안 떠."*
+
+     🚨 **범인이 이것이었다.** 「빠른 이동」 칩을 누르면 `eip.navreset` 이 켜지고,
+        도착한 페이지가 그것을 보고 뒤로가기를 **숨겼다.** 칩은 섹션마다 바닥에 있어
+        실제로 가장 많이 쓰는 이동 수단인데, 하필 거기서만 버튼이 사라졌다.
+
+     🔑 **그 규칙은 버튼이 하나였을 때의 것이다.** 그때는 왼쪽 위 하나가 「상위로」와
+        「뒤로」를 겸했고, *"빠른 이동으로 왔으면 여기가 새 출발점"* 은 **라벨이
+        엉뚱한 곳을 가리키지 않게** 하려던 규칙이었다.
+        둘을 가른 지금 **뒤로가기는 브라우저 뒤로가기를 그대로 비출 뿐**이고,
+        브라우저 뒤로가기는 빠른 이동을 했다고 사라지지 않는다.
+
+     ✅ 그래서 `TRAIL_RESET`·`markTrailReset`·`takeTrailReset` 을 지웠다.
+        **제약이 사라지면 그 제약이 만든 코드도 지운다.** */
 
   /* ------------------------------------------------- 사이드바 목차 (공통) */
   function buildSidebar(doc) {
