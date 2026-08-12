@@ -208,11 +208,13 @@
     saveTimer = setTimeout(flush, 500);
   }
 
-  function open(yes) {
+  /* noFocus — 처음 그릴 때는 커서를 넣지 않는다.
+     펼치면서 focus 까지 주면 페이지가 메모 자리로 스크롤돼 본문이 밀린다. */
+  function open(yes, noFocus) {
     head.setAttribute('aria-expanded', yes ? 'true' : 'false');
     if (yes) bodyBox.removeAttribute('hidden');
     else bodyBox.setAttribute('hidden', '');
-    if (yes) ta.focus();
+    if (yes && !noFocus) ta.focus();
   }
 
   var card;
@@ -285,8 +287,13 @@
     if (done) doc.insertBefore(card, done);
     else doc.appendChild(card);
 
-    /* 이미 적어 둔 것이 있으면 펼쳐 둔다 — 있는 줄 모르고 지나치지 않도록 */
-    if (saved && saved.t) open(true);
+    /* 🔒 섹션 메모는 **언제나 펼친 채로 시작한다** (2026-08-12, 사용자 지시).
+       접어 두면 「적을 수 있다」는 것 자체가 안 보여 안 쓰게 된다.
+       접는 것은 여전히 머리를 눌러 할 수 있고, **접힌 상태를 저장하지는 않는다** —
+       섹션마다 다시 펼치는 것이 목적이다.
+       🚨 문항 메모(`qmemo`)는 반대로 기본 감춤이다 — 거기엔 정답 힌트가 들어가
+       시험 중에 보이면 안 된다. → decisions/quiz.md 5장 */
+    open(true, true);
   }
 
   /* ⚠️ app.js 의 initSection 이 doc.innerHTML 을 통째로 갈아엎는다.
