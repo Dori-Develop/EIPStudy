@@ -839,7 +839,7 @@ mark, .hl {
    인쇄
    ========================================================================== */
 @media print {
-  .hdr, .sidebar, .totop, .scrollnav, .progressbar, .sectiondone,
+  .hdr, .sidebar, .totop, .scrollnav, .backnav, .progressbar, .sectiondone,
   .diagram__zoom, .scrim, .search, .quiz { display: none !important; }
   .layout { grid-template-columns: 1fr; padding-top: 0; }
   .main { padding: 0; }
@@ -1692,23 +1692,33 @@ mark, .hl {
    섹션별 출제 빈도 (T50) — assets/secrank.js 가 붙인다
    🔑 별은 **제목을 밀어내지 않는다.** 목록에서 줄이 밀리면 훑기가 나빠진다
    ══════════════════════════════════════════════════════════════ */
+/* 🔒 ⭐ 는 이모지라 `color` 가 안 먹는다 — 등급은 **개수**로만 가른다.
+   본문 중요도(`.imp`)는 글자 ★ 라 **색**으로 가른다. 둘이 섞이지 않는다 */
 .srank {
   margin-left: 6px;
-  font-size: 11px; letter-spacing: -.5px; white-space: nowrap;
+  font-size: 10.5px; letter-spacing: -1px; white-space: nowrap;
   vertical-align: 1px;
 }
-.srank--1 { color: var(--fg-faint); }
-.srank--2 { color: var(--accent); opacity: .75; }
-.srank--3 { color: var(--accent); }
+.srank--1 { opacity: .55; }
+.srank--2 { opacity: .8; }
 
 /* 사이드바는 더 좁다 — 한 단계 작게 */
-.toc__row .srank { font-size: 10px; margin-left: 4px; }
+.toc__row .srank { font-size: 9.5px; margin-left: 4px; }
 
 /* 섹션 페이지 머리 한 줄 */
 .srankline {
   margin: -4px 0 18px;
   color: var(--fg-muted); font-size: 12.5px; line-height: 1.5;
 }
-.srankline b { margin-right: 5px; color: var(--accent); letter-spacing: -.5px; }
-.srankline--1 b { color: var(--fg-faint); }
-.srankline--2 b { opacity: .75; }
+.srankline b { margin-right: 5px; letter-spacing: -1px; }
+.srankline--1 b { opacity: .55; }
+.srankline--2 b { opacity: .8; }
+
+/* 본문 중요도 ★ — app.js 의 paintStars() 가 감싼다.
+   🔑 즐겨찾기 ★(--star, 호박색)와 **색으로** 갈린다. 글자는 같아도 뜻이 다르다 */
+.imp {
+  color: var(--accent);
+  letter-spacing: -.5px;
+  font-size: .92em;
+  vertical-align: 1px;
+}

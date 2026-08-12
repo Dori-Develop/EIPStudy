@@ -99,7 +99,7 @@
     return String(text)
       .trim()
       .toLowerCase()
-      .replace(/[📌🖼️⭐⚠️💡✅❌]/g, '')
+      .replace(/[📌🖼️★⚠️💡✅❌]/g, '')
       .replace(/[^\w가-힣ㄱ-ㅎㅏ-ㅣ().\- ]/g, '')
       .replace(/\s+/g, '-')
       .replace(/-+/g, '-')
@@ -352,29 +352,56 @@
         그냥 빠져나가서는 안 된다. 직전 화면의 라벨이 그대로 남는다. */
   var authored = null;
 
+  /* 🔒 **둘을 갈랐다** (2026-08-12, 사용자 요청).
+
+     > 💬 *"아무리 생각해도 뒤로가기랑 상위 페이지로 이동을 분리해야 할 것 같아."*
+
+     | 어디 | 무엇 | 어디로 |
+     |---|---|---|
+     | **왼쪽 위** `.js-back` | **상위로** | 섹션 → 챕터 목차, 도구 → 홈. **늘 같은 곳** |
+     | **왼쪽 아래** `.backnav` | **뒤로** | 직전에 보던 화면. `history.back()` |
+
+     🚨 **전에는 왼쪽 위 하나가 둘을 겸했다.** 어디서 왔느냐에 따라 같은 버튼이
+        다른 데로 가서, **누르기 전에는 어디로 갈지 알 수 없었다.**
+        「상위로」는 위치가 정하고 「뒤로」는 발자취가 정한다 — 서로 다른 것이다.
+
+     📌 exam.js 의 `setBack` 은 그대로 둔다. 한 페이지 안에서 화면이 바뀔 때
+        (복기 → 응시 이력) 그것도 **상위로 가는 것**이라 왼쪽 위가 맞다. */
   function initBackLink() {
     var a = $('.js-back');
     if (!a) return;
-
+    /* HTML 에 적힌 그대로가 곧 「상위」다. 발자취로 덮어쓰지 않는다.
+       🔑 exam.js 의 resetBack() 이 이 함수를 불러 **처음 상태로 되돌린다** —
+          setBack 으로 갈아 끼웠던 라벨을 여기서 원래대로 돌린다. */
     if (!authored) authored = { label: a.textContent, href: a.getAttribute('href') };
+    restoreBack();
+  }
 
+  /* ------------------------------------------------ 왼쪽 아래 뒤로가기 */
+  /* 🚨 그냥 `history.back()` 을 놓으면 안 된다. 주소를 직접 치거나 새 탭으로 열었으면
+        돌아갈 데가 없어 **사이트 밖으로 나간다.** 같은 사이트에서 왔을 때만 띄운다. */
+  function initBackNav() {
     var ref = document.referrer || '';
     var sameSite = ref.indexOf(location.protocol + '//' + location.host) === 0 ||
                    (location.protocol === 'file:' && ref.indexOf('file:') === 0);
     /* 같은 페이지를 새로고침한 것은 「직전」이 아니다 */
     var samePage = ref.split('#')[0] === location.href.split('#')[0];
-
-    /* 🔒 **원칙 하나.** 같은 사이트에서 왔으면 **언제나 직전 화면으로 돌아간다.**
-       예외를 두지 않는다 — 예외가 곧 루프였다.
-
-       한때 "갈 곳 이름이 자기 이름과 같으면 기본 링크로" 라는 조건을 뒀는데,
-       그러면 **섹션 → 섹션** 이동에서 뒤로가기가 챕터 목록으로 튀었다.
-       둘 다 「학습 정리본」이라 같은 이름으로 보였기 때문이다.
-       이름이 같다고 같은 화면인 것이 아니다 → **이름을 화면 단위로 잘게 만든다** (pageName). */
     /* 「빠른 이동」으로 왔으면 여기가 **새 출발점**이다. 직전을 가리키지 않는다. */
-    if (!sameSite || samePage || takeTrailReset()) { restoreBack(); return; }
+    if (!sameSite || samePage || takeTrailReset()) return;
 
-    setBack('← ' + pageName(ref), null, function () { history.back(); });
+    var nav = el('div', 'backnav');
+    var btn = el('button', 'totop backnav__btn', '←');
+    btn.type = 'button';
+    /* 🔒 **어디로 가는지 이름으로 적는다.** 「뒤로」만으로는 어디인지 모른다 */
+    var name = pageName(ref);
+    btn.title = name + '(으)로 뒤로가기';
+    btn.setAttribute('aria-label', btn.title);
+    btn.appendChild(el('span', 'backnav__label', name));
+    btn.addEventListener('click', function () { history.back(); });
+    nav.appendChild(btn);
+    document.body.appendChild(nav);
+    /* 다음 프레임에 띄운다 — 처음부터 보이면 페이지가 덜컹인다 */
+    setTimeout(function () { btn.classList.add('is-show'); }, 0);
   }
 
   /* HTML 에 적혀 있던 그대로 되돌린다 (섹션 페이지는 「← 학습 정리본」, 도구는 「← 홈」) */
@@ -519,6 +546,7 @@
     });
 
     nav.appendChild(list);
+    paintStars(list);          /* 07-02 처럼 제목에 ★ 가 든 섹션 */
 
     /* 소제목 클릭 → 부드럽게 이동 */
     nav.addEventListener('click', function (e) {
@@ -574,6 +602,7 @@
       window.marked.setOptions({ gfm: true, breaks: false });
       intro.innerHTML = window.marked.parse(src.textContent);
       decorateQuotes(intro);
+      paintStars(intro);
     }
 
     var host = $('.js-seclist');
@@ -612,6 +641,7 @@
       host.appendChild(row);
     });
 
+    paintStars(host);
     saveMeta();
     paintProgress();
   }
@@ -679,6 +709,7 @@
 
     wrapTables(doc);
     decorateQuotes(doc);
+    paintStars(doc);          /* 🔒 중요도 ★ 는 여기서 한 번만 칠한다 */
     var diagrams = extractDiagrams(doc);
 
     buildSidebar(doc);
@@ -695,6 +726,46 @@
       var t = document.getElementById(decodeURIComponent(location.hash.slice(1)));
       if (t) setTimeout(function () { t.scrollIntoView({ block: 'start' }); }, 60);
     }
+  }
+
+  /* ------------------------------------------------------- 중요도 별 (★) */
+  /* 본문의 중요도 표시를 이모지 ⭐ 에서 **글자 ★** 로 바꿨다 (2026-08-12).
+     이모지는 글꼴을 타고 색을 못 입혀 제목 안에서 튄다. 글자면 색을 준다.
+
+     🔒 **칠하는 규칙은 여기 한 곳뿐이다.** 마크다운이 그려진 뒤 텍스트 노드를 훑어
+        ★ 뭉치만 `<span class="imp">` 로 감싼다. 본문에 태그를 적지 않는다 —
+        같은 글이 목차·검색·카드에서는 textContent 로도 쓰이기 때문이다.
+
+     🚨 `code`·`pre` 안은 건드리지 않는다. 코드에 ★ 가 나오면 그건 코드다.
+     🚨 즐겨찾기 버튼의 ★ 와 글자가 같다 — 그쪽은 `.qstar` 같은 제 클래스가 있고
+        색도 `--star`(호박색)라 섞이지 않는다. 이건 `--accent`(파랑)다. */
+  var STAR_SKIP = { CODE: 1, PRE: 1, SCRIPT: 1, STYLE: 1, TEXTAREA: 1, BUTTON: 1 };
+
+  function paintStars(root) {
+    if (!root || !window.document.createTreeWalker) return;
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
+    var hits = [], node;
+    while ((node = walker.nextNode())) {
+      if (node.nodeValue.indexOf('★') < 0) continue;
+      var p = node.parentNode, skip = false;
+      while (p && p !== root) {
+        if (STAR_SKIP[p.nodeName] || (p.className && String(p.className).indexOf('imp') >= 0)) {
+          skip = true; break;
+        }
+        p = p.parentNode;
+      }
+      if (!skip) hits.push(node);
+    }
+    hits.forEach(function (t) {
+      var parts = t.nodeValue.split(/(★+)/);
+      var frag = document.createDocumentFragment();
+      parts.forEach(function (s) {
+        if (!s) return;
+        if (s.charAt(0) === '★') frag.appendChild(el('span', 'imp', s));
+        else frag.appendChild(document.createTextNode(s));
+      });
+      if (t.parentNode) t.parentNode.replaceChild(frag, t);
+    });
   }
 
   function wrapTables(doc) {
@@ -1193,6 +1264,7 @@
     initHome();
     initReset();
     initBackLink();
+    initBackNav();
     initToolNav();
     initScrollNav();
     initRevive();

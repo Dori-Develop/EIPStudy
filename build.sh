@@ -579,7 +579,7 @@ echo "  ✓ assets/glossary-data.js (약어 ${gloss_n}개)"
         # 여러 바이트 문장부호는 낱개 리터럴로 지운다. 클래스에 넣으면 한글 바이트를 깨뜨린다.
         gsub(/→/, "", s); gsub(/←/, "", s); gsub(/↔/, "", s); gsub(/⇒/, "", s)
         gsub(/·/, "", s); gsub(/—/, "", s); gsub(/–/, "", s); gsub(/…/, "", s)
-        gsub(/⭐/, "", s); gsub(/📌/, "", s); gsub(/⚠️/, "", s); gsub(/💡/, "", s)
+        gsub(/★/, "", s); gsub(/📌/, "", s); gsub(/⚠️/, "", s); gsub(/💡/, "", s)
         gsub(/×/, "", s); gsub(/～/, "", s); gsub(/’/, "", s); gsub(/‘/, "", s)
         out = ""
         for (i = 1; i <= length(s); i++) {
