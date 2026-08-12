@@ -1564,24 +1564,39 @@ mark, .hl {
   border-radius: var(--radius);
   box-shadow: var(--shadow);
 }
-.strat__title { margin: 0 0 10px; font-size: 17px; letter-spacing: -.01em; }
-
-/* 🔑 결론 — 접어도 이것만은 보인다 */
-.strat__must, .strat__plus {
-  margin: 0 0 7px; font-size: 13.5px; line-height: 1.65; color: var(--fg);
+/* 눈썹 — 맥락만 얹는다 */
+.strat__eyebrow {
+  margin: 0 0 6px; color: var(--fg-faint);
+  font-size: 11.5px; font-weight: 700; letter-spacing: .04em;
 }
-.strat__plus { color: var(--fg-muted); }
-.strat__must-k, .strat__plus-k {
+
+/* 🔑 결론 — 이 카드에서 가장 큰 글자 */
+.strat__must {
+  margin: 0; font-size: 19px; line-height: 1.5; letter-spacing: -.02em; color: var(--fg);
+}
+.strat__must-k {
+  display: inline-block; margin-right: 6px;
+  padding: 2px 11px; border-radius: var(--radius-s);
+  background: var(--accent); color: var(--accent-fg);
+  font-size: 19px; font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.strat__must-sub {
+  margin: 7px 0 0; color: var(--fg); font-size: 14px; font-weight: 700;
+}
+
+.strat__plus {
+  margin: 12px 0 0; color: var(--fg-muted); font-size: 13px; line-height: 1.65;
+}
+.strat__plus-k {
   display: inline-block; margin-right: 4px;
   padding: 2px 8px; border-radius: var(--radius-s);
-  font-size: 13.5px; font-variant-numeric: tabular-nums; white-space: nowrap;
+  background: var(--accent-weak); color: var(--accent);
+  font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap;
 }
-.strat__must-k { background: var(--accent); color: var(--accent-fg); }
-.strat__plus-k { background: var(--accent-weak); color: var(--accent); }
-.strat__warn {
-  margin: 0; padding: 7px 10px;
-  background: var(--warn-weak); color: var(--warn);
-  border-radius: var(--radius-s); font-size: 12.5px; line-height: 1.55; font-weight: 600;
+
+/* 각주 — 강조하지 않는다. 「셋만 하라」로 읽히면 안 된다 */
+.strat__note {
+  margin: 8px 0 0; color: var(--fg-faint); font-size: 12px; line-height: 1.55;
 }
 
 /* 접기 */

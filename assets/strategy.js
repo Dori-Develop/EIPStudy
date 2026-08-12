@@ -62,23 +62,29 @@
        + 2장 1.6 + 7장 1.6                      = 17.1문항(85점)
      🚨 세 단원(10·11·8)까지는 11.8문항(59점)이라 **한 문항 모자란다.** */
   var head = el('div', 'strat__head');
-  head.appendChild(el('h2', 'strat__title', '합격까지 — 12문항'));
 
-  var must = el('p', 'strat__must');
+  /* 눈썹 — 맥락만 얹는다. 제목 노릇은 아래 결론이 한다 */
+  head.appendChild(el('p', 'strat__eyebrow', '합격선 60점 = 20문항 중 12문항'));
+
+  /* 🔑 결론 — 이 카드에서 가장 큰 글자다 */
+  var must = el('h2', 'strat__must');
   must.appendChild(el('b', 'strat__must-k', '10 · 11 · 8 · 9'));
-  must.appendChild(document.createTextNode(
-    ' 네 단원은 완벽하게. 이것만으로 평균 13.9문항(69점)이 나옵니다.'));
+  must.appendChild(document.createTextNode(' 네 단원을 완벽하게'));
   head.appendChild(must);
+
+  head.appendChild(el('p', 'strat__must-sub',
+    '이 넷만으로 평균 13.9문항 — 69점입니다.'));
 
   var plus = el('p', 'strat__plus');
   plus.appendChild(el('b', 'strat__plus-k', '+ 2 · 7'));
   plus.appendChild(document.createTextNode(
-    ' 을 더하면 17.1문항(85점). 🔑 여유가 여기서 생깁니다 — ' +
-    '네 단원만 하면 그 안에서 87%를 맞혀야 하지만, 여섯 단원이면 70%로 충분합니다.'));
+    ' 을 더하면 17.1문항 · 85점. 네 단원만 하면 그 안에서 87%를 맞혀야 하지만, ' +
+    '여섯 단원이면 70%로 충분합니다.'));
   head.appendChild(plus);
 
-  head.appendChild(el('p', 'strat__warn',
-    '🚨 10 · 11 · 8 까지 셋만 하면 11.8문항(59점) — 한 문항이 모자랍니다.'));
+  /* 각주 — 강조하지 않는다. 「셋만 하라」로 읽히면 안 된다 */
+  head.appendChild(el('p', 'strat__note',
+    '10 · 11 · 8 까지 셋만 하면 11.8문항 · 59점으로 한 문항이 모자랍니다.'));
 
   card.appendChild(head);
 
