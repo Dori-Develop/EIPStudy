@@ -56,13 +56,51 @@
   var card = el('section', 'strat');
   card.setAttribute('aria-label', '공부 전략');
 
-  /* ── 머리 — 합격 산수 ────────────────────────────────────────── */
+  /* ── 🔑 결론 — 접어도 이것만은 보인다 ────────────────────────────
+     20회차 400문항 비율을 20문항으로 환산해 큰 단원부터 쌓은 값이다.
+       10장 6.7 → 11장 2.8 → 8장 2.3 → 9장 2.1  = 13.9문항(69점)
+       + 2장 1.6 + 7장 1.6                      = 17.1문항(85점)
+     🚨 세 단원(10·11·8)까지는 11.8문항(59점)이라 **한 문항 모자란다.** */
   var head = el('div', 'strat__head');
-  head.appendChild(el('h2', 'strat__title', '어디부터 볼까'));
-  head.appendChild(el('p', 'strat__lead',
-    '20문항 × 5점 = 100점, 60점이면 합격 — 곧 12문항입니다. ' +
-    '기출 20회차 400문항을 세어 보니 아래 여섯 단원이 85% 였습니다.'));
+  head.appendChild(el('h2', 'strat__title', '합격까지 — 12문항'));
+
+  var must = el('p', 'strat__must');
+  must.appendChild(el('b', 'strat__must-k', '10 · 11 · 8 · 9'));
+  must.appendChild(document.createTextNode(
+    ' 네 단원은 완벽하게. 이것만으로 평균 13.9문항(69점)이 나옵니다.'));
+  head.appendChild(must);
+
+  var plus = el('p', 'strat__plus');
+  plus.appendChild(el('b', 'strat__plus-k', '+ 2 · 7'));
+  plus.appendChild(document.createTextNode(
+    ' 을 더하면 17.1문항(85점). 🔑 여유가 여기서 생깁니다 — ' +
+    '네 단원만 하면 그 안에서 87%를 맞혀야 하지만, 여섯 단원이면 70%로 충분합니다.'));
+  head.appendChild(plus);
+
+  head.appendChild(el('p', 'strat__warn',
+    '🚨 10 · 11 · 8 까지 셋만 하면 11.8문항(59점) — 한 문항이 모자랍니다.'));
+
   card.appendChild(head);
+
+  /* ── 접기 ───────────────────────────────────────────────────── */
+  var toggle = el('button', 'strat__toggle');
+  toggle.type = 'button';
+  toggle.setAttribute('aria-expanded', 'false');
+  toggle.appendChild(el('span', 'strat__toggle-t', '단원별로 자세히'));
+  toggle.appendChild(el('span', 'strat__caret', '▾'));
+  card.appendChild(toggle);
+
+  var body = el('div', 'strat__body');
+  body.setAttribute('hidden', '');       /* 🔒 기본은 접힘 — 길어서 접자는 요청이었다 */
+  card.appendChild(body);
+
+  toggle.addEventListener('click', function () {
+    var open = toggle.getAttribute('aria-expanded') !== 'true';
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (open) body.removeAttribute('hidden');
+    else body.setAttribute('hidden', '');
+    toggle.firstChild.textContent = open ? '접기' : '단원별로 자세히';
+  });
 
   /* ── 막대 ───────────────────────────────────────────────────── */
   var list = el('ol', 'strat__list');
@@ -95,7 +133,7 @@
 
     list.appendChild(li);
   }
-  card.appendChild(list);
+  body.appendChild(list);
 
   /* ── 꼬리 — 놓치기 쉬운 것 셋 ───────────────────────────────── */
   var foot = el('div', 'strat__foot');
@@ -120,7 +158,7 @@
   var src = el('p', 'strat__src',
     '기출 PDF 20회차 400문항(2020-1 ~ 2026-1)을 문항 단위로 세어 낸 값입니다.');
   foot.appendChild(src);
-  card.appendChild(foot);
+  body.appendChild(foot);
 
   host.appendChild(card);
 }());

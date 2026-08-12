@@ -1564,8 +1564,40 @@ mark, .hl {
   border-radius: var(--radius);
   box-shadow: var(--shadow);
 }
-.strat__title { margin: 0; font-size: 17px; letter-spacing: -.01em; }
-.strat__lead  { margin: 6px 0 14px; color: var(--fg-muted); font-size: 13.5px; line-height: 1.6; }
+.strat__title { margin: 0 0 10px; font-size: 17px; letter-spacing: -.01em; }
+
+/* 🔑 결론 — 접어도 이것만은 보인다 */
+.strat__must, .strat__plus {
+  margin: 0 0 7px; font-size: 13.5px; line-height: 1.65; color: var(--fg);
+}
+.strat__plus { color: var(--fg-muted); }
+.strat__must-k, .strat__plus-k {
+  display: inline-block; margin-right: 4px;
+  padding: 2px 8px; border-radius: var(--radius-s);
+  font-size: 13.5px; font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.strat__must-k { background: var(--accent); color: var(--accent-fg); }
+.strat__plus-k { background: var(--accent-weak); color: var(--accent); }
+.strat__warn {
+  margin: 0; padding: 7px 10px;
+  background: var(--warn-weak); color: var(--warn);
+  border-radius: var(--radius-s); font-size: 12.5px; line-height: 1.55; font-weight: 600;
+}
+
+/* 접기 */
+.strat__toggle {
+  display: flex; align-items: center; gap: 5px;
+  margin: 12px 0 0; padding: 6px 12px;
+  background: var(--bg-sunken); color: var(--fg-muted);
+  border: 1px solid var(--border); border-radius: 999px;
+  font: inherit; font-size: 12.5px; font-weight: 700;
+  cursor: pointer;
+  transition: border-color .15s, color .15s;
+}
+.strat__toggle:hover { border-color: var(--accent); color: var(--accent); }
+.strat__caret { font-size: 10px; transition: transform .15s; }
+.strat__toggle[aria-expanded="true"] .strat__caret { transform: rotate(180deg); }
+.strat__body { margin: 12px 0 0; }
 
 .strat__list { list-style: none; margin: 0; padding: 0; }
 
