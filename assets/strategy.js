@@ -66,9 +66,11 @@
   /* 눈썹 — 맥락만 얹는다. 제목 노릇은 아래 결론이 한다 */
   head.appendChild(el('p', 'strat__eyebrow', '합격선 60점 = 20문항 중 12문항'));
 
-  /* 🔑 결론 — 이 카드에서 가장 큰 글자다 */
+  /* 🔑 결론 — 한 덩어리로 둔다. 칩과 글이 갈리면 두 조각으로 읽힌다.
+     📌 단원은 **번호 순**으로 적는다 (8 · 9 · 10 · 11).
+        출제량 순(10·11·8·9)은 아래 막대가 이미 보여 준다. */
   var must = el('h2', 'strat__must');
-  must.appendChild(el('b', 'strat__must-k', '10 · 11 · 8 · 9'));
+  must.appendChild(el('b', 'strat__must-k', '8 · 9 · 10 · 11'));
   must.appendChild(document.createTextNode(' 네 단원을 완벽하게'));
   head.appendChild(must);
 
@@ -82,9 +84,11 @@
     '여섯 단원이면 70%로 충분합니다.'));
   head.appendChild(plus);
 
-  /* 각주 — 강조하지 않는다. 「셋만 하라」로 읽히면 안 된다 */
+  /* 각주 — 강조하지 않는다.
+     🔑 「넷 중 하나만 빠져도 안 된다」가 네 단원을 고른 근거다.
+        8장 빼면 57.8 · 9장 빼면 58.8 · 11장 빼면 55.3 · 10장 빼면 36점. */
   head.appendChild(el('p', 'strat__note',
-    '10 · 11 · 8 까지 셋만 하면 11.8문항 · 59점으로 한 문항이 모자랍니다.'));
+    '넷 중 하나만 빠져도 55~59점 — 60점에 못 미칩니다.'));
 
   card.appendChild(head);
 
