@@ -378,25 +378,34 @@
   }
 
   /* ------------------------------------------------ 왼쪽 아래 뒤로가기 */
-  /* 🚨 그냥 `history.back()` 을 놓으면 안 된다. 주소를 직접 치거나 새 탭으로 열었으면
-        돌아갈 데가 없어 **사이트 밖으로 나간다.** 같은 사이트에서 왔을 때만 띄운다. */
+  /* 🚨 **`document.referrer` 로 판정하다 두 번 틀렸다** (2026-08-12).
+
+     | 증상 | 왜 |
+     |---|---|
+     | *"필요한 때에 안 떠"* | `file://` 이나 새 탭에서는 **referrer 가 빈 문자열**이다 |
+     | *"눌러도 반응 안 할 때가 있어"* | 새 탭은 **referrer 는 있는데 히스토리가 비어 있다.**<br>`history.back()` 이 갈 데가 없어 아무 일도 안 일어난다 |
+
+     🔒 **물어야 할 것은 「어디서 왔나」가 아니라 「돌아갈 데가 있나」다.**
+        그건 `history.length` 가 답한다 — referrer 와 달리 **`back()` 과 같은 것을 본다.**
+
+     📌 다른 사이트에서 들어왔으면 밖으로 나갈 수 있다. 그것이 브라우저 뒤로가기의
+        본래 동작이고, **이 버튼은 그것을 그대로 꺼내 놓은 것**이다. */
   function initBackNav() {
-    var ref = document.referrer || '';
-    var sameSite = ref.indexOf(location.protocol + '//' + location.host) === 0 ||
-                   (location.protocol === 'file:' && ref.indexOf('file:') === 0);
-    /* 같은 페이지를 새로고침한 것은 「직전」이 아니다 */
-    var samePage = ref.split('#')[0] === location.href.split('#')[0];
+    /* 🚨 bfcache 로 되살아나면 다시 불린다. **두 개가 되면 안 된다.** */
+    if ($('.backnav')) return;
     /* 「빠른 이동」으로 왔으면 여기가 **새 출발점**이다. 직전을 가리키지 않는다. */
-    if (!sameSite || samePage || takeTrailReset()) return;
+    if (takeTrailReset()) return;
+    if (!window.history || history.length <= 1) return;
 
     var nav = el('div', 'backnav');
-    var btn = el('button', 'totop backnav__btn', '←');
+    var btn = el('button', 'backbtn', '←');
     btn.type = 'button';
-    /* 🔒 **어디로 가는지 이름으로 적는다.** 「뒤로」만으로는 어디인지 모른다 */
-    var name = pageName(ref);
-    btn.title = name + '(으)로 뒤로가기';
+    /* 🔒 **글자는 넣지 않는다** (사용자 요청). 도구 툴팁에만 갈 곳 이름을 적는다 —
+       버튼이 커지면 본문을 가리고, 왼쪽 아래는 좁은 화면에서 특히 빠듯하다. */
+    var ref = document.referrer || '';
+    var name = ref ? pageName(ref) : '';
+    btn.title = name ? name + '(으)로 뒤로가기' : '뒤로가기';
     btn.setAttribute('aria-label', btn.title);
-    btn.appendChild(el('span', 'backnav__label', name));
     btn.addEventListener('click', function () { history.back(); });
     nav.appendChild(btn);
     document.body.appendChild(nav);
@@ -1250,6 +1259,7 @@
       if (!e.persisted) return;   /* 새로 연 것이면 boot() 가 이미 그렸다 */
 
       initHome();                 /* 홈·챕터 목록 — CH 가 있으면 스스로 빠진다 */
+      initBackNav();              /* 🔑 되살아난 페이지는 이제 돌아갈 데가 생겼을 수 있다 */
       if (CH) {
         paintProgress();          /* 챕터 목차·섹션의 진도 막대 */
         refreshSidebarDone();     /* 사이드바 목차의 완료 표시 */
