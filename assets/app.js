@@ -956,7 +956,7 @@
             /* 🚨 빈 클래스도 구획 셋을 다 그려서 **관계만 보여 주는 그림이 상자 3단**이 됐다.
                💬 *"사각형 3개가 하나의 오브젝트로 되어있는 거 의도 맞아?"* → 아니다.
                속성·오퍼레이션이 없으면 **이름 칸만** 남긴다 (mermaid 11 의 옵션). */
-            'class': { useMaxWidth: true, hideEmptyMembersBox: true },
+            'class': { useMaxWidth: true, hideEmptyMembersBox: true, rankSpacing: 110 },
             'state': { useMaxWidth: true }
           });
 
