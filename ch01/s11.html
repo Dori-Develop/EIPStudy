@@ -103,9 +103,8 @@ classDiagram
 > 사서는 여러 회원의 업무를 처리하고, 회원도 여러 사서를 통해 도서를 빌림.
 
 ```mermaid
-classDiagram
-    direction LR
-    사서 "1..*" --> "1..*" 회원
+flowchart LR
+    사서["사서"] -- "1..*  ↔  1..*" --> 회원["회원"]
 ```
 
 **해설**

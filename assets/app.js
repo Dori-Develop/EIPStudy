@@ -956,7 +956,10 @@
             /* 🚨 빈 클래스도 구획 셋을 다 그려서 **관계만 보여 주는 그림이 상자 3단**이 됐다.
                💬 *"사각형 3개가 하나의 오브젝트로 되어있는 거 의도 맞아?"* → 아니다.
                속성·오퍼레이션이 없으면 **이름 칸만** 남긴다 (mermaid 11 의 옵션). */
-            'class': { useMaxWidth: true, hideEmptyMembersBox: true, rankSpacing: 110 },
+            /* 🚨 `rankSpacing` 을 올려 봤지만 소용없었다 — **선 길이가 문제가 아니었다.**
+               `direction LR` 이면 mermaid 가 **양쪽 다중도를 도착 쪽에 겹쳐 쌓는다.**
+               → 그런 그림은 `flowchart` 로 그린다 (라벨을 선 가운데에 한 번만 놓는다). */
+            'class': { useMaxWidth: true, hideEmptyMembersBox: true },
             'state': { useMaxWidth: true }
           });
 
