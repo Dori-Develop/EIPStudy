@@ -421,7 +421,9 @@
     if ($('.backnav')) return;
     if (!window.history || navDepth() < 1) return;
 
-    var nav = el('div', 'backnav');
+    /* 🚨 넓은 화면에서 **사이드바가 왼쪽 300px 를 차지한다.** 그 아래 깔려 안 보였다.
+       사이드바가 있는 페이지에서만 그만큼 오른쪽으로 민다 — 홈·도구에는 없다. */
+    var nav = el('div', 'backnav' + ($('.sidebar') ? ' backnav--aside' : ''));
     var btn = el('button', 'backbtn', '←');
     btn.type = 'button';
     /* 🔒 **글자는 넣지 않는다** (사용자 요청). 툴팁에만 갈 곳 이름을 적는다 —

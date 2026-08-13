@@ -1748,3 +1748,10 @@ mark, .hl {
   .backnav { left: 10px; }
   .backbtn { width: 40px; height: 40px; font-size: 15px; }
 }
+
+/* 🚨 넓은 화면에서는 사이드바가 왼쪽 `--sidebar-w` 를 먹는다. **그 아래 깔렸다.**
+   사이드바가 있는 페이지(챕터·섹션)에서만 민다 — 홈·도구에는 사이드바가 없다.
+   📌 분기점은 사이드바가 고정 열이 되는 1060px 과 **같아야 한다.** */
+@media (min-width: 1060px) {
+  .backnav--aside { left: calc(var(--sidebar-w) + 14px); }
+}
