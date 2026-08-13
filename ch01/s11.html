@@ -91,7 +91,7 @@ window.EIP_CHAPTER = {id:"ch01",title:"정보처리기사 실기 — 01. 요구�
 ```mermaid
 classDiagram
     direction LR
-    회원 "1" --> "1" 대출카드
+    회원 "1" --> "1" 대출카드 : 발급받는다
 ```
 
 **해설**
@@ -105,7 +105,7 @@ classDiagram
 ```mermaid
 classDiagram
     direction LR
-    사서 "1..*" -- "1..*" 회원
+    사서 "1..*" -- "1..*" 회원 : 담당한다
 ```
 
 **해설**

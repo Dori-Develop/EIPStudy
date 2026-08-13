@@ -954,7 +954,10 @@
                💬 *"s16 게 너무 작아서 잘 안 보이는 것 같아."*
                → 제 크기로 그리고 **가로로 민다.** 아래에서 `.diagram--wide` 를 붙인다. */
             sequence: { useMaxWidth: false, wrap: true, actorMargin: 42 },
-            'class': { useMaxWidth: true },
+            /* 🚨 빈 클래스도 구획 셋을 다 그려서 **관계만 보여 주는 그림이 상자 3단**이 됐다.
+               💬 *"사각형 3개가 하나의 오브젝트로 되어있는 거 의도 맞아?"* → 아니다.
+               속성·오퍼레이션이 없으면 **이름 칸만** 남긴다 (mermaid 11 의 옵션). */
+            'class': { useMaxWidth: true, hideEmptyMembersBox: true },
             'state': { useMaxWidth: true }
           });
 
@@ -967,12 +970,17 @@
 
           /* 그려 놓고 **실제로 넘치는지** 재서 붙인다. 종류로 미리 정하지 않는다 —
              참여 객체가 셋뿐인 시퀀스는 안 넘치고, 넘치면 무엇이든 밀 수 있어야 한다. */
+          /* 🚨 **그려진 폭을 재면 안 된다.** `.diagram svg { max-width: 100% }` 가 이미
+             줄여 놓은 뒤라 **언제나 상자 폭과 같게 나온다** — 그래서 아무것도 안 붙었고
+             💬 *"c11 그대론데?"* 가 됐다.
+             🔑 **`viewBox` 가 줄어들기 전의 제 폭**이다. 그걸 상자와 견준다. */
           var markWide = function () {
             diagrams.forEach(function (d) {
               var svg = d.box.querySelector('svg');
               if (!svg) return;
-              var w = svg.getBoundingClientRect().width;
-              d.box.classList.toggle('diagram--wide', w > d.box.clientWidth + 1);
+              var vb = svg.viewBox && svg.viewBox.baseVal;
+              var natural = (vb && vb.width) || svg.getBoundingClientRect().width;
+              d.box.classList.toggle('diagram--wide', natural > d.box.clientWidth + 1);
             });
           };
 
