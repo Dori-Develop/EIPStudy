@@ -948,12 +948,11 @@
             securityLevel: 'loose',
             fontFamily: 'inherit',
             flowchart: { htmlLabels: true, curve: 'basis', useMaxWidth: true },
-            /* 🚨 시퀀스만 `useMaxWidth: false` 다.
-               참여 객체가 가로로 늘어서는 그림이라 8개만 돼도 폭이 1600px 이 넘는데,
-               `true` 면 그것을 본문 폭에 **욱여넣어 글자가 절반 크기로 줄었다.**
-               💬 *"s16 게 너무 작아서 잘 안 보이는 것 같아."*
-               → 제 크기로 그리고 **가로로 민다.** 아래에서 `.diagram--wide` 를 붙인다. */
-            sequence: { useMaxWidth: false, wrap: true, actorMargin: 42 },
+            /* 🔒 **넘치는 그림은 줄여서 담는다.** 가로로 밀어 보게 만들었다가 되돌렸다 —
+               💬 *"좌우로 미는 기능 그냥 다시 없애. 크게 보는 버튼 누르는 데에 의지하자."*
+               🔑 **확대 버튼(⤢)이 이미 있다.** 미는 것은 그것과 하는 일이 겹치면서
+                  **본문 스크롤과 싸운다** — 손가락이 어느 쪽을 미는지 헷갈린다. */
+            sequence: { useMaxWidth: true, wrap: true },
             /* 🚨 빈 클래스도 구획 셋을 다 그려서 **관계만 보여 주는 그림이 상자 3단**이 됐다.
                💬 *"사각형 3개가 하나의 오브젝트로 되어있는 거 의도 맞아?"* → 아니다.
                속성·오퍼레이션이 없으면 **이름 칸만** 남긴다 (mermaid 11 의 옵션). */
@@ -970,24 +969,9 @@
 
           /* 그려 놓고 **실제로 넘치는지** 재서 붙인다. 종류로 미리 정하지 않는다 —
              참여 객체가 셋뿐인 시퀀스는 안 넘치고, 넘치면 무엇이든 밀 수 있어야 한다. */
-          /* 🚨 **그려진 폭을 재면 안 된다.** `.diagram svg { max-width: 100% }` 가 이미
-             줄여 놓은 뒤라 **언제나 상자 폭과 같게 나온다** — 그래서 아무것도 안 붙었고
-             💬 *"c11 그대론데?"* 가 됐다.
-             🔑 **`viewBox` 가 줄어들기 전의 제 폭**이다. 그걸 상자와 견준다. */
-          var markWide = function () {
-            diagrams.forEach(function (d) {
-              var svg = d.box.querySelector('svg');
-              if (!svg) return;
-              var vb = svg.viewBox && svg.viewBox.baseVal;
-              var natural = (vb && vb.width) || svg.getBoundingClientRect().width;
-              d.box.classList.toggle('diagram--wide', natural > d.box.clientWidth + 1);
-            });
-          };
-
           var settle = function (err) {
             if (err) console.warn('mermaid 렌더링 실패:', err);
             diagrams.forEach(function (d) { d.box.classList.remove('diagram--pending'); });
-            markWide();
           };
 
           try {
