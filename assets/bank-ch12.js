@@ -121,6 +121,15 @@ window.EIP_BANK_ch12 = [
   },
 
 
+  {
+    id: 'ch12-s03-05', ch: 12, sec: 3,
+    t: 'short',
+    q: 'DRM 기술 요소 중 <b>크랙에 의한 콘텐츠 사용을 막는</b> 기술은? (<b>템퍼프루핑</b>이라고도 함)',
+    a: ['크랙 방지', '크랙방지', 'Tamper Resistance', '템퍼프루핑', 'Tamperproofing'],
+    why: '<b>크랙 방지</b>(Tamper Resistance)다. 🚨 <b>템퍼프루핑</b>(Tamperproofing)으로 물은 적이 있다 — 같은 것을 가리키는 다른 이름이다.',
+    d: 3, y: [], tag: ['DRM', '크랙방지'], lang: null, code: null
+  },
+
   /* ==================================================== s04 설치 매뉴얼 작성 */
 
   {

@@ -1445,6 +1445,25 @@ window.EIP_BANK_ch10 = [
     a: true,
     why: 'Java 에는 없고 <b>Python 에만 있는</b> 블록이다. 순서는 <code>try → except → else → finally</code> 다.',
     d: 3, y: [], tag: ['예외처리', 'Python'], lang: null, code: null
+  },
+
+  {
+    id: 'ch10-s13-10', ch: 10, sec: 13,
+    t: 'short',
+    q: '람다식으로 받으려면 인터페이스에 <b>추상 메소드가 몇 개</b> 있어야 하는가?',
+    a: ['1', '1개', '하나', '한 개'],
+    why: '<b>하나</b>여야 한다. 이런 인터페이스를 <b>함수형 인터페이스</b>라 하고 <code>@FunctionalInterface</code> 로 검사할 수 있다. 🚨 둘 이상이면 <b>어느 메소드를 구현한 것인지 알 수 없어</b> 람다로 못 받는다. 📌 <code>default</code>·<code>static</code> 메소드는 여러 개여도 된다.',
+    d: 3, y: [], tag: ['람다', '함수형인터페이스'], lang: null, code: null
+  },
+
+  {
+    id: 'ch10-s13-11', ch: 10, sec: 13,
+    t: 'choice',
+    q: '표준 함수형 인터페이스 중 <b>받아서 참·거짓을 돌려주는</b> 것은?',
+    c: ['Function', 'Supplier', 'Consumer', 'Predicate'],
+    a: 3,
+    why: '<b>Predicate</b> 는 <code>boolean test(T t)</code> 다. <b>Function</b> 은 받아서 바꿔 주고, <b>Supplier</b> 는 주기만 하고, <b>Consumer</b> 는 받아서 쓰기만 한다.',
+    d: 3, y: [], tag: ['람다', '함수형인터페이스'], lang: null, code: null
   }
 
 ];

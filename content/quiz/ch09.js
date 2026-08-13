@@ -117,6 +117,34 @@ window.EIP_BANK_ch09 = [
     d: 2, y: [], tag: ['보안기능', '접근제어'], lang: null, code: null
   },
 
+  {
+    id: 'ch09-s03-03', ch: 9, sec: 3,
+    t: 'short',
+    q: '접근 통제 모델 중 <b>데이터의 소유자가 직접 접근 권한을 부여</b>하는 신분 기반 방식은? (약어)',
+    a: ['DAC', 'dac', '임의 접근 통제'],
+    why: '<b>DAC</b>(Discretionary Access Control, 임의 접근 통제)다. 소유자가 마음대로 권한을 넘길 수 있어 통제가 느슨하다. 일반적인 파일 시스템 권한이 이 방식이다.',
+    d: 2, y: [], tag: ['접근통제', 'DAC'], lang: null, code: null
+  },
+
+  {
+    id: 'ch09-s03-04', ch: 9, sec: 3,
+    t: 'choice',
+    q: '<b>보안 등급(Label)</b>을 기준으로 <b>시스템이 강제로</b> 접근을 통제하며, 소유자도 권한을 바꿀 수 없는 모델은?',
+    c: ['DAC', 'MAC', 'RBAC', 'ACL'],
+    a: 1,
+    why: '<b>MAC</b>(Mandatory Access Control, 강제 접근 통제)다. 가장 엄격해 군사·정부 시스템에서 쓴다. 셋을 가르는 기준은 <b>권한을 누가 정하는가</b> — 소유자(DAC) · 시스템(MAC) · 역할(RBAC).',
+    d: 2, y: [], tag: ['접근통제', 'MAC'], lang: null, code: null
+  },
+
+  {
+    id: 'ch09-s03-05', ch: 9, sec: 3,
+    t: 'short',
+    q: '사람이 아니라 <b>직무(역할)</b>에 권한을 붙여, 인사 이동이 잦은 조직에서 관리 부담이 작은 접근 통제 모델은? (약어)',
+    a: ['RBAC', 'rbac', '역할 기반 접근 통제'],
+    why: '<b>RBAC</b>(Role Based Access Control)다. 사람이 바뀌어도 역할은 그대로라 권한을 다시 손볼 일이 적다.',
+    d: 2, y: [], tag: ['접근통제', 'RBAC'], lang: null, code: null
+  },
+
   /* ========================================================= s04 시간 및 상태 */
 
   {
@@ -360,6 +388,42 @@ window.EIP_BANK_ch09 = [
     d: 2, y: [], tag: ['네트워크침해', '큐싱'], lang: null, code: null
   },
 
+  {
+    id: 'ch09-s10-07', ch: 9, sec: 10,
+    t: 'short',
+    q: '공격 대상이 <b>자주 방문하는 웹 사이트를 미리 감염</b>시켜 두고 찾아오기를 기다리는 공격은?',
+    a: ['워터링 홀', '워터링홀', 'Watering Hole', '워터링 홀 공격'],
+    why: '<b>워터링 홀</b>(Watering Hole)이다. 맹수가 물웅덩이 곁에서 기다리는 데서 온 이름이다. 대상을 직접 치지 않고 <b>길목을 지킨다</b>는 것이 요점이다.',
+    d: 2, y: [], tag: ['네트워크침해', '워터링홀'], lang: null, code: null
+  },
+
+  {
+    id: 'ch09-s10-08', ch: 9, sec: 10,
+    t: 'short',
+    q: '침입 후 <b>자신의 존재를 숨기고 관리자 권한을 유지</b>하기 위해 시스템 명령어까지 바꿔치기하는 도구 모음은?',
+    a: ['루트킷', 'Rootkit', '루트킷(Rootkit)'],
+    why: '<b>루트킷</b>(Rootkit)이다. 감염 자체가 목적이 아니라 <b>들키지 않는 것</b>이 목적이라, 백신이 보는 명령어를 바꿔 놓는다.',
+    d: 3, y: [], tag: ['정보보안침해', '루트킷'], lang: null, code: null
+  },
+
+  {
+    id: 'ch09-s10-09', ch: 9, sec: 10,
+    t: 'short',
+    q: '기술이 아니라 <b>사람의 심리와 신뢰를 파고들어</b> 정보를 얻어내는 공격 수법은?',
+    a: ['사회공학', '사회 공학', 'Social Engineering', '사회공학 기법'],
+    why: '<b>사회공학</b>(Social Engineering)이다. 관리자를 사칭한 전화나 메일이 대표적이다. 아무리 시스템을 지켜도 <b>사람이 열어 주면 소용없다</b>.',
+    d: 2, y: [], tag: ['네트워크침해', '사회공학'], lang: null, code: null
+  },
+
+  {
+    id: 'ch09-s10-10', ch: 9, sec: 10,
+    t: 'short',
+    q: '<b>오타를 노려</b> 유명 사이트와 비슷한 도메인을 미리 사 두고 잘못 들어온 사용자를 노리는 공격은?',
+    a: ['타이포스쿼팅', 'Typosquatting', 'URL 하이재킹'],
+    why: '<b>타이포스쿼팅</b>(Typosquatting)이다. <b>URL 하이재킹</b>이라고도 한다.',
+    d: 3, y: [], tag: ['네트워크침해', '타이포스쿼팅'], lang: null, code: null
+  },
+
   /* ========================================================== s11 서버 인증 */
 
   {
@@ -388,6 +452,15 @@ window.EIP_BANK_ch09 = [
     a: ['커버로스', 'Kerberos', '케르베로스'],
     why: '<b>커버로스</b> 다. 한 번의 인증으로 여러 시스템에 접근하는 <b>SSO</b>, 한 번만 쓰는 비밀번호인 <b>OTP</b> 와 함께 나온다.',
     d: 3, y: [], tag: ['인증', '커버로스'], lang: null, code: null
+  },
+
+  {
+    id: 'ch09-s11-04', ch: 9, sec: 11,
+    t: 'short',
+    q: '<b>비밀번호를 넘기지 않고</b> 제3의 서비스에 접근 권한만 위임하는 개방형 표준은? (「구글 계정으로 로그인」이 이것)',
+    a: ['OAuth', 'oauth', '오어스'],
+    why: '<b>OAuth</b> 다. 🚨 인증(Authentication)이 아니라 <b>인가(Authorization)</b> 를 다루는 규약이다 — 「이 앱이 내 사진첩을 읽어도 된다」를 맡기는 것이지 「내가 누구인가」를 증명하는 것이 아니다. 인증까지 얹은 것은 OpenID Connect 다.',
+    d: 2, y: [], tag: ['서버인증', 'OAuth'], lang: null, code: null
   },
 
   /* ============================================ s12 보안 아키텍처와 보안 프레임워크 */
@@ -468,6 +541,33 @@ window.EIP_BANK_ch09 = [
     a: false,
     why: '탐지만 하는 것은 <b>IDS</b> 다. <b>IPS</b> 는 방화벽과 IDS 를 결합한 것으로 <b>능동적으로 차단하고 격리</b>한다. 이름의 Detection / Prevention 차이가 그대로다.',
     d: 2, y: [], tag: ['보안솔루션', 'IPS'], lang: null, code: null
+  },
+
+  {
+    id: 'ch09-s14-04', ch: 9, sec: 14,
+    t: 'short',
+    q: 'IP 패킷 자체를 인증·암호화하는 <b>네트워크 계층</b>의 보안 표준은?',
+    a: ['IPSec', 'IPsec', 'ipsec', 'IP Security'],
+    why: '<b>IPSec</b> 이다. <b>AH</b> 는 인증·무결성만 하고 <b>ESP</b> 는 암호화까지 한다. 이 둘의 차이가 자주 나온다.',
+    d: 2, y: [], tag: ['보안프로토콜', 'IPSec'], lang: null, code: null
+  },
+
+  {
+    id: 'ch09-s14-05', ch: 9, sec: 14,
+    t: 'short',
+    q: 'PPTP 와 L2F 를 합친 터널링 프로토콜로, <b>자체 암호화 기능이 없어</b> 보통 IPSec 과 함께 쓰는 것은?',
+    a: ['L2TP', 'l2tp', 'Layer 2 Tunneling Protocol'],
+    why: '<b>L2TP</b> 다. 🚨 <b>터널만 뚫고 암호는 IPSec 이 건다</b> — 그래서 L2TP/IPSec 이라고 짝으로 부른다.',
+    d: 3, y: [], tag: ['보안프로토콜', 'L2TP'], lang: null, code: null
+  },
+
+  {
+    id: 'ch09-s14-06', ch: 9, sec: 14,
+    t: 'short',
+    q: '평문으로 오가던 Telnet 과 FTP 를 대체해 원격 접속을 <b>암호화</b>하는 규약은? (기본 포트 22번)',
+    a: ['SSH', 'ssh', 'Secure Shell'],
+    why: '<b>SSH</b>(Secure Shell)다. Telnet(23) · FTP(21) 는 아이디와 비밀번호가 <b>평문으로 흐른다</b>.',
+    d: 1, y: [], tag: ['보안프로토콜', 'SSH'], lang: null, code: null
   },
 
   /* ==================================================== s15 취약점 분석과 평가 */
