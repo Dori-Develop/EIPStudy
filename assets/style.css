@@ -344,6 +344,17 @@ button { font: inherit; cursor: pointer; }
   text-align: center;
 }
 .diagram svg { max-width: 100%; height: auto; }
+/* 🔑 **본문 폭보다 넓은 그림은 줄이지 않고 민다.** 시퀀스 다이어그램처럼 참여 객체가
+   가로로 늘어서는 그림은 욱여넣으면 글자가 안 읽힌다 — app.js 가 재서 붙인다.
+   📌 왼쪽부터 보여야 한다. 가운데 정렬이면 첫 객체가 화면 밖에서 시작한다. */
+.diagram--wide { text-align: left; }
+.diagram--wide svg { max-width: none; }
+.diagram--wide::after {
+  content: '← 좌우로 밀어 보세요';
+  display: block; margin-top: 6px;
+  color: var(--fg-faint); font-size: 11.5px;
+  position: sticky; left: 0;
+}
 .diagram__zoom {
   position: absolute; top: 8px; right: 8px;
   width: 32px; height: 32px;

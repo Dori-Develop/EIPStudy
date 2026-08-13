@@ -948,7 +948,12 @@
             securityLevel: 'loose',
             fontFamily: 'inherit',
             flowchart: { htmlLabels: true, curve: 'basis', useMaxWidth: true },
-            sequence: { useMaxWidth: true, wrap: true },
+            /* 🚨 시퀀스만 `useMaxWidth: false` 다.
+               참여 객체가 가로로 늘어서는 그림이라 8개만 돼도 폭이 1600px 이 넘는데,
+               `true` 면 그것을 본문 폭에 **욱여넣어 글자가 절반 크기로 줄었다.**
+               💬 *"s16 게 너무 작아서 잘 안 보이는 것 같아."*
+               → 제 크기로 그리고 **가로로 민다.** 아래에서 `.diagram--wide` 를 붙인다. */
+            sequence: { useMaxWidth: false, wrap: true, actorMargin: 42 },
             'class': { useMaxWidth: true },
             'state': { useMaxWidth: true }
           });
@@ -960,9 +965,21 @@
             return d.target;
           });
 
+          /* 그려 놓고 **실제로 넘치는지** 재서 붙인다. 종류로 미리 정하지 않는다 —
+             참여 객체가 셋뿐인 시퀀스는 안 넘치고, 넘치면 무엇이든 밀 수 있어야 한다. */
+          var markWide = function () {
+            diagrams.forEach(function (d) {
+              var svg = d.box.querySelector('svg');
+              if (!svg) return;
+              var w = svg.getBoundingClientRect().width;
+              d.box.classList.toggle('diagram--wide', w > d.box.clientWidth + 1);
+            });
+          };
+
           var settle = function (err) {
             if (err) console.warn('mermaid 렌더링 실패:', err);
             diagrams.forEach(function (d) { d.box.classList.remove('diagram--pending'); });
+            markWide();
           };
 
           try {
