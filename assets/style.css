@@ -606,9 +606,50 @@ a.wcard__loc:hover { color: var(--accent); text-decoration: underline; }
 .quiz__input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
 .quiz__input:disabled { opacity: .7; }
 
+/* ---- 여러 칸짜리 문항 (parts) ----
+   🔒 실기는 한 문항에서 ㉠㉡ 처럼 여러 답을 묻는다. 칸마다 입력이 하나씩 붙고
+      여기에만 부분점수가 생긴다. 배점 규칙은 qcard.js 한 벌이다. */
+.quiz__pool {
+  display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
+  margin: 0 0 11px; padding: 9px 11px;
+  background: var(--bg-sunken); border-radius: var(--radius-s);
+}
+.quiz__poollabel { flex: none; font-size: 11.5px; font-weight: 700; color: var(--fg-faint); }
+.quiz__poolitems { display: flex; flex-wrap: wrap; gap: 5px; }
+.quiz__poolitem {
+  padding: 2px 9px; background: var(--bg-elev);
+  border: 1px solid var(--border); border-radius: 999px;
+  font-size: 12.5px;
+}
+
+.quiz__parts { display: flex; flex-direction: column; gap: 7px; }
+.quiz__part { display: flex; align-items: center; gap: 8px; }
+.quiz__plabel {
+  flex: none; min-width: 26px;
+  font-weight: 700; color: var(--accent); font-size: 13.5px;
+}
+.quiz__pinput, .quiz__pselect {
+  flex: 1; min-width: 0;
+  padding: 8px 11px;
+  background: var(--bg); color: var(--fg);
+  border: 1px solid var(--border); border-radius: var(--radius-s);
+  font-family: inherit; font-size: 14px;
+}
+.quiz__pinput:focus, .quiz__pselect:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+.quiz__pinput:disabled, .quiz__pselect:disabled { opacity: .7; }
+
+/* 채점 뒤 칸마다 내 답과 정답을 나란히 */
+.quiz__pans { display: flex; flex-direction: column; gap: 4px; margin: 6px 0 0; }
+.quiz__pansrow { display: flex; align-items: baseline; gap: 8px; color: var(--fg-muted); }
+.quiz__pansrow.is-ok .quiz__plabel { color: var(--good); }
+.quiz__pansrow.is-no .quiz__plabel { color: var(--warn); }
+.quiz__pansrow b { color: var(--fg); font-weight: 700; }
+
 /* ---- 채점 결과 ---- */
 .quiz__item.is-ok { background: var(--good-weak); }
 .quiz__item.is-no { background: var(--warn-weak); }
+/* 부분 정답 — 오답과 같은 색으로 두면 두 칸 중 하나를 맞힌 것이 묻힌다 */
+.quiz__item.is-part { background: color-mix(in srgb, var(--warn-weak) 55%, transparent); }
 
 .quiz__fb {
   margin: 11px 0 0; padding: 10px 12px;
@@ -623,6 +664,7 @@ a.wcard__loc:hover { color: var(--accent); text-decoration: underline; }
 }
 .is-ok .quiz__mark { background: var(--good-weak); color: var(--good); }
 .is-no .quiz__mark { background: var(--warn-weak); color: var(--warn); }
+.is-part .quiz__mark { background: var(--accent-weak); color: var(--accent); }
 .quiz__ans { color: var(--fg-muted); }
 .quiz__ans b { color: var(--fg); font-weight: 700; }
 .quiz__why { margin: 7px 0 0; color: var(--fg-muted); }
@@ -1066,6 +1108,14 @@ mark, .hl {
 .exam__score strong { font-size: 28px; letter-spacing: -.02em; }
 .exam__score span { font-size: 15px; color: var(--fg-muted); font-weight: 600; }
 .exam__timeout { margin: 6px 0 0; font-size: 13px; color: var(--warn); }
+
+/* 합격선 60점 — 실기와 같은 배점이다 */
+.exam__pass {
+  margin: 8px 0 0; font-size: 13.5px; font-weight: 700; color: var(--fg-muted);
+}
+.exam__pass.is-pass { color: var(--good); }
+/* 🚨 부분점수는 공개된 채점기준이 아니라 추정이라고 밝히는 각주 */
+.exam__note { margin: 8px 0 0; font-size: 12px; color: var(--fg-faint); line-height: 1.6; }
 
 .exam__bars { margin: 16px 0 0; display: flex; flex-direction: column; gap: 8px; }
 .exam__barrow { display: flex; align-items: center; gap: 10px; font-size: 12.5px; }

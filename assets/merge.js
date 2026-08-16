@@ -16,7 +16,10 @@
    memo.q       {문항id: {t,u}}         → 🚨 같은 규칙. 구조가 같아 memo. 로 함께 걸린다
    quiz.chNN    {섹션번호: {score,total,at}} → at 최신 쪽
    meta.chNN    {total,title,updated}   → updated 최신 쪽
-   exam.history [{seed,at,score,…}]     → 합쳐서 at 내림차순 EXAM_HISTORY_KEEP 개
+   exam.history [{seed,at,score,pt,…}]  → 합쳐서 at 내림차순 EXAM_HISTORY_KEEP 개
+                                          (📌 기록을 통째로 옮기므로 필드가 늘어도
+                                           여기는 손댈 것이 없다. `pt` 는 배점 합이라
+                                           **소수**일 수 있고 `score` 는 문항 수 그대로다)
    exam.recent  [[문항 id,…], …]        → 앞에서부터 번갈아, 최대 RECENT_KEEP
    exam.answers {seed: {at, a}}          → 회차마다 at 최신 쪽, 최대 ANSWERS_KEEP
    theme · ui.* → **아예 옮기지 않는다** (학습 기록이 아니라 이 기기의 화면 설정이다)

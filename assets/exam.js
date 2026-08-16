@@ -18,19 +18,44 @@
   var TOC = window.EIP_TOC || {};
 
   /* ------------------------------------------------------------------------
-     회차별 단원 분포 — PLAN-exam.md 4-2 (7회분 139문항 실측)
-     값은 그 회차에서 해당 단원이 몇 문항 나왔는가.
+     회차별 단원 분포 — 🔒 **개정 이후 21회차 420문항 실측** (T45).
+     값은 그 회차에서 해당 단원이 몇 문항 나왔는가. 각 행의 합은 20이다.
+
+     옛 표는 7회차 139문항 표본이었다. 21회차를 다 담아 교체했다.
+     🔑 10장이 22% → 33% 로 늘었고, 3·6장은 개정 초기에만 나왔다
+     (3장은 2021-1, 6장은 2022-1 이 마지막) — 그래도 0으로 빼지 않는다.
+     → EIPStudy-notes/exam-archive/chapters.md
      ------------------------------------------------------------------------ */
   var EXAM_DIST = {
+    '2020-1': { 1:1, 2:2, 3:0, 4:2, 5:2, 6:0, 7:2, 8:1, 9:2, 10:3, 11:4, 12:1 },
+    '2020-2': { 1:1, 2:2, 3:1, 4:1, 5:1, 6:1, 7:1, 8:3, 9:2, 10:3, 11:3, 12:1 },
+    '2020-3': { 1:1, 2:2, 3:1, 4:1, 5:0, 6:1, 7:2, 8:3, 9:0, 10:5, 11:3, 12:1 },
+    '2020-4': { 1:1, 2:2, 3:0, 4:1, 5:0, 6:0, 7:2, 8:1, 9:2, 10:5, 11:6, 12:0 },
+    '2021-1': { 1:1, 2:4, 3:2, 4:1, 5:0, 6:0, 7:2, 8:1, 9:2, 10:4, 11:3, 12:0 },
+    '2021-2': { 1:1, 2:2, 3:0, 4:2, 5:0, 6:1, 7:2, 8:3, 9:1, 10:5, 11:3, 12:0 },
+    '2021-3': { 1:2, 2:1, 3:0, 4:2, 5:0, 6:1, 7:3, 8:2, 9:3, 10:5, 11:1, 12:0 },
     '2022-1': { 1:0, 2:3, 3:0, 4:0, 5:0, 6:1, 7:4, 8:1, 9:3, 10:7, 11:1, 12:0 },
-    '2022-2': { 1:0, 2:3, 3:0, 4:2, 5:0, 6:0, 7:2, 8:2, 9:2, 10:6, 11:3, 12:0 },
+    '2022-2': { 1:0, 2:3, 3:0, 4:2, 5:1, 6:0, 7:2, 8:2, 9:2, 10:6, 11:2, 12:0 },
     '2022-3': { 1:1, 2:2, 3:0, 4:1, 5:0, 6:0, 7:1, 8:2, 9:4, 10:6, 11:2, 12:1 },
-    '2023-1': { 1:0, 2:3, 3:0, 4:1, 5:1, 6:0, 7:1, 8:2, 9:2, 10:6, 11:4, 12:0 },
-    '2023-2': { 1:0, 2:1, 3:0, 4:1, 5:0, 6:0, 7:2, 8:2, 9:2, 10:9, 11:2, 12:1 },
+    '2023-1': { 1:0, 2:2, 3:0, 4:1, 5:1, 6:0, 7:1, 8:2, 9:3, 10:8, 11:2, 12:0 },
+    '2023-2': { 1:0, 2:2, 3:0, 4:1, 5:0, 6:0, 7:2, 8:2, 9:1, 10:9, 11:2, 12:1 },
     '2023-3': { 1:1, 2:2, 3:0, 4:0, 5:0, 6:0, 7:1, 8:1, 9:2, 10:8, 11:5, 12:0 },
-    '2024-1': { 1:0, 2:2, 3:0, 4:2, 5:0, 6:0, 7:1, 8:1, 9:2, 10:8, 11:3, 12:0 }
+    '2024-1': { 1:0, 2:1, 3:0, 4:2, 5:0, 6:0, 7:1, 8:3, 9:2, 10:8, 11:3, 12:0 },
+    '2024-2': { 1:0, 2:2, 3:0, 4:3, 5:0, 6:0, 7:0, 8:1, 9:2, 10:9, 11:3, 12:0 },
+    '2024-3': { 1:1, 2:2, 3:0, 4:1, 5:0, 6:0, 7:1, 8:1, 9:2, 10:9, 11:3, 12:0 },
+    '2025-1': { 1:0, 2:2, 3:0, 4:2, 5:0, 6:0, 7:1, 8:1, 9:2, 10:9, 11:3, 12:0 },
+    '2025-2': { 1:0, 2:3, 3:0, 4:1, 5:1, 6:0, 7:1, 8:0, 9:1, 10:9, 11:4, 12:0 },
+    '2025-3': { 1:1, 2:2, 3:0, 4:0, 5:0, 6:0, 7:2, 8:2, 9:3, 10:8, 11:2, 12:0 },
+    '2026-1': { 1:1, 2:1, 3:0, 4:2, 5:0, 6:0, 7:1, 8:3, 9:3, 10:7, 11:2, 12:0 },
+    '2026-2': { 1:0, 2:1, 3:0, 4:2, 5:0, 6:0, 7:1, 8:4, 9:1, 10:7, 11:4, 12:0 }
   };
-  var ROUNDS = ['2022-1', '2022-2', '2022-3', '2023-1', '2023-2', '2023-3', '2024-1'];
+  var ROUNDS = ['2020-1', '2020-2', '2020-3', '2020-4',
+                '2021-1', '2021-2', '2021-3',
+                '2022-1', '2022-2', '2022-3',
+                '2023-1', '2023-2', '2023-3',
+                '2024-1', '2024-2', '2024-3',
+                '2025-1', '2025-2', '2025-3',
+                '2026-1', '2026-2'];
 
   function roundLabel(key) {
     return key.slice(0, 4) + '년 ' + key.slice(5) + '회';
@@ -182,13 +207,22 @@
   }
 
   /* 단원 번호 → 문항 배열 */
+  /* 🔒 **O/X 는 모의 문제지에 넣지 않는다.** 실기 기출 400문항 중 O/X 는 0이다 —
+     전부 필답 단답이다. 은행의 O/X 124문항은 버리지 않고 **섹션 퀴즈에만** 남긴다.
+     개념을 빨리 확인하는 데는 쓸모가 있다. → decisions/exam-format.md 6장 */
+  function inExam(item) {
+    return item && item.t !== 'ox';
+  }
+
   function poolByChapter() {
-    var out = {}, keys = bankChapters(), i, bank, n;
+    var out = {}, keys = bankChapters(), i, bank, n, pool;
     for (i = 0; i < keys.length; i++) {
       bank = window['EIP_BANK_' + keys[i]];
       if (!bank || !bank.length) continue;
+      pool = bank.filter(inExam);
+      if (!pool.length) continue;
       n = numOf(keys[i]);
-      out[n] = bank.slice(0);
+      out[n] = pool;
     }
     return out;
   }
@@ -447,8 +481,13 @@
       var top = el('div', 'exam__histtop');
       top.appendChild(el('span', 'exam__histat', r.at));
       top.appendChild(el('span', 'exam__histseed', '#' + r.seed));
-      var pct = r.total ? Math.round(r.score / r.total * 100) : 0;
-      top.appendChild(el('strong', 'exam__histscore', r.score + ' / ' + r.total));
+      /* pt 가 있으면 배점으로 — 없으면 옛 기록이라 문항 수로 보여 준다 */
+      var hasPt = typeof r.pt === 'number' && r.ptMax;
+      var pct = hasPt ? Math.round(r.pt / r.ptMax * 100)
+                      : (r.total ? Math.round(r.score / r.total * 100) : 0);
+      top.appendChild(el('strong', 'exam__histscore', hasPt
+        ? ptText(r.pt) + ' / ' + r.ptMax + '점'
+        : r.score + ' / ' + r.total));
       top.appendChild(el('span', 'exam__histpct', pct + '%'));
       li.appendChild(top);
 
@@ -588,7 +627,9 @@
     var title = el('div', 'exam__headmain');
     title.appendChild(el('strong', null, '복기 — 모의 문제지 #' + rec.seed));
     title.appendChild(el('span', 'exam__headsub',
-      rec.at + ' · ' + rec.score + ' / ' + rec.total));
+      rec.at + ' · ' + (typeof rec.pt === 'number' && rec.ptMax
+        ? ptText(rec.pt) + ' / ' + rec.ptMax + '점'
+        : rec.score + ' / ' + rec.total)));
     head.appendChild(title);
     sheetBox.appendChild(head);
 
@@ -637,13 +678,41 @@
     window.scrollTo(0, 0);
   }
 
+  /* 배점 — 규칙은 qcard 한 벌뿐이다. 없으면 옛 방식(맞으면 1점)으로 물러난다. */
+  function qscore(res) {
+    var Q = window.EIP_QCARD;
+    if (Q && Q.score) return Q.score(res);
+    return res && res.ok ? 5 : 0;
+  }
+  function fullPt() {
+    var Q = window.EIP_QCARD;
+    return (Q && Q.FULL_PT) || 5;
+  }
+  /* 소수 첫째 자리까지만 — 2.5 는 그대로, 5.0 은 5 로 */
+  function ptText(n) {
+    return (Math.round(n * 10) / 10).toString();
+  }
+
   /* 저장된 답이 정답이었는지 — 채점 규칙은 qcard 것을 그대로 쓴다.
      ⚠️ 규칙을 여기서 다시 짜지 말 것. 정규화가 어긋나면 복기 결과가 그때와 달라진다. */
   function matchesSaved(item, mine) {
     var Q = window.EIP_QCARD;
     if (!Q || !Q.matchText) return false;
-    if (mine === '(무응답)') return false;
+    if (mine === '(무응답)' || mine == null) return false;
+    /* parts 는 칸마다 배열로 저장된다 — 전부 맞아야 정답이다 */
+    if (item.parts) {
+      if (Object.prototype.toString.call(mine) !== '[object Array]') return false;
+      var i, p;
+      for (i = 0; i < item.parts.length; i++) {
+        p = item.parts[i];
+        if (!Q.matchText(mine[i] || '', p.a || [], p.t === 'code')) return false;
+      }
+      return true;
+    }
     if (item.t === 'ox') return (mine === 'O') === !!item.a;
+    if (item.t === 'multi') {
+      return mine === (item.a || []).map(function (k) { return (item.c || [])[k]; }).join(' · ');
+    }
     if (item.t === 'choice') return mine === (item.c || [])[item.a];
     return Q.matchText(mine, item.a, item.t === 'code');
   }
@@ -877,26 +946,35 @@
     stopTimer();
     if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = '채점 완료'; }
 
-    var score = 0;
+    /* 🔒 점수는 **배점**이다 — 문항 수가 아니다.
+       한 문항 5점, 20문항이면 100점 만점. 여러 칸짜리는 부분점수가 붙어
+       score 가 소수(1.5·2.5…)가 될 수 있다. 배점 규칙은 qcard 한 벌뿐이다. */
+    var score = 0;       /* 배점 합 */
+    var okCount = 0;     /* 완전 정답 문항 수 — 단원별 표와 오답노트가 쓴다 */
     var perCh = {};      /* 단원 번호 → {ok, total} */
     var wrongItems = [];
-    var answers = {};    /* 문항 id → 내가 쓴 답 */
+    var answers = {};    /* 문항 id → 내가 쓴 답 (parts 면 배열) */
 
     cards.forEach(function (row) {
       var res = row.card.judge();
       row.card.lock();
       row.card.showResult(res);
-      row.li.className = 'quiz__item ' + (res.ok ? 'is-ok' : 'is-no');
+      /* 부분 정답은 오답과 다르게 보여야 한다 — 두 칸 중 하나를 맞힌 것이 묻히지 않게 */
+      row.li.className = 'quiz__item ' +
+        (res.ok ? 'is-ok' : (res.got ? 'is-part' : 'is-no'));
 
       answers[row.item.id] = res.mine;
+      score += qscore(res);
 
       var c = row.item.ch;
       if (!perCh[c]) perCh[c] = { ok: 0, total: 0 };
       perCh[c].total++;
-      if (res.ok) { score++; perCh[c].ok++; }
+      if (res.ok) { okCount++; perCh[c].ok++; }
       else wrongItems.push(row.item);
 
-      /* 오답 가중치 설정과 무관하게 항상 적립한다 */
+      /* 🔒 오답노트는 **완전 정답이 아니면 오답**으로 적립한다.
+         실기는 한 문항을 다 맞아야 만점이라 부분 정답을 「맞은 것」으로 두면
+         다시 볼 문항이 목록에서 빠진다. 오답 가중치 설정과 무관하게 항상 적립한다. */
       if (window.EIP_WRONG) window.EIP_WRONG.record(row.item.id, res.ok);
     });
 
@@ -905,13 +983,16 @@
        이력에도 「12문항 중 12점」 같은 왜곡된 줄이 남는다.
        원래 회차의 기록을 지키는 쪽이 맞다. */
     if (!current.partial) {
-      saveHistory(score, perCh);
+      saveHistory(okCount, score, perCh);
       saveAnswers(current.seed, answers);
     }
     renderResult(score, perCh, wrongItems, byTimeout);
   }
 
-  function saveHistory(score, perCh) {
+  /* okCount 는 완전 정답 문항 수, pt 는 배점 합이다.
+     🔒 **score/total 의 뜻을 바꾸지 않고 pt 를 더했다.** 이미 쌓인 이력이
+     「14 / 20」으로 남아 있는데 뜻을 바꾸면 옛 줄이 조용히 거짓말을 한다. */
+  function saveHistory(okCount, pt, perCh) {
     var ids = current.items.map(function (i) { return i.id; });
     var rounds = recentRounds();
     rounds.unshift(ids);
@@ -924,8 +1005,10 @@
     hist.unshift({
       seed: current.seed,
       at: d.getFullYear() + '-' + (mm < 10 ? '0' : '') + mm + '-' + (dd < 10 ? '0' : '') + dd,
-      score: score,
-      total: current.items.length,
+      score: okCount,                          /* 완전 정답 문항 수 (옛 뜻 그대로) */
+      total: current.items.length,             /* 문항 수 */
+      pt: Math.round(pt * 10) / 10,            /* 배점 합 — 소수 가능 */
+      ptMax: current.items.length * fullPt(),  /* 만점 */
       chapters: perCh
     });
     while (hist.length > HISTORY_KEEP) hist.pop();
@@ -935,14 +1018,31 @@
   function renderResult(score, perCh, wrongItems, byTimeout) {
     var box = el('section', 'exam__result');
 
-    var pct = Math.round(score / current.items.length * 100);
+    /* 🔒 실기와 같은 배점이다 — 한 문항 5점, 20문항이면 100점 만점.
+       합격선 60점은 곧 12문항이다. */
+    var full = current.items.length * fullPt();
+    var pct = full ? Math.round(score / full * 100) : 0;
     var h = el('div', 'exam__score');
-    h.appendChild(el('strong', null, score + ' / ' + current.items.length));
+    h.appendChild(el('strong', null, ptText(score) + ' / ' + full + '점'));
     h.appendChild(el('span', null, pct + '%'));
     box.appendChild(h);
 
+    /* 20문항 기준일 때만 합격/불합격을 말한다 — 5문항짜리에 「합격」은 뜻이 없다 */
+    if (current.items.length >= 20) {
+      var passed = pct >= 60;
+      box.appendChild(el('p', 'exam__pass' + (passed ? ' is-pass' : ''),
+        passed ? '✅ 합격선(60점)을 넘었습니다' : '합격선은 60점입니다 — ' +
+          ptText(full * 0.6 - score) + '점 모자랍니다'));
+    }
+
     if (byTimeout) {
       box.appendChild(el('p', 'exam__timeout', '시간이 끝나 자동으로 제출되었습니다.'));
+    }
+
+    /* 🚨 부분점수 규칙은 공개된 것이 아니라 추정이다. 그렇게 밝힌다. */
+    if (score !== Math.floor(score)) {
+      box.appendChild(el('p', 'exam__note',
+        '⚠️ 여러 칸짜리 문항의 부분점수(2칸 2점 · 3칸 1.5점)는 공개된 채점기준이 아니라 추정입니다.'));
     }
 
     var tbl = el('div', 'exam__bars');

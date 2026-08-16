@@ -166,7 +166,10 @@
       row.graded = true;
       if (res.ok) score++;
 
-      row.li.classList.add(res.ok ? 'is-ok' : 'is-no');
+      /* 여러 칸짜리는 부분 정답이 나온다 — 오답과 같은 색으로 두면
+         두 칸 중 하나를 맞힌 것이 묻힌다. 점수는 모의 문제지와 같게
+         **완전 정답만** 센다 (실기는 다 맞아야 만점이다). */
+      row.li.classList.add(res.ok ? 'is-ok' : (res.got ? 'is-part' : 'is-no'));
       row.card.lock();
       row.card.showResult(res);
 

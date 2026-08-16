@@ -71,9 +71,53 @@
   }
 
   function answerText(item) {
+    if (item.parts) {
+      return item.parts.map(function (p) {
+        return (p.label ? p.label + ' ' : '') + ((p.a && p.a[0]) || '');
+      }).join(' · ');
+    }
     if (item.t === 'ox') return item.a ? 'O' : 'X';
+    if (item.t === 'multi') {
+      return (item.a || []).map(function (k) { return (item.c || [])[k]; }).join(' · ');
+    }
     if (item.t === 'choice') return (item.c || [])[item.a];
     return (item.a && item.a[0]) || '';
+  }
+
+  /* ====================================================== 배점 (실기와 같게)
+     20문항 × 5점 = 100점. 60점이면 합격 — 곧 12문항이다.
+
+     🚨 **부분점수 규칙은 공개된 것이 아니라 추정이다.** 산업인력공단이 채점기준을
+        공개하지 않는다. 화면에도 그렇게 밝힌다.
+        → decisions/exam-format.md 6장
+
+     🔑 **유형이 아니라 칸 수로 가른다.** 「프로그래밍은 부분점수 없음」이 아니라
+        「출력값 문항이 부분점수 없음」이다 — 그것들이 1칸이라 그렇게 보였을 뿐이고,
+        빈칸 채우기형 프로그래밍은 최대 4칸이라 부분점수가 붙는다.
+
+     | 칸 수 | 하나당 | 근거 |
+     |---|---|---|
+     | 1 | — (5점 아니면 0점) | 확인됨 |
+     | 2 | **2점** (2.5 아님) | 확인됨 — 비례배분보다 박하다 |
+     | 3 | **1.5점** | 확인됨 |
+     | 4 이상 | `5/n` 을 0.5 단위로 내림 | ⚠️ **추정.** 3칸까지의 결을 이었다 |
+
+     다 맞으면 칸 수와 무관하게 **5점**이다 (부분점수의 합이 아니다). */
+  var FULL_PT = 5;
+
+  function partPt(n) {
+    if (n <= 1) return FULL_PT;
+    if (n === 2) return 2;                     /* 공식대로면 2.5 — 확인된 값이 더 박하다 */
+    return Math.floor(FULL_PT / n * 2) / 2;    /* 3 → 1.5 · 4 → 1 · 6 이상 → 0.5 */
+  }
+
+  /* judge() 결과 하나를 점수로. exam.js 가 이것만 쓴다 — 규칙을 두 곳에 두지 않는다. */
+  function score(res) {
+    if (!res) return 0;
+    var max = res.max || 1;
+    if (res.ok) return FULL_PT;
+    if (max <= 1) return 0;
+    return (res.got || 0) * partPt(max);
   }
 
   /* ============================================================== 문항 메모 */
@@ -247,16 +291,88 @@
   function create(item, container) {
     var graded = false;
     var picked = null, buttons = null, radios = null, input = null;
+    var checks = null;      /* t: 'multi' — 모두 고르시오 */
+    var partIn = null;      /* parts — 칸마다 하나씩 */
 
     container.appendChild(html('div', 'quiz__q', item.q));
 
-    if (item.t === 'code' && item.code) {
+    /* 코드는 유형과 무관하게 있으면 낸다 — 빈칸 채우기형 프로그래밍은
+       t 가 'code' 가 아니라 parts 를 쓴다 */
+    if (item.code) {
       var pre = el('pre', 'quiz__code');
       pre.appendChild(el('code', item.lang ? 'lang-' + item.lang : null, item.code));
       container.appendChild(pre);
     }
 
-    if (item.t === 'ox') {
+    /* 보기 묶음 — parts 의 pick 칸들이 여기서 고른다.
+       실제 시험도 보기를 한 번만 주고 여러 빈칸이 그것을 나눠 쓴다. */
+    if (item.pool && item.pool.length) {
+      var poolBox = el('div', 'quiz__pool');
+      poolBox.appendChild(el('span', 'quiz__poollabel', '보기'));
+      var poolList = el('div', 'quiz__poolitems');
+      item.pool.forEach(function (text) {
+        poolList.appendChild(html('span', 'quiz__poolitem', text));
+      });
+      poolBox.appendChild(poolList);
+      container.appendChild(poolBox);
+    }
+
+    if (item.parts && item.parts.length) {
+      /* 🔒 칸이 여럿인 문항. 여기서만 부분점수가 붙는다. */
+      var pbox = el('div', 'quiz__parts');
+      partIn = [];
+      item.parts.forEach(function (p, k) {
+        var row = el('div', 'quiz__part');
+        row.appendChild(el('span', 'quiz__plabel', p.label || String(k + 1)));
+
+        var ctrl;
+        if (p.t === 'pick') {
+          /* 보기에서 고른다 — 좁은 화면에서도 되고 키보드로도 된다 */
+          ctrl = document.createElement('select');
+          ctrl.className = 'quiz__pselect';
+          var blank = el('option', null, '— 고르세요 —');
+          blank.value = '';
+          ctrl.appendChild(blank);
+          (item.pool || []).forEach(function (text) {
+            var op = el('option', null, text);
+            op.value = text;
+            ctrl.appendChild(op);
+          });
+        } else {
+          ctrl = document.createElement('input');
+          ctrl.type = 'text';
+          ctrl.className = 'quiz__pinput';
+          ctrl.setAttribute('autocomplete', 'off');
+          ctrl.setAttribute('autocapitalize', 'off');
+          ctrl.spellcheck = false;
+          ctrl.placeholder = '답';
+        }
+        ctrl.setAttribute('aria-label', (p.label || (k + 1) + '번') + ' 답');
+        row.appendChild(ctrl);
+        pbox.appendChild(row);
+        partIn.push(ctrl);
+      });
+      container.appendChild(pbox);
+
+    } else if (item.t === 'multi') {
+      /* 「모두 고르시오」 — 물음이 하나라 1칸이다. 전부 아니면 전무로 채점한다. */
+      var mname = 'm-' + item.id;
+      var mbox = el('div', 'quiz__choices');
+      checks = [];
+      (item.c || []).forEach(function (text, k) {
+        var lab = el('label', 'quiz__choice');
+        var cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.name = mname;
+        cb.value = String(k);
+        lab.appendChild(cb);
+        lab.appendChild(html('span', null, text));
+        mbox.appendChild(lab);
+        checks.push(cb);
+      });
+      container.appendChild(mbox);
+
+    } else if (item.t === 'ox') {
       var oxWrap = el('div', 'quiz__ox');
       buttons = [];
       ['O', 'X'].forEach(function (label, k) {
@@ -325,20 +441,49 @@
 
       isGraded: function () { return graded; },
 
+      /* { ok, mine, got, max } — max 는 칸 수, got 는 맞은 칸 수.
+         칸이 하나인 문항도 max: 1 로 돌려 exam.js 가 한 가지 규칙만 쓰게 한다.
+         parts 가 있으면 mine 은 **배열**이다 (복기에서 칸마다 되살려야 한다). */
       judge: function () {
+        if (partIn) {
+          var mine = [], got = 0, i, val, p;
+          for (i = 0; i < partIn.length; i++) {
+            p = item.parts[i];
+            val = partIn[i].value;
+            mine.push(val);
+            if (norm(val) && matchText(val, p.a || [], p.t === 'code')) got++;
+          }
+          return { ok: got === item.parts.length, mine: mine, got: got, max: item.parts.length };
+        }
+        if (item.t === 'multi') {
+          var picks = [], j;
+          for (j = 0; j < checks.length; j++) { if (checks[j].checked) picks.push(j); }
+          if (!picks.length) return { ok: false, mine: '(무응답)', got: 0, max: 1 };
+          var want = (item.a || []).slice().sort();
+          var same = picks.length === want.length;
+          if (same) {
+            var sorted = picks.slice().sort();
+            for (j = 0; j < sorted.length; j++) { if (sorted[j] !== want[j]) same = false; }
+          }
+          var text = picks.map(function (k) { return (item.c || [])[k]; }).join(' · ');
+          return { ok: same, mine: text, got: same ? 1 : 0, max: 1 };
+        }
         if (item.t === 'ox') {
-          if (picked === null) return { ok: false, mine: '(무응답)' };
-          return { ok: picked === item.a, mine: picked ? 'O' : 'X' };
+          if (picked === null) return { ok: false, mine: '(무응답)', got: 0, max: 1 };
+          var oxOk = picked === item.a;
+          return { ok: oxOk, mine: picked ? 'O' : 'X', got: oxOk ? 1 : 0, max: 1 };
         }
         if (item.t === 'choice') {
-          var k = -1, n;
-          for (n = 0; n < radios.length; n++) { if (radios[n].checked) k = n; }
-          if (k < 0) return { ok: false, mine: '(무응답)' };
-          return { ok: k === item.a, mine: (item.c || [])[k] };
+          var k2 = -1, n;
+          for (n = 0; n < radios.length; n++) { if (radios[n].checked) k2 = n; }
+          if (k2 < 0) return { ok: false, mine: '(무응답)', got: 0, max: 1 };
+          var chOk = k2 === item.a;
+          return { ok: chOk, mine: (item.c || [])[k2], got: chOk ? 1 : 0, max: 1 };
         }
         var v = input.value;
-        if (!norm(v)) return { ok: false, mine: '(무응답)' };
-        return { ok: matchText(v, item.a, item.t === 'code'), mine: v };
+        if (!norm(v)) return { ok: false, mine: '(무응답)', got: 0, max: 1 };
+        var tOk = matchText(v, item.a, item.t === 'code');
+        return { ok: tOk, mine: v, got: tOk ? 1 : 0, max: 1 };
       },
 
       lock: function () {
@@ -346,13 +491,37 @@
         if (input) input.disabled = true;
         if (radios) radios.forEach(function (r) { r.disabled = true; });
         if (buttons) buttons.forEach(function (b) { b.disabled = true; });
+        if (checks) checks.forEach(function (c) { c.disabled = true; });
+        if (partIn) partIn.forEach(function (c) { c.disabled = true; });
       },
 
       /* 정답/오답 배지 + 해설을 container 에 붙인다 */
       showResult: function (res) {
         var fb = el('div', 'quiz__fb');
-        fb.appendChild(el('span', 'quiz__mark', res.ok ? '정답' : '오답'));
-        if (!res.ok) {
+        var max = res.max || 1;
+
+        /* 부분 정답이 있으면 배지에 몇 칸 맞았는지까지 적는다 —
+           「오답」만 뜨면 두 칸 중 하나를 맞힌 것이 안 보인다. */
+        var mark = res.ok ? '정답'
+          : (max > 1 && res.got ? '부분 정답 ' + res.got + '/' + max : '오답');
+        fb.appendChild(el('span', 'quiz__mark', mark));
+
+        if (!res.ok && partIn) {
+          /* 칸마다 무엇을 썼고 무엇이 답인지 나란히 */
+          var rows = el('div', 'quiz__pans');
+          item.parts.forEach(function (p, i) {
+            var mineVal = (res.mine && res.mine[i]) || '';
+            var okThis = norm(mineVal) && matchText(mineVal, p.a || [], p.t === 'code');
+            var row = el('div', 'quiz__pansrow' + (okThis ? ' is-ok' : ' is-no'));
+            row.appendChild(el('span', 'quiz__plabel', p.label || String(i + 1)));
+            row.appendChild(html('span', null,
+              '내 답 <b>' + escapeHtml(mineVal || '(무응답)') + '</b> · 정답 <b>' +
+              escapeHtml((p.a && p.a[0]) || '') + '</b>'));
+            rows.appendChild(row);
+          });
+          fb.appendChild(rows);
+
+        } else if (!res.ok) {
           fb.appendChild(html('span', 'quiz__ans',
             '내 답 <b>' + escapeHtml(res.mine) + '</b> · 정답 <b>' +
             escapeHtml(answerText(item)) + '</b>'));
@@ -380,6 +549,9 @@
     answerText: answerText,
     norm: norm,
     matchText: matchText,
+    score: score,          /* judge() 결과 → 점수. 배점 규칙은 여기 한 벌뿐이다 */
+    partPt: partPt,
+    FULL_PT: FULL_PT,
     memoToggle: memoToggle,
     memoShown: showAll
   };
