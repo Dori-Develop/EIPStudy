@@ -351,6 +351,47 @@ window.EIP_BANK_ch03 = [
     a: ['송·수신 시스템별', '송수신 시스템별', '송신 수신 시스템별'],
     why: '<b>송·수신 시스템별</b>로 연계 테스트 항목을 도출해 케이스로 만든다.',
     d: 2, y: [], tag: ['연계테스트'], lang: null, code: null
+  },
+
+  /* ===== T46 7절 — 보기 선택 문항 (`pool` + `t:'pick'`) · 2026-08-17 ===== */
+
+  {
+    id: 'ch03-s04-06', ch: 3, sec: 4,
+    t: 'multi-blank',
+    q: '연계 방식과 연계 기술에 대한 설명이다. 각 설명에 해당하는 것을 <b>보기에서 골라</b> 쓰시오.<br>'
+     + '㉠ 중간 매개체 없이 송·수신 시스템이 직접 연결된다. <b>속도가 빠르고 구현이 단순</b>하지만 시스템 변경에 민감하다<br>'
+     + '㉡ 수신 시스템의 DB 에서 <b>송신 시스템의 DB 객체를 직접 참조</b>하는 링크를 만든다<br>'
+     + '㉢ 서버가 <b>포트를 할당하고 클라이언트의 요청을 대기</b>하다가 연결을 수락해 통신한다',
+    pool: ['직접 연계 방식', '간접 연계 방식', 'DB Link', 'API / Open API',
+           'JDBC', '하이퍼링크', '소켓(Socket)', '웹 서비스'],
+    parts: [
+      { label: '㉠', t: 'pick', a: ['직접 연계 방식'] },
+      { label: '㉡', t: 'pick', a: ['DB Link'] },
+      { label: '㉢', t: 'pick', a: ['소켓(Socket)'] }
+    ],
+    why: '🔑 <b>중간에 연계 솔루션이 끼는가</b>로 갈린다 — '
+       + '<b>직접</b>(DB Link · DB Connection · JDBC · API · 하이퍼링크)은 빠르지만 <b>결합도가 높고</b>, '
+       + '<b>간접</b>(EAI · ESB · 소켓 · 웹 서비스)은 <b>변화에 유연하지만</b> 복잡하고 느려질 수 있다.',
+    d: 3, y: [], tag: ['연계방식', 'DBLink', '소켓'], lang: null, code: null
+  },
+
+  {
+    id: 'ch03-s08-06', ch: 3, sec: 8,
+    t: 'multi-blank',
+    q: '웹 서비스 관련 기술에 대한 설명이다. 각 설명에 해당하는 것을 <b>보기에서 골라</b> 쓰시오.<br>'
+     + '㉠ 네트워크상에서 <b>XML 기반의 메시지를 교환</b>하는 프로토콜. Envelope → Header → Body 구조<br>'
+     + '㉡ 웹 서비스의 <b>이름·제공 위치·메시지 포맷·프로토콜</b> 정보를 XML 형식으로 기술한 언어<br>'
+     + '㉢ 위의 것을 <b>등록해 두고 검색할 수 있게 한 저장소</b>',
+    pool: ['SOAP', 'WSDL', 'UDDI', 'REST', 'XML', 'JSON'],
+    parts: [
+      { label: '㉠', t: 'pick', a: ['SOAP'] },
+      { label: '㉡', t: 'pick', a: ['WSDL'] },
+      { label: '㉢', t: 'pick', a: ['UDDI'] }
+    ],
+    why: '📌 <b>웹 서비스 3요소</b> — <b>SOAP</b>(메시지 교환) · <b>WSDL</b>(서비스 기술) · '
+       + '<b>UDDI</b>(등록·검색). 제공자가 WSDL 을 UDDI 에 올리면 요청자가 찾아서 SOAP 으로 부른다. '
+       + '🚨 <b>REST 는 SOAP 의 대안</b>이다 — XML 만 쓰는 SOAP 과 달리 <b>JSON 등도 쓰고 가볍고 무상태</b> 다.',
+    d: 2, y: [], tag: ['웹서비스', 'SOAP', 'WSDL', 'UDDI'], lang: null, code: null
   }
 
 ];

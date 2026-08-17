@@ -469,6 +469,48 @@ window.EIP_BANK_ch05 = [
     a: ['APM', 'Application Performance Management', 'Application Performance Monitoring'],
     why: '<b>APM</b> 이다. <b>스카우터(Scouter)</b> 는 오픈 소스 APM, <b>제니퍼(Jennifer)</b> 는 개발부터 운영까지 전 단계 성능을 모니터링한다.',
     d: 2, y: [], tag: ['감시도구', 'APM'], lang: null, code: null
+  },
+
+  /* ===== T46 7절 — 보기 선택 문항 (`pool` + `t:'pick'`) · 2026-08-17 ===== */
+
+  {
+    id: 'ch05-s06-07', ch: 5, sec: 6,
+    t: 'multi-blank',
+    q: '미들웨어 솔루션에 대한 설명이다. 각 설명에 해당하는 것을 <b>보기에서 골라</b> 쓰시오.<br>'
+     + '㉠ 항공기·철도 예약 업무처럼 <b>사용자 수가 늘어도 빠른 응답 속도를 유지</b>해야 하는 업무에 쓴다<br>'
+     + '㉡ 원격 프로시저를 <b>마치 로컬 프로시저처럼 호출</b>하는 방식<br>'
+     + '㉢ 객체 지향 미들웨어로 <b>코바(CORBA)</b> 표준 스펙을 구현했다',
+    pool: ['DB', 'RPC', 'MOM', 'TP-Monitor', 'ORB', 'WAS'],
+    parts: [
+      { label: '㉠', t: 'pick', a: ['TP-Monitor'] },
+      { label: '㉡', t: 'pick', a: ['RPC'] },
+      { label: '㉢', t: 'pick', a: ['ORB'] }
+    ],
+    why: '📌 <b>한 단어씩 붙잡아 두면 끝난다</b> — <b>TP-Monitor</b> 예약(빠른 응답) · '
+       + '<b>ORB</b> CORBA(객체 지향) · <b>MOM</b> 비동기 메시지(이기종 데이터 동기화) · '
+       + '<b>WAS</b> 동적 콘텐츠 · <b>RPC</b> 원격 호출 · <b>DB</b> 2-Tier. '
+       + '🚨 <b>웹 서버는 정적 콘텐츠, WAS 는 동적 콘텐츠</b> 다.',
+    d: 2, y: [], tag: ['미들웨어', 'TP-Monitor', 'ORB', 'RPC'], lang: null, code: null
+  },
+
+  {
+    id: 'ch05-s13-06', ch: 5, sec: 13,
+    t: 'multi-blank',
+    q: '인터페이스 구현 검증 도구에 대한 설명이다. 각 설명에 해당하는 것을 <b>보기에서 골라</b> 쓰시오.<br>'
+     + '㉠ JUnit·CppUnit·NUnit 처럼 <b>다양한 언어를 지원하는 단위 테스트 프레임워크</b><br>'
+     + '㉡ FitNesse 의 <b>협업 기능</b>과 STAF 의 <b>재사용·확장성</b>을 통합한 NHN 의 자동화 프레임워크<br>'
+     + '㉢ 다양한 브라우저와 개발 언어를 지원하는 <b>웹 애플리케이션</b> 테스트 프레임워크',
+    pool: ['xUnit', 'STAF', 'FitNesse', 'NTAF', 'Selenium', 'watir'],
+    parts: [
+      { label: '㉠', t: 'pick', a: ['xUnit'] },
+      { label: '㉡', t: 'pick', a: ['NTAF'] },
+      { label: '㉢', t: 'pick', a: ['Selenium'] }
+    ],
+    why: '📌 <b>NTAF = FitNesse(협업) + STAF(재사용·확장성)</b> 이고 개발사는 <b>NHN</b> 이다 — '
+       + '이 조합이 자주 나온다. '
+       + '<b>watir 는 Ruby</b>, <b>FitNesse 는 웹 기반</b> 이다. '
+       + '💡 감시 쪽은 <b>APM</b> 이며 <b>스카우터·제니퍼</b> 가 대표적이다.',
+    d: 3, y: [], tag: ['인터페이스검증', 'NTAF', 'xUnit', 'Selenium'], lang: null, code: null
   }
 
 ];

@@ -361,6 +361,49 @@ window.EIP_BANK_ch12 = [
     a: ['CI', '지속적 통합', 'Continuous Integration', '지속적통합'],
     why: '<b>CI(지속적 통합)</b> 다. 통합된 코드를 자동으로 릴리즈·배포하는 것은 <b>CD(지속적 제공/배포)</b> 다.',
     d: 2, y: [], tag: ['빌드도구', 'CI'], lang: null, code: null
+  },
+
+  /* ===== T46 7절 — 보기 선택 문항 (`pool` + `t:'pick'`) · 2026-08-17 ===== */
+
+  {
+    id: 'ch12-s07-04', ch: 12, sec: 7,
+    t: 'multi-blank',
+    q: '소프트웨어 버전 관리 도구에 대한 설명이다. 각 설명에 해당하는 것을 <b>보기에서 골라</b> 쓰시오.<br>'
+     + '㉠ 버전 관리 자료가 <b>중앙 서버에 저장</b>된다. 서버에 문제가 생기면 협업이 막힌다<br>'
+     + '㉡ 원격 저장소의 자료를 <b>자신의 로컬 저장소로 복제(Clone)</b> 해 작업한 뒤 반영한다<br>'
+     + '㉢ 가장 오래된 도구 중 하나로, <b>파일 이름·디렉터리 변경과 심볼릭 링크를 지원하지 않는다</b>',
+    pool: ['공유 폴더 방식', '클라이언트/서버 방식', '분산 저장소 방식',
+           'CVS', 'SVN', 'Git', 'RCS'],
+    parts: [
+      { label: '㉠', t: 'pick', a: ['클라이언트/서버 방식'] },
+      { label: '㉡', t: 'pick', a: ['분산 저장소 방식'] },
+      { label: '㉢', t: 'pick', a: ['CVS'] }
+    ],
+    why: '⚠️ <b>SVN = 클라이언트/서버, Git = 분산 저장소.</b> 이 구분이 매번 나온다. '
+       + '<b>Git 은 리누스 토발즈</b> 가 만들었고 <b>커밋은 지역 저장소에서, 푸시로 원격에 반영</b>한다 — '
+       + '그래서 빠르다. 🚨 <b>SVN 은 CVS 를 개선한 것</b>이라 디렉터리·파일을 자유롭게 옮길 수 있다.',
+    d: 2, y: [], tag: ['버전관리', 'Git', 'SVN', 'CVS'], lang: null, code: null
+  },
+
+  {
+    id: 'ch12-s09-05', ch: 12, sec: 9,
+    t: 'multi-blank',
+    q: '빌드 자동화 도구에 대한 설명이다. 각 설명에 해당하는 것을 <b>보기에서 골라</b> 쓰시오.<br>'
+     + '㉠ <b>Groovy 기반</b>의 빌드 스크립트를 쓰며 안드로이드 앱 개발 환경에서 쓴다. 태스크 단위로 실행한다<br>'
+     + '㉡ <b>의존성을 설정</b>해 라이브러리를 관리한다. 규칙·표준이 있어 <code>pom.xml</code> 로 관리한다<br>'
+     + '㉢ Java 기반 오픈 소스로 가장 많이 쓰이는 <b>CI 도구</b>. 웹 기반 GUI 를 제공한다',
+    pool: ['Ant', 'Maven', 'Gradle', 'Jenkins'],
+    parts: [
+      { label: '㉠', t: 'pick', a: ['Gradle'] },
+      { label: '㉡', t: 'pick', a: ['Maven'] },
+      { label: '㉢', t: 'pick', a: ['Jenkins'] }
+    ],
+    why: '📌 <b>XML = Ant·Maven · Groovy = Gradle · CI 서버 = Jenkins.</b> '
+       + '🚨 <b>Ant 와 Maven 은 둘 다 XML 이라 헷갈린다</b> — '
+       + '<b>Ant 는 규칙이 없어 전부 직접 정의</b>해야 하고, '
+       + '<b>Maven 은 규칙·표준이 있어 예외만 적으면</b> 된다. '
+       + '<b>Gradle 은 그 둘의 장점을 합친 것</b>이다.',
+    d: 2, y: [], tag: ['빌드자동화', 'Gradle', 'Maven', 'Jenkins'], lang: null, code: null
   }
 
 ];

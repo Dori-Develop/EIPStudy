@@ -359,12 +359,22 @@
         이웃 회차 겹침 1.7** 이다. 이제 이 규칙이 제값을 한다. */
   var CODE_SHARE = 0.4;
 
+  /* 🔒 **보기 선택 문항도 같은 문제를 겪는다** — 실제 회차는 2~5문항인데
+     은행에서 차지하는 비율이 낮아 그냥 뽑으면 회차당 **1.75** 밖에 안 들어왔다.
+     코드와 똑같이 **목표 수까지만 앞으로 당긴다.**
+     🔑 값이 0.10 인 것은 **넘침을 막지 않기 때문**이다 — 목표 2 로 잡으면
+     실제로는 **4.0** 이 들어와 2~5 한가운데에 선다 (80문항 · 12회 추출 실측).
+     0.15 로 하면 4.67 로 위쪽 끝에 붙는다. */
+  var PICK_SHARE = 0.10;
+
   function pickItems(opts) {
     var rng = makeRng(opts.seed);
     var rounds = recentRounds();
     var picked = [];
     var codeWant = Math.round(opts.n * CODE_SHARE);
     var codeGot = 0;
+    var pickWant = Math.round(opts.n * PICK_SHARE);
+    var pickGot = 0;
 
     function scoreOf(item) {
       var s = rng();
@@ -377,6 +387,8 @@
       /* 목표에 닿을 때까지만 코드 문항을 앞으로 당긴다.
          난수보다 큰 값을 더해 같은 신선도 안에서는 코드가 먼저 서게 한다. */
       if (item.t === 'code' && codeGot < codeWant) s += 10;
+      /* 보기 선택도 같은 방식으로. 코드보다 가산점이 낮아 **코드가 먼저 선다** */
+      else if (item.pool && pickGot < pickWant) s += 5;
       return s;
     }
     function take(cand, want) {
@@ -402,6 +414,11 @@
           if (it2.t === 'code') {
             if (!allowOverCode && codeGot >= codeWant) continue;   /* 예산 초과 */
             codeGot++;
+          } else if (it2.pool) {
+            /* 🚨 보기 선택은 **넘쳐도 막지 않는다.** 코드와 달리 개념 문항이라
+               몇 개 더 들어와도 시험지가 이상해지지 않고, 막으면 은행이 얇은
+               단원에서 자리를 못 채운다. 세기만 해서 가산점을 멈춘다. */
+            pickGot++;
           }
           seen[it2.id] = 1;
           out.push(it2);
