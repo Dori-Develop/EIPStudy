@@ -4236,6 +4236,436 @@ window.EIP_BANK_ch10 = [
        + '📌 <b>Java 도 값에 의한 호출이지만 참조 타입은 「주소값」이 복사</b>되어 '
        + '가리키는 객체의 내용은 바뀐다 — 배열을 넘기면 원본이 바뀌는 이유다.',
     d: 2, y: [], tag: ['매개변수전달', 'CallByValue', '재귀함수'], lang: null, code: null
+  },
+
+  /* ======================================================================
+     🚨 T46 8절 — 빈칸 키워드 15문항 (프로그래밍) · 2026-08-17
+
+     실제 회차의 빈칸형은 **2020-1 ~ 2023-3 열세 회차에 15개**로 앞쪽에 몰려 있고
+     2024 이후 일곱 회차에는 2개뿐이다. **0으로 두지는 않는다** — 2025-3 에 다시 나왔다.
+     → exam-archive/answers.md 3장 · decisions/exam-format.md
+
+     🔒 **빈칸은 「예약어나 표준 함수 이름」 자리에만 판다.**
+        식이나 문장을 비우면 정답이 여럿이 되어 채점이 안 된다.
+     ====================================================================== */
+
+  {
+    id: 'ch10-s01-17', ch: 10, sec: 1,
+    t: 'code', lang: 'c',
+    code: '#include <( ㉠ )>\n'
+        + '\n'
+        + 'void 세기() {\n'
+        + '    ( ㉡ ) int cnt = 0;   /* 함수가 끝나도 값이 남는다 */\n'
+        + '    cnt++;\n'
+        + '    printf("%d ", cnt);\n'
+        + '}\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    세기(); 세기(); 세기();\n'
+        + '    return 0;\n'
+        + '}',
+    q: '출력이 <code>1 2 3</code> 이 되게 하려 한다. ㉠ 에 들어갈 <b>헤더 파일</b>과 ㉡ 에 들어갈 <b>기억 클래스</b>를 쓰시오.',
+    parts: [
+      { label: '㉠', a: ['stdio.h'] },
+      { label: '㉡', a: ['static'] }
+    ],
+    why: '<code>printf</code> 는 <b>stdio.h</b> 에 있다. '
+       + '🚨 <b><code>static</code> 을 빼면 <code>1 1 1</code> 이 나온다</b> — '
+       + '보통의 지역 변수(<code>auto</code>)는 함수가 끝나면 사라져 다음 호출 때 다시 0 이 된다. '
+       + '<b>static 은 데이터 영역에 놓여 프로그램이 끝날 때까지 값이 남는다.</b>',
+    d: 2, y: [], tag: ['빈칸', '기억클래스', 'static']
+  },
+
+  {
+    id: 'ch10-s05-23', ch: 10, sec: 5,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '\n'
+        + 'void 바꾸기(int *x, int *y) {\n'
+        + '    int t = ( ㉠ )x;\n'
+        + '    ( ㉠ )x = ( ㉠ )y;\n'
+        + '    ( ㉠ )y = t;\n'
+        + '}\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    int a = 1, b = 2;\n'
+        + '    바꾸기(( ㉡ )a, ( ㉡ )b);\n'
+        + '    printf("%d %d", a, b);\n'
+        + '    return 0;\n'
+        + '}',
+    q: '출력이 <code>2 1</code> 이 되게 하려 한다. ㉠·㉡ 에 들어갈 <b>연산자</b>를 쓰시오.',
+    parts: [
+      { label: '㉠', a: ['*'] },
+      { label: '㉡', a: ['&'] }
+    ],
+    why: '🔑 <b><code>&amp;</code> 는 주소를 꺼내고 <code>*</code> 는 그 주소가 가리키는 값을 꺼낸다.</b> '
+       + '주소를 넘기는 <b>주소에 의한 호출(Call by Reference)</b> 이라 원본이 바뀐다. '
+       + '🚨 <code>&amp;</code> 를 빼고 값만 넘기면 <b>값에 의한 호출</b>이 되어 <code>1 2</code> 그대로다.',
+    d: 2, y: [], tag: ['빈칸', '포인터', 'CallByReference']
+  },
+
+  {
+    id: 'ch10-s06-12', ch: 10, sec: 6,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '\n'
+        + '( ㉠ ) struct {\n'
+        + '    char 이름[10];\n'
+        + '    int  나이;\n'
+        + '} 회원;\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    회원 m = {"김", 25};\n'
+        + '    회원 *p = &m;\n'
+        + '\n'
+        + '    printf("%d ", m( ㉡ )나이);\n'
+        + '    printf("%d", p( ㉢ )나이);\n'
+        + '    return 0;\n'
+        + '}',
+    q: '<code>struct</code> 를 붙이지 않고 <code>회원</code> 만으로 쓰려 한다. ㉠ 에 들어갈 예약어와, ㉡·㉢ 에 들어갈 <b>멤버 접근 연산자</b>를 쓰시오.',
+    parts: [
+      { label: '㉠', a: ['typedef'] },
+      { label: '㉡', a: ['.'] },
+      { label: '㉢', a: ['->'] }
+    ],
+    why: '<b><code>typedef</code></b> 는 자료형에 새 이름을 붙인다. '
+       + '⚠️ <b>구조체 변수는 <code>.</code>, 구조체 포인터는 <code>-&gt;</code></b> 로 멤버에 접근한다. '
+       + '<code>p-&gt;나이</code> 는 <code>(*p).나이</code> 와 같은 뜻이다.',
+    d: 2, y: [], tag: ['빈칸', '구조체', 'typedef']
+  },
+
+  {
+    id: 'ch10-s07-19', ch: 10, sec: 7,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '#include <( ㉠ )>\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    char a[20] = "EIP";\n'
+        + '    char b[20];\n'
+        + '\n'
+        + '    ( ㉡ )(b, a);          /* b 에 a 를 복사 */\n'
+        + '    ( ㉢ )(b, "Study");    /* b 뒤에 이어 붙임 */\n'
+        + '\n'
+        + '    printf("%s", b);\n'
+        + '    return 0;\n'
+        + '}',
+    q: '출력이 <code>EIPStudy</code> 가 되게 하려 한다. ㉠ 의 <b>헤더 파일</b>과 ㉡·㉢ 의 <b>함수 이름</b>을 쓰시오.',
+    parts: [
+      { label: '㉠', a: ['string.h'] },
+      { label: '㉡', a: ['strcpy'] },
+      { label: '㉢', a: ['strcat'] }
+    ],
+    why: '문자열 함수는 <b>string.h</b> 에 있다 — <code>strlen</code>(길이) · '
+       + '<code>strcpy</code>(복사) · <code>strcat</code>(연결) · <code>strcmp</code>(비교). '
+       + '🚨 <b>순서를 바꾸면 안 된다</b> — <code>strcat</code> 을 먼저 부르면 b 가 아직 비어 있지 않아 '
+       + '엉뚱한 값 뒤에 붙는다.',
+    d: 2, y: [], tag: ['빈칸', '문자열', 'string.h']
+  },
+
+  {
+    id: 'ch10-s03-23', ch: 10, sec: 3,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    int i, sum = 0;\n'
+        + '    for (i = 1; i <= 10; i++) {\n'
+        + '        if (i % 2 == 0) ( ㉠ );   /* 짝수는 건너뛴다 */\n'
+        + '        if (i > 7) ( ㉡ );        /* 7 을 넘으면 반복을 끝낸다 */\n'
+        + '        sum += i;\n'
+        + '    }\n'
+        + '    printf("%d", sum);\n'
+        + '    return 0;\n'
+        + '}',
+    q: '출력이 <code>16</code> 이 되게 하려 한다. ㉠·㉡ 에 들어갈 <b>제어문</b>을 쓰시오.',
+    parts: [
+      { label: '㉠', a: ['continue'] },
+      { label: '㉡', a: ['break'] }
+    ],
+    why: '🔑 <b><code>continue</code> 는 이번 회만 건너뛰고 <code>break</code> 는 반복문을 아주 나온다.</b> '
+       + '홀수 1·3·5·7 만 더해져 <b>16</b> 이다 — 9 는 <code>i &gt; 7</code> 에 걸려 못 들어온다. '
+       + '🚨 <b>둘을 바꿔 쓰면 1 만 더해지고 끝난다.</b>',
+    d: 2, y: [], tag: ['빈칸', '제어문', 'continue', 'break']
+  },
+
+  {
+    id: 'ch10-s04-28', ch: 10, sec: 4,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '#include <( ㉠ )>\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    int n = 4, i, sum = 0;\n'
+        + '    int *p = (int *)( ㉡ )(sizeof(int) * n);\n'
+        + '\n'
+        + '    for (i = 0; i < n; i++) p[i] = i + 1;\n'
+        + '    for (i = 0; i < n; i++) sum += p[i];\n'
+        + '\n'
+        + '    printf("%d", sum);\n'
+        + '    ( ㉢ )(p);\n'
+        + '    return 0;\n'
+        + '}',
+    q: '정수 4개를 <b>동적으로 할당</b>했다가 반환하려 한다. ㉠ 의 <b>헤더 파일</b>과 ㉡·㉢ 의 <b>함수 이름</b>을 쓰시오.',
+    parts: [
+      { label: '㉠', a: ['stdlib.h'] },
+      { label: '㉡', a: ['malloc'] },
+      { label: '㉢', a: ['free'] }
+    ],
+    why: '🚨 <b>메모리 할당은 stdlib.h 에 있다</b> — 가장 잘 틀리는 자리다. '
+       + '크기는 <b>바이트로</b> 주므로 <code>sizeof(int) * n</code> 이라야 정수 넉 칸이다. '
+       + '<b><code>free</code> 를 빠뜨리면 메모리 누수</b>가 된다. 출력은 1+2+3+4 = <b>10</b>.',
+    d: 3, y: [], tag: ['빈칸', 'malloc', 'stdlib.h']
+  },
+
+  {
+    id: 'ch10-s08-24', ch: 10, sec: 8,
+    t: 'code', lang: 'java',
+    code: 'class 회원 {\n'
+        + '    ( ㉠ ) int 인원 = 0;   /* 객체를 만들지 않고도 쓰고, 모든 객체가 공유한다 */\n'
+        + '    String 이름;\n'
+        + '\n'
+        + '    회원(String 이름) {\n'
+        + '        ( ㉡ ).이름 = 이름;\n'
+        + '        인원++;\n'
+        + '    }\n'
+        + '}\n'
+        + '\n'
+        + 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        new 회원("김"); new 회원("이"); new 회원("박");\n'
+        + '        System.out.println(회원.인원);\n'
+        + '    }\n'
+        + '}',
+    q: '출력이 <code>3</code> 이 되게 하려 한다. ㉠·㉡ 에 들어갈 예약어를 쓰시오.',
+    parts: [
+      { label: '㉠', a: ['static'] },
+      { label: '㉡', a: ['this'] }
+    ],
+    why: '<b><code>static</code></b> 은 객체마다가 아니라 <b>클래스에 하나</b>라 셋을 만들면 3 이 된다 — '
+       + '🚨 빼면 <code>회원.인원</code> 이라고 부를 수조차 없다. '
+       + '<b><code>this</code></b> 는 현재 객체 자신이라 <b>매개변수와 필드의 이름이 같을 때</b> 둘을 가른다.',
+    d: 2, y: [], tag: ['빈칸', 'static', 'this']
+  },
+
+  {
+    id: 'ch10-s09-23', ch: 10, sec: 9,
+    t: 'code', lang: 'java',
+    code: 'interface 대출가능 {\n'
+        + '    void 대출();\n'
+        + '}\n'
+        + '\n'
+        + '( ㉠ ) class 자료 {\n'
+        + '    ( ㉠ ) void 정보();          /* 몸통이 없다 */\n'
+        + '    void 안내() { System.out.print("자료 "); }\n'
+        + '}\n'
+        + '\n'
+        + 'class 도서 ( ㉡ ) 자료 ( ㉢ ) 대출가능 {\n'
+        + '    public void 정보() { System.out.print("도서 "); }\n'
+        + '    public void 대출() { System.out.print("대출"); }\n'
+        + '}\n'
+        + '\n'
+        + 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        도서 d = new 도서();\n'
+        + '        d.안내(); d.정보(); d.대출();\n'
+        + '    }\n'
+        + '}',
+    q: '출력이 <code>자료 도서 대출</code> 이 되게 하려 한다. ㉠~㉢ 에 들어갈 예약어를 쓰시오.',
+    parts: [
+      { label: '㉠', a: ['abstract'] },
+      { label: '㉡', a: ['extends'] },
+      { label: '㉢', a: ['implements'] }
+    ],
+    why: '🚨 <b>클래스는 <code>extends</code>, 인터페이스는 <code>implements</code></b> 로 받는다 — '
+       + '이 둘을 바꿔 쓰면 컴파일이 안 된다. '
+       + '<b>추상 클래스는 단일 상속, 인터페이스는 다중 구현</b>이라 한 클래스가 둘을 함께 쓸 때는 '
+       + '<b><code>extends</code> 가 먼저</b> 온다. '
+       + '📌 몸통 없는 메소드가 하나라도 있으면 클래스에도 <code>abstract</code> 를 붙여야 한다.',
+    d: 3, y: [], tag: ['빈칸', '추상클래스', 'extends', 'implements']
+  },
+
+  {
+    id: 'ch10-s13-19', ch: 10, sec: 13,
+    t: 'code', lang: 'java',
+    code: 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        ( ㉠ ) {\n'
+        + '            int r = 10 / 0;\n'
+        + '        } ( ㉡ ) (ArithmeticException e) {\n'
+        + '            System.out.print("오류 ");\n'
+        + '        } ( ㉢ ) {\n'
+        + '            System.out.print("종료");\n'
+        + '        }\n'
+        + '    }\n'
+        + '}',
+    q: '출력이 <code>오류 종료</code> 가 되게 하려 한다. ㉠~㉢ 에 들어갈 예약어를 쓰시오.',
+    parts: [
+      { label: '㉠', a: ['try'] },
+      { label: '㉡', a: ['catch'] },
+      { label: '㉢', a: ['finally'] }
+    ],
+    why: '<b><code>try</code></b> 는 예외가 날 만한 코드, <b><code>catch</code></b> 는 났을 때 할 일, '
+       + '<b><code>finally</code></b> 는 <b>나든 안 나든 반드시</b> 하는 일이다 — 자원 반환을 여기에 둔다. '
+       + '📌 0으로 나누면 <b>ArithmeticException</b> 이다.',
+    d: 1, y: [], tag: ['빈칸', '예외처리', 'try-catch-finally']
+  },
+
+  {
+    id: 'ch10-s09-24', ch: 10, sec: 9,
+    t: 'code', lang: 'java',
+    code: 'class 자료 {\n'
+        + '    String 이름;\n'
+        + '    자료(String 이름) { this.이름 = 이름; }\n'
+        + '}\n'
+        + '\n'
+        + 'class 도서 extends 자료 {\n'
+        + '    int 쪽수;\n'
+        + '    도서(String 이름, int 쪽수) {\n'
+        + '        ( ㉠ )(이름);        /* 상위 클래스의 생성자를 부른다 */\n'
+        + '        ( ㉡ ).쪽수 = 쪽수;\n'
+        + '    }\n'
+        + '}\n'
+        + '\n'
+        + 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        도서 d = new 도서("자료구조", 300);\n'
+        + '        System.out.println(d.이름 + " " + d.쪽수);\n'
+        + '    }\n'
+        + '}',
+    q: '출력이 <code>자료구조 300</code> 이 되게 하려 한다. ㉠·㉡ 에 들어갈 예약어를 쓰시오.',
+    parts: [
+      { label: '㉠', a: ['super'] },
+      { label: '㉡', a: ['this'] }
+    ],
+    why: '🚨 <b><code>super()</code> 는 반드시 생성자의 첫 줄</b>이라야 한다 — '
+       + '부모가 다 만들어진 뒤에 자식 몫을 채우기 때문이다. '
+       + '<b><code>super</code> 는 상위 클래스, <code>this</code> 는 현재 객체</b>이고, '
+       + '<code>this()</code> 는 <b>같은 클래스의 다른 생성자</b>를 부른다.',
+    d: 2, y: [], tag: ['빈칸', 'super', 'this', '생성자']
+  },
+
+  {
+    id: 'ch10-s04-29', ch: 10, sec: 4,
+    t: 'code', lang: 'java',
+    code: 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        int[] arr = {10, 20, 30};\n'
+        + '        String s = "EIPStudy";\n'
+        + '        int sum = 0;\n'
+        + '\n'
+        + '        for (int v : arr) sum += v;\n'
+        + '\n'
+        + '        System.out.print(arr.( ㉠ ) + " ");\n'
+        + '        System.out.print(s.( ㉡ ) + " ");\n'
+        + '        System.out.print(sum);\n'
+        + '    }\n'
+        + '}',
+    q: '출력이 <code>3 8 60</code> 이 되게 하려 한다. ㉠·㉡ 에 들어갈 것을 쓰시오.',
+    parts: [
+      { label: '㉠', a: ['length'] },
+      { label: '㉡', a: ['length()'] }
+    ],
+    why: '🚨 <b>배열은 <code>length</code>(필드), 문자열은 <code>length()</code>(메소드)</b> 다 — '
+       + '괄호 하나 차이라 가장 자주 틀리는 자리다. '
+       + '📌 컬렉션(<code>ArrayList</code> 등)은 또 달라서 <code>size()</code> 를 쓴다. 셋을 함께 외운다.',
+    d: 2, y: [], tag: ['빈칸', '배열', '문자열', 'length']
+  },
+
+  {
+    id: 'ch10-s12-15', ch: 10, sec: 12,
+    t: 'code', lang: 'java',
+    code: '( ㉠ ) java.util.*;\n'
+        + '\n'
+        + 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        List<Integer> a = new ArrayList<>();\n'
+        + '        a.add(3); a.add(7); a.add(3);\n'
+        + '\n'
+        + '        Set<Integer> s = new ( ㉡ )<>(a);\n'
+        + '\n'
+        + '        System.out.print(a.size() + " " + s.size());\n'
+        + '    }\n'
+        + '}',
+    q: '출력이 <code>3 2</code> 가 되게 하려 한다. ㉠ 의 예약어와 ㉡ 의 <b>클래스 이름</b>을 쓰시오.',
+    parts: [
+      { label: '㉠', a: ['import'] },
+      { label: '㉡', a: ['HashSet'] }
+    ],
+    why: 'Java 는 라이브러리를 <b>패키지</b>로 주고 <b><code>import</code></b> 로 불러 쓴다 — '
+       + '🚨 <b><code>java.lang</code> 만 자동으로 포함</b>되고 <code>java.util</code> 은 적어야 한다. '
+       + '<b><code>Set</code> 은 중복을 담지 않아</b> 3 이 둘이어도 하나만 남는다.',
+    d: 2, y: [], tag: ['빈칸', 'import', 'HashSet', 'java.util']
+  },
+
+  {
+    id: 'ch10-s10-34', ch: 10, sec: 10,
+    t: 'code', lang: 'python',
+    code: 'class 회원:\n'
+        + '    def ( ㉠ )(( ㉡ ), 이름):\n'
+        + '        ( ㉡ ).이름 = 이름\n'
+        + '        ( ㉡ ).대출수 = 0\n'
+        + '\n'
+        + '    def 대출(( ㉡ )):\n'
+        + '        ( ㉡ ).대출수 += 1\n'
+        + '\n'
+        + 'm = 회원("김하늘")\n'
+        + 'm.대출()\n'
+        + 'print(m.이름, m.대출수)',
+    q: '출력이 <code>김하늘 1</code> 이 되게 하려 한다. ㉠ 의 <b>생성자 이름</b>과 ㉡ 의 <b>첫 매개변수</b>를 쓰시오.',
+    parts: [
+      { label: '㉠', a: ['__init__'] },
+      { label: '㉡', a: ['self'] }
+    ],
+    why: 'Python 의 생성자는 <b><code>__init__</code></b> 이고 <b>앞뒤로 밑줄이 두 개씩</b>이다. '
+       + '🚨 <b>메소드의 첫 매개변수는 반드시 <code>self</code></b> — 부를 때는 안 넘기지만 '
+       + '정의할 때는 적어야 한다. 빠뜨리면 인자 개수가 안 맞는다는 오류가 난다.',
+    d: 2, y: [], tag: ['빈칸', 'Python', '생성자', 'self']
+  },
+
+  {
+    id: 'ch10-s10-35', ch: 10, sec: 10,
+    t: 'code', lang: 'python',
+    code: 'a = [0, 1, 2, 3, 4, 5]\n'
+        + '\n'
+        + 'print(a[( ㉠ )])            # [5, 4, 3, 2, 1, 0]\n'
+        + '\n'
+        + 'for i in ( ㉡ )(1, 4):\n'
+        + '    print(i, end=" ")     # 1 2 3',
+    q: '주석과 같은 결과가 나오게 하려 한다. ㉠ 의 <b>슬라이싱 표기</b>와 ㉡ 의 <b>내장 함수</b>를 쓰시오.',
+    parts: [
+      { label: '㉠', a: ['::-1'] },
+      { label: '㉡', a: ['range'] }
+    ],
+    why: '<b><code>a[::-1]</code></b> 은 간격을 −1 로 줘서 <b>뒤에서부터</b> 훑는다. '
+       + '🚨 <b><code>range(1, 4)</code> 는 1 이상 4 <u>미만</u></b> 이라 1·2·3 이다 — '
+       + '끝 값이 안 들어가는 것이 슬라이싱과 같다.',
+    d: 2, y: [], tag: ['빈칸', 'Python', '슬라이싱', 'range']
+  },
+
+  {
+    id: 'ch10-s10-36', ch: 10, sec: 10,
+    t: 'code', lang: 'python',
+    code: '( ㉠ ):\n'
+        + '    r = 10 / 0\n'
+        + '( ㉡ ) ZeroDivisionError:\n'
+        + '    print("0으로 나눌 수 없음", end=" ")\n'
+        + '( ㉢ ):\n'
+        + '    print("예외 없음", end=" ")\n'
+        + '( ㉣ ):\n'
+        + '    print("항상 실행")',
+    q: '출력이 <code>0으로 나눌 수 없음 항상 실행</code> 이 되게 하려 한다. ㉠~㉣ 에 들어갈 예약어를 쓰시오.',
+    parts: [
+      { label: '㉠', a: ['try'] },
+      { label: '㉡', a: ['except'] },
+      { label: '㉢', a: ['else'] },
+      { label: '㉣', a: ['finally'] }
+    ],
+    why: '🚨 <b>Java 는 <code>catch</code>, Python 은 <code>except</code></b> 다. '
+       + '💡 <b>Python 에만 <code>else</code> 가 있다</b> — <b>예외가 나지 않았을 때만</b> 실행된다. '
+       + '여기서는 0으로 나눠 예외가 났으므로 <code>else</code> 는 건너뛰고 '
+       + '<code>finally</code> 만 이어서 실행된다.',
+    d: 3, y: [], tag: ['빈칸', 'Python', '예외처리']
   }
 
 ];
