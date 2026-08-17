@@ -452,7 +452,8 @@
   }
   function $(sel) { return document.querySelector(sel); }
 
-  var setupBox, sheetBox, cards = [], timerId = null, current = null, submitBtn = null;
+  var setupBox, sheetBox, cards = [], timerId = null, current = null;
+  var submitBtn = null, againBtn = null;
 
   function chapterTitle(n) {
     var k = 'ch' + (n < 10 ? '0' : '') + n;
@@ -934,13 +935,18 @@
     var foot = el('div', 'exam__foot');
     submitBtn = el('button', 'quiz__grade', '제출하기');
     submitBtn.type = 'button';
-    submitBtn.addEventListener('click', function () { doSubmit(false); });
+    /* 채점 뒤에는 같은 버튼이 「나가기」가 된다 — 핸들러를 새로 걸지 않고
+       여기서 갈라 준다. 두 번 걸면 한 번 눌러 둘 다 도는 사고가 난다. */
+    submitBtn.addEventListener('click', function () {
+      if (submitBtn.getAttribute('data-done') === '1') backToSetup();
+      else doSubmit(false);
+    });
     foot.appendChild(submitBtn);
 
-    var again = el('button', 'exam__ghost', '↩ 다른 문제지 만들기');
-    again.type = 'button';
-    again.addEventListener('click', backToSetup);
-    foot.appendChild(again);
+    againBtn = el('button', 'exam__ghost', '↩ 다른 문제지 만들기');
+    againBtn.type = 'button';
+    againBtn.addEventListener('click', backToSetup);
+    foot.appendChild(againBtn);
     sheetBox.appendChild(foot);
 
     setBack('← 모의 문제지 생성',
@@ -1045,7 +1051,16 @@
   function doSubmit(byTimeout) {
     if (!cards.length || cards[0].card.isGraded()) return;
     stopTimer();
-    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = '채점 완료'; }
+    /* 📌 채점이 끝나면 이 자리에 할 일은 「나가기」뿐이다.
+       비활성 「채점 완료」로 두면 문항을 다 훑고 맨 아래에 왔을 때 죽은 버튼만 남는다.
+       (채점 결과는 맨 위에 붙으므로 여기서 나가도 놓치는 것이 없다.)
+       옆의 「다른 문제지 만들기」는 같은 일을 하므로 숨긴다 — 둘이 나란히 서면 헷갈린다. */
+    if (submitBtn) {
+      submitBtn.setAttribute('data-done', '1');
+      submitBtn.textContent = '↩ 모의 문제지 홈으로';
+      submitBtn.className = 'exam__ghost';
+    }
+    if (againBtn) againBtn.style.display = 'none';
 
     /* 🔒 점수는 **배점**이다 — 문항 수가 아니다.
        한 문항 5점, 20문항이면 100점 만점. 여러 칸짜리는 부분점수가 붙어
