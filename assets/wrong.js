@@ -297,6 +297,51 @@
       renderList();
     });
     ctlEl.appendChild(sizeSel);
+
+    /* ---- 이 목록 비우기 ----
+       🔒 **초기화는 「그 데이터를 보는 화면」에 둔다** (T32) — 홈 푸터에 항목을
+          여섯으로 늘리면 푸터가 그것만 남는다.
+       🔑 **지금 보이는 목록만** 지운다. 탭도 챕터 필터도 그대로 따르므로
+          「무엇이 지워지는가」가 화면에 그대로 떠 있다. */
+    var ids = idsFor(current);
+    if (ids.length) {
+      var wipe = el('button', 'wctl__wipe', '이 목록 비우기');
+      wipe.type = 'button';
+      wipe.addEventListener('click', function () { askWipe(ids); });
+      ctlEl.appendChild(wipe);
+    }
+  }
+
+  function tabLabel(k) {
+    var i;
+    for (i = 0; i < TABS.length; i++) { if (TABS[i].k === k) return TABS[i].label; }
+    return '';
+  }
+
+  function askWipe(ids) {
+    var D = window.EIP_DIALOG;
+    var isFavTab = current === 0;
+    var n = ids.length;
+
+    /* 🚨 `confirm()` 을 쓰지 않는다 — 제목 줄에 앱 이름이 붙어 무슨 창인지 모른다.
+       대화상자는 `dialog.js` 한 벌뿐이다. */
+    if (!D) return;
+    D.confirm({
+      title: isFavTab ? '★ 저장을 비울까요?' : '이 목록을 비울까요?',
+      sub: '「' + tabLabel(current) + '」 ' + n + '문항' +
+           (chFilter ? ' · ' + (TOC[chFilter] ? TOC[chFilter].t : chFilter) : ''),
+      body: isFavTab
+        ? '★ 표시만 사라집니다. 틀린 기록과 메모는 그대로 남습니다.'
+        : '이 목록에 든 문항의 틀린 기록이 사라집니다. ' +
+          '★ 저장과 메모는 그대로 남고, 다시 틀리면 새로 쌓입니다.',
+      ok: '비우기',
+      danger: true,
+      onOk: function () {
+        if (isFavTab) W.unfav(ids); else W.remove(ids);
+        page = 0;
+        refresh();
+      }
+    });
   }
 
   function renderTabs() {

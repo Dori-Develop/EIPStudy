@@ -254,7 +254,16 @@
     savedEl = el('span', 'memo__saved', lastSaved ? '저장됨 ' + MEMO.stampText(lastSaved) : '');
     var clearBtn = el('button', 'memo__clear', '메모 지우기');
     clearBtn.type = 'button';
+
+    /* 🔒 지운 메모를 한 번은 되살린다 — 사람이 쓴 글은 사라지면 복구가 안 된다.
+       페이지를 벗어나면 없어지는 임시 되돌리기라 새 저장 키를 만들지 않는다. */
+    var undoBtn = el('button', 'memo__clear memo__undo', '↩ 되돌리기');
+    undoBtn.type = 'button';
+    undoBtn.hidden = true;
+    var undoText = null;
+
     foot.appendChild(savedEl);
+    foot.appendChild(undoBtn);
     foot.appendChild(clearBtn);
     bodyBox.appendChild(foot);
 
@@ -267,10 +276,37 @@
     ta.addEventListener('input', schedule);
     ta.addEventListener('blur', flush);
 
+    /* 🚨 `confirm()` 을 쓰지 않는다 — 제목 줄에 앱 이름이 붙어 무슨 창인지 모른다.
+       대화상자는 `dialog.js` 한 벌뿐이다 (T32 에서 걷어냈다).
+       🔒 **메모는 사람이 손으로 쓴 글이라 잃으면 복구가 안 된다.** 그래서 지운 뒤에
+          「되돌리기」를 두어 실수 한 번으로 사라지지 않게 한다. */
     clearBtn.addEventListener('click', function () {
       if (!ta.value) { open(false); return; }
-      if (!confirm('이 섹션의 메모를 지웁니다.\n되돌릴 수 없습니다. 계속할까요?')) return;
-      ta.value = '';
+      var D = window.EIP_DIALOG;
+      var before = ta.value;
+      var wipe = function () {
+        ta.value = '';
+        flush();
+        ta.focus();
+        undoBtn.hidden = false;
+        undoText = before;
+      };
+      if (!D) { if (window.confirm('이 섹션의 메모를 지웁니다.\n되돌릴 수 없습니다. 계속할까요?')) wipe(); return; }
+      D.confirm({
+        title: '이 메모를 지울까요?',
+        sub: before.length + '자',
+        body: '지운 뒤 「되돌리기」로 한 번은 되살릴 수 있습니다. 페이지를 벗어나면 사라집니다.',
+        ok: '지우기',
+        danger: true,
+        onOk: wipe
+      });
+    });
+
+    undoBtn.addEventListener('click', function () {
+      if (undoText == null) return;
+      ta.value = undoText;
+      undoText = null;
+      undoBtn.hidden = true;
       flush();
       ta.focus();
     });

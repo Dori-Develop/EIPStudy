@@ -214,10 +214,21 @@
     head.appendChild(el('span', 'exam__histn', all.length + '회'));
     var clear = el('button', 'exam__histclear', '비우기');
     clear.type = 'button';
+    /* 🚨 `confirm()` 을 쓰지 않는다 — 대화상자는 `dialog.js` 한 벌뿐이다 */
     clear.addEventListener('click', function () {
-      if (!window.confirm('응시 이력을 모두 지울까요?')) return;
-      if (store()) store().set('past.hist', []);
-      buildSetup();
+      var D = window.EIP_DIALOG;
+      if (!D) return;
+      D.confirm({
+        title: '응시 이력을 지울까요?',
+        sub: all.length + '회분',
+        body: '기출문제집의 점수 기록만 사라집니다. 모의 문제지 이력과 진도는 그대로입니다.',
+        ok: '이력 지우기',
+        danger: true,
+        onOk: function () {
+          if (store()) store().set('past.hist', []);
+          buildSetup();
+        }
+      });
     });
     head.appendChild(clear);
     wrap.appendChild(head);

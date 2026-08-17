@@ -740,18 +740,24 @@
     }).join(' · ');
   }
 
+  /* ✅ T32 에서 `dialog.js` 로 바꿨다 — `confirm()` 은 제목 줄에 앱 이름이 붙어
+     무슨 창인지 알아볼 수 없다. 대화상자는 한 벌뿐이다. */
   function clearHistory() {
-    if (!confirmClear()) return;
-    var s = store();
-    if (s) { s.remove('exam.history'); s.remove('exam.answers'); }
-    refreshHistory();
-  }
-
-  /* T28 에서 화면 안 대화상자로 바꿀 자리 — 지금은 confirm 이다 */
-  function confirmClear() {
-    return confirm('응시 이력과 저장된 답안을 모두 지웁니다.\n' +
-                   '오답노트와 진도는 그대로 남습니다.\n\n' +
-                   '지우기 전에 홈에서 「기록 내보내기」로 백업해 두면 되돌릴 수 있습니다.\n\n계속할까요?');
+    var D = window.EIP_DIALOG;
+    if (!D) return;
+    D.confirm({
+      title: '응시 이력을 지울까요?',
+      sub: historyList().length + '회분 · 저장된 답안 포함',
+      body: '오답노트와 진도는 그대로 남습니다. ' +
+            '지우기 전에 홈에서 「기록 내보내기」로 받아 두면 되돌릴 수 있습니다.',
+      ok: '이력 지우기',
+      danger: true,
+      onOk: function () {
+        var s = store();
+        if (s) { s.remove('exam.history'); s.remove('exam.answers'); }
+        refreshHistory();
+      }
+    });
   }
 
   /* ------------------------------------------------------------ 복기 */

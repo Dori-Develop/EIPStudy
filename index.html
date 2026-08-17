@@ -147,6 +147,12 @@ document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
           <button type="button" class="dangerlink js-reset">진도만 초기화</button>
           <button type="button" class="dangerlink js-reset-all">전체 초기화</button>
         </p>
+        <!-- 🚨 초기화는 되돌릴 수 없다. **누르기 전에** 내보내기가 있다는 것을 알려야 한다 (T32).
+             오답노트·암기 카드처럼 좁은 범위를 지우는 것은 그 화면에 있다. -->
+        <p class="footer__warn">
+          초기화는 되돌릴 수 없습니다. <strong>먼저 「기록 내보내기」</strong>로 파일을 받아 두세요.<br>
+          오답노트만 · 암기 카드 저장함만 비우려면 <a href="wrong.html">오답노트</a>·<a href="cards.html">암기 카드</a> 화면에서 하세요.
+        </p>
       </footer>
 
     </div>
@@ -158,6 +164,7 @@ document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
 <script src="assets/strategy.js"></script>
 <script src="assets/app.js"></script>
 <script src="assets/memo.js"></script>
+<script src="assets/dialog.js"></script>
 <script src="assets/merge.js"></script>
 <script src="assets/backup.js"></script>
 

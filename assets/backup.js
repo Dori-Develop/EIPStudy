@@ -112,26 +112,36 @@
       alert('EIP Study 백업 파일이 아닙니다.');
       return;
     }
+    var go = function () {
+      var sum = m.summarize(parsed.data);
+      if (!sum.keys) { alert('파일에 학습 기록이 없습니다.'); return; }
+      openDialog(parsed, filename, sum);
+    };
+
+    /* ✅ T32 에서 `confirm()` 을 걷어냈다 — 대화상자는 `dialog.js` 한 벌뿐이다 */
     if (parsed.v && parsed.v > FORMAT) {
-      if (!confirm('더 새로운 형식(v' + parsed.v + ')의 파일입니다.\n' +
-                   '일부 기록을 못 읽을 수 있습니다. 계속할까요?')) return;
+      var D = window.EIP_DIALOG;
+      if (!D) return;
+      D.confirm({
+        title: '더 새로운 형식의 파일입니다',
+        sub: 'v' + parsed.v + ' · 이 사이트는 v' + FORMAT + ' 까지 읽습니다',
+        body: '일부 기록을 못 읽을 수 있습니다. 그래도 열어 볼까요?',
+        ok: '계속',
+        onOk: go
+      });
+      return;
     }
-
-    var sum = m.summarize(parsed.data);
-    if (!sum.keys) { alert('파일에 학습 기록이 없습니다.'); return; }
-
-    openDialog(parsed, filename, sum);
+    go();
   }
 
-  var scrim, box;
+  /* 🔒 대화상자는 `dialog.js` 한 벌뿐이다 (T32 에서 떼어 냈다).
+     여기 있던 `shell`·`closeDialog`·`onEsc` 가 그것이다 — 두 벌이 되면 어긋난다. */
+  var box;
 
   function closeDialog() {
-    if (scrim) { scrim.parentNode.removeChild(scrim); scrim = null; }
-    if (box) { box.parentNode.removeChild(box); box = null; }
-    document.removeEventListener('keydown', onEsc);
+    box = null;
+    if (window.EIP_DIALOG) window.EIP_DIALOG.close();
   }
-
-  function onEsc(e) { if (e.key === 'Escape' || e.keyCode === 27) closeDialog(); }
 
   /* 지금 · 파일 · 합친 뒤 를 나란히 보여 준다.
      🔒 「합친 뒤」는 merge.js 의 dryRun 으로 실제 합쳐 본 값이라 결과와 어긋나지 않는다. */
@@ -174,21 +184,7 @@
   }
 
   function shell(title, subtitle) {
-    closeDialog();
-
-    scrim = el('div', 'scrim is-open');
-    scrim.addEventListener('click', closeDialog);
-    document.body.appendChild(scrim);
-
-    box = el('div', 'bkdlg');
-    box.setAttribute('role', 'dialog');
-    box.setAttribute('aria-modal', 'true');
-    box.setAttribute('aria-label', title);
-    box.appendChild(el('h2', 'bkdlg__title', title));
-    if (subtitle) box.appendChild(el('p', 'bkdlg__file', subtitle));
-
-    document.addEventListener('keydown', onEsc);
-    document.body.appendChild(box);
+    box = window.EIP_DIALOG ? window.EIP_DIALOG.shell(title, subtitle) : null;
     return box;
   }
 
@@ -200,7 +196,7 @@
     var nowSum = m.summarize(m.exportable(s));
     var afterSum = m.summarize(m.dryRun(s, parsed.data));
 
-    shell('이 기록을 가져옵니다', filename + ' · ' + dateText(parsed.at) + ' 에 내보냄');
+    if (!shell('이 기록을 가져옵니다', filename + ' · ' + dateText(parsed.at) + ' 에 내보냄')) return;
 
     var t = statsTable(nowSum, fileSum, afterSum);
     if (t) box.appendChild(t);
@@ -232,7 +228,7 @@
      📌 브라우저 confirm() 을 쓰지 않는다. 제목 줄에 앱 이름이나 도메인이 붙어
         (VS Code 내장 브라우저에서는 "Code") 무슨 창인지 알아보기 어렵다. */
   function confirmReplace(parsed, filename, nowSum, fileSum) {
-    shell('정말 덮어쓸까요?', filename);
+    if (!shell('정말 덮어쓸까요?', filename)) return;
 
     box.appendChild(el('p', 'bkdlg__warn',
       '지금 이 브라우저의 학습 기록이 사라지고 파일의 기록만 남습니다. 되돌릴 수 없습니다.'));

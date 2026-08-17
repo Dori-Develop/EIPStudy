@@ -275,6 +275,37 @@
     un.disabled = !history.length;
     un.addEventListener('click', undo);
     ctlEl.appendChild(un);
+
+    /* 🔒 **초기화는 「그 데이터를 보는 화면」에 둔다** (T32).
+       저장함에 있을 때만 낸다 — 전체 카드 화면에서는 지울 것이 눈앞에 없다. */
+    if (stage === 2 && savedCount()) {
+      var wipe = el('button', 'cctl__btn cctl__btn--wipe', '저장함 비우기');
+      wipe.type = 'button';
+      wipe.addEventListener('click', askWipe);
+      ctlEl.appendChild(wipe);
+    }
+  }
+
+  /* 🚨 `confirm()` 을 쓰지 않는다 — 제목 줄에 앱 이름이 붙어 무슨 창인지 모른다.
+     대화상자는 `dialog.js` 한 벌뿐이다. */
+  function askWipe() {
+    var D = window.EIP_DIALOG;
+    if (!D) return;
+    var n = savedCount();
+    D.confirm({
+      title: '저장함을 비울까요?',
+      sub: '카드 ' + n + '장',
+      body: '저장해 둔 카드가 모두 빠집니다. 카드 자체는 「전체 카드」에 그대로 있습니다.',
+      ok: '비우기',
+      danger: true,
+      onOk: function () {
+        saved = {};
+        persist();
+        history = [];
+        buildDeck();
+        render();
+      }
+    });
   }
 
   function renderCard() {

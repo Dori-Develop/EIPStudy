@@ -93,6 +93,28 @@
 
     classify: classify,
 
+    /* 🔒 **지우는 것도 여기 한 벌이다** (T32). 화면이 직접 localStorage 를 만지면
+       분류 규칙과 어긋난다 — 그것이 이 파일을 만든 이유다.
+       `ids` 는 배열. 목록에 든 것만 지우므로 **보고 있는 것과 지워지는 것이 같다.** */
+    remove: function (ids) {
+      var raw = read('wrong.all', {}) || {}, i, n = 0;
+      for (i = 0; i < (ids || []).length; i++) {
+        if (raw[ids[i]]) { delete raw[ids[i]]; n++; }
+      }
+      if (n) write('wrong.all', raw);
+      return n;
+    },
+
+    /* ★ 저장은 별도 축이라 따로 지운다 — 오답 기록은 남는다 */
+    unfav: function (ids) {
+      var f = read('fav.all', {}) || {}, i, n = 0;
+      for (i = 0; i < (ids || []).length; i++) {
+        if (f[ids[i]]) { delete f[ids[i]]; n++; }
+      }
+      if (n) write('fav.all', f);
+      return n;
+    },
+
     /* ---- 저장한 문제 (즐겨찾기) — 틀린 것과 별도 축 ---- */
     isFav: function (id) { return !!((read('fav.all', {}) || {})[id]); },
 

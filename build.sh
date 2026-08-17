@@ -61,7 +61,9 @@ for md in "${sources[@]}"; do
   # 메모는 은행 유무와 상관없이 모든 섹션에 붙는다.
   # 🚨 quiz.js 뒤여야 한다 — 둘 다 "학습 완료" 버튼 앞에 끼워 넣는 방식이라
   #    먼저 실린 쪽이 위로 간다. 메모 카드는 퀴즈 아래에 와야 한다.
+  # dialog.js 는 memo.js 의 「메모 지우기」가 쓴다 (T32 에서 confirm 을 걷어냈다)
   sec_scripts="${quiz_scripts}
+<script src=\"../assets/dialog.js\"></script>
 <script src=\"../assets/memo.js\"></script>"
 
   # 본문에 </script> 가 있으면 인라인 삽입이 깨진다

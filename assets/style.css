@@ -1842,3 +1842,27 @@ mark, .hl {
 .past__round span { font-size: 12px; color: var(--fg-faint); }
 .past__round:hover { border-color: var(--accent); }
 .past__round:active { transform: translateY(1px); }
+
+/* 목록·저장함 비우기 (T32) — 되돌릴 수 없는 것이라 **오른쪽 끝으로 밀어 두고**
+   평소엔 흐리게 둔다. 정렬·필터 옆에 나란히 서면 실수로 눌린다. */
+.wctl__wipe, .cctl__btn--wipe {
+  margin-left: auto;
+  padding: 6px 9px;
+  background: transparent; color: var(--fg-faint);
+  border: 1px solid transparent; border-radius: var(--radius-s);
+  font-size: 12.5px; font-family: inherit; cursor: pointer;
+  transition: border-color .15s, color .15s;
+}
+.wctl__wipe:hover, .cctl__btn--wipe:hover { color: var(--warn); border-color: var(--warn); }
+
+/* 홈 푸터 — 초기화 앞의 안내 (T32). 지우기 전에 내보내기가 있다는 것을 알린다. */
+.footer__warn {
+  margin: 10px 0 0;
+  font-size: 12px; line-height: 1.7; color: var(--fg-faint);
+  word-break: keep-all;
+}
+.footer__warn a { color: var(--fg-muted); text-decoration: underline; }
+.footer__warn a:hover { color: var(--accent); }
+
+/* 지운 메모 한 번 되살리기 (T32) */
+.memo__undo { color: var(--accent); }

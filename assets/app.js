@@ -252,32 +252,51 @@
       return false;
     }
 
+    /* 🚨 `confirm()` 을 쓰지 않는다 — 제목 줄을 코드로 못 바꿔 앱 이름이나 도메인이 붙는다
+       (VS Code 내장 브라우저에서는 "Code"). 대화상자는 `dialog.js` 한 벌뿐이다. */
+    function ask(opts) {
+      if (window.EIP_DIALOG) { window.EIP_DIALOG.confirm(opts); return; }
+      /* dialog.js 가 없는 페이지에서도 되돌릴 수 없는 일이 조용히 실행되면 안 된다 */
+      if (window.confirm(opts.title + '\n\n' + (opts.body || ''))) opts.onOk();
+    }
+
     var reset = $('.js-reset');
     if (reset) {
       reset.addEventListener('click', function () {
-        if (!confirm('섹션 학습 완료 표시를 모두 지웁니다.\n' +
-                     '오답노트·저장한 문제·메모는 그대로 남습니다.\n\n계속할까요?')) return;
-        store.keys().forEach(function (k) {
-          if (k.indexOf('done.') === 0) store.remove(k);
+        ask({
+          title: '진도만 초기화할까요?',
+          sub: '섹션 학습 완료 표시',
+          body: '오답노트 · ★ 저장한 문제 · 암기 카드 · 메모는 그대로 남습니다.',
+          ok: '진도 지우기',
+          danger: true,
+          onOk: function () {
+            store.keys().forEach(function (k) {
+              if (k.indexOf('done.') === 0) store.remove(k);
+            });
+            location.reload();
+          }
         });
-        location.reload();
       });
     }
 
     var resetAll = $('.js-reset-all');
     if (resetAll) {
       resetAll.addEventListener('click', function () {
-        if (!confirm('이 브라우저에 쌓인 학습 기록을 전부 지웁니다.\n\n' +
-                     '  · 섹션 학습 진도\n' +
-                     '  · 오답노트 (틀린 횟수 · 분류)\n' +
-                     '  · ★ 저장한 문제\n' +
-                     '  · 저장한 암기 카드\n' +
-                     '  · 섹션마다 적어 둔 메모\n\n' +
-                     '되돌릴 수 없습니다. 계속할까요?')) return;
-        store.keys().forEach(function (k) {
-          if (!isKept(k)) store.remove(k);
+        ask({
+          title: '전체 초기화할까요?',
+          sub: '이 브라우저에 쌓인 학습 기록 전부',
+          body: '섹션 학습 진도 · 오답노트(틀린 횟수·분류) · ★ 저장한 문제 · ' +
+                '저장한 암기 카드 · 섹션마다 적어 둔 메모가 모두 사라집니다. ' +
+                '되돌릴 수 없습니다 — 먼저 「기록 내보내기」로 받아 두세요.',
+          ok: '전부 지우기',
+          danger: true,
+          onOk: function () {
+            store.keys().forEach(function (k) {
+              if (!isKept(k)) store.remove(k);
+            });
+            location.reload();
+          }
         });
-        location.reload();
       });
     }
   }
