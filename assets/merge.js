@@ -221,7 +221,10 @@
     for (i = 0; i < all.length; i++) {
       r = all[i];
       if (!isObj(r)) continue;
-      var id = String(r.seed) + '|' + String(r.at);
+      /* 🚨 seed|at 으로 묶으면 **같은 날 같은 문제지를 두 번 푼 기록**이 하나로
+         뭉개진다. ts(응시 시각)가 있으면 그것이 응시를 가리키는 값이다.
+         옛 기록에는 ts 가 없어 seed|at 으로 물러난다. */
+      var id = r.ts ? ('t' + String(r.ts)) : (String(r.seed) + '|' + String(r.at));
       if (seen[id]) continue;
       seen[id] = 1;
       out.push(r);

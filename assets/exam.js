@@ -132,13 +132,21 @@
 
   /* 회차의 답안을 넣고, 이력에서 사라진 회차의 답안은 함께 지운다.
      🚨 안 지우면 아무도 못 여는 고아 데이터가 계속 쌓인다. */
-  function saveAnswers(seed, map) {
-    var all = answerBook();
-    all[String(seed)] = { at: (new Date()).getTime(), a: map };
+  /* 🔒 **응시 하나를 가리키는 키.** seed 가 아니다 —
+     같은 문제지를 두 번 풀 수 있고, seed 로만 묶으면 **앞의 답안이 덮인다.**
+     옛 기록에는 ts 가 없으므로 seed 로 물러난다. */
+  function histKey(rec) {
+    return rec && rec.ts ? String(rec.ts) : String(rec && rec.seed);
+  }
 
-    var live = {}, hist = historyList(), i, n = 0;
+  function saveAnswers(key, map) {
+    var all = answerBook();
+    all[String(key)] = { at: (new Date()).getTime(), a: map };
+
+    var live = {}, hist = historyList(), i, n = 0, k2;
     for (i = 0; i < hist.length && n < ANSWERS_KEEP; i++) {
-      if (!live[String(hist[i].seed)]) { live[String(hist[i].seed)] = 1; n++; }
+      k2 = histKey(hist[i]);
+      if (!live[k2]) { live[k2] = 1; n++; }
     }
     var out = {}, k;
     for (k in all) { if (has(all, k) && live[k]) out[k] = all[k]; }
@@ -155,6 +163,33 @@
     var i;
     for (i = 0; i < bank.length; i++) { if (bank[i].id === id) return bank[i]; }
     return null;
+  }
+
+  /* 🔒 이력에 적힌 문항 목록을 **그대로** 다시 낸다.
+     seed 로 다시 뽑으면 그 사이 바뀐 것들 때문에 다른 문제지가 된다 —
+     최근 출제 이력(recent)·오답 가중치·회차 수가 전부 추출에 끼어든다.
+     ids 가 없는 옛 기록만 seed 재계산으로 물러난다. */
+  function replayRecord(rec) {
+    if (!rec.ids || !rec.ids.length) {
+      /* 옛 기록 — seed 로 다시 뽑는다. 그때와 다를 수 있다고 알린다. */
+      generate({ scope: 'all', mode: 'real', n: rec.total, mins: 0, boost: false, seed: rec.seed });
+      return;
+    }
+    var items = [], missing = 0, i, it;
+    for (i = 0; i < rec.ids.length; i++) {
+      it = itemById(rec.ids[i]);
+      if (it) items.push(it); else missing++;
+    }
+    if (!items.length) { alert('그때의 문항을 은행에서 찾지 못했습니다.'); return; }
+    if (missing) {
+      alert('문항 ' + missing + '개는 은행에서 찾지 못해 빼고 냅니다. 그 사이 문항이 바뀐 것입니다.');
+    }
+    current = {
+      seed: rec.seed, items: items, mins: 0,
+      scope: 'all', mode: 'real', n: items.length,
+      boost: false, roundKey: null, partial: false
+    };
+    renderSheet();
   }
 
   /* 최근 K회 문제지에 나온 문항 — 중복 회피용. [[id,…], …] 최신이 앞 */
@@ -311,10 +346,24 @@
   }
 
   /* --------------------------------------------------------------- 추출 */
+  /* 🔒 **실제 시험은 20문항 중 7~9가 프로그래밍이다** (최근 회차 기준 40%).
+     챕터 분포만 맞추면 10단원이 6~7문항 들어오지만 **그 안에서 코드 문항이
+     뽑히리라는 보장이 없다** — 우리 10단원 은행은 3분의 2가 개념 문항이라
+     실제로 코드가 2문항밖에 안 나왔다.
+
+     그래서 **단원 배정은 그대로 두고, 그 안에서 코드 문항을 먼저 채운다.**
+     목표에 닿으면 우대를 멈춰 개념 문항도 들어온다.
+
+     ⚠️ **은행에 코드가 62문항뿐이라 아직 자주 겹친다.** 150문항을 채우는 것이
+        T46 4절이고, 그것이 끝나야 이 규칙이 제값을 한다. */
+  var CODE_SHARE = 0.4;
+
   function pickItems(opts) {
     var rng = makeRng(opts.seed);
     var rounds = recentRounds();
     var picked = [];
+    var codeWant = Math.round(opts.n * CODE_SHARE);
+    var codeGot = 0;
 
     function scoreOf(item) {
       var s = rng();
@@ -324,6 +373,9 @@
            안 그러면 틀린 문제 몇 개만 계속 돌아온다 (PLAN-exam 5-3) */
         if (e && e.w > 0 && recentCount(rounds, item.id) < 2) s *= 2.0;
       }
+      /* 목표에 닿을 때까지만 코드 문항을 앞으로 당긴다.
+         난수보다 큰 값을 더해 같은 신선도 안에서는 코드가 먼저 서게 한다. */
+      if (item.t === 'code' && codeGot < codeWant) s += 10;
       return s;
     }
     function take(cand, want) {
@@ -338,12 +390,27 @@
         m.sort(function (a, b) { return b.s - a.s; });
         return m;
       }
-      var out = [], m = bySc(fresh);
-      for (i = 0; i < m.length && out.length < want; i++) out.push(m[i].it);
-      if (out.length < want) {            /* 신규가 모자라면 제외 조건을 완화 */
-        m = bySc(stale);
-        for (i = 0; i < m.length && out.length < want; i++) out.push(m[i].it);
+      /* 예산은 **문항 단위로** 센다. 챕터가 끝난 뒤에 세면 한 챕터에서 한꺼번에
+         뽑혀 목표를 넘긴다 (10단원 하나로 7문항이 다 코드가 된다). */
+      var out = [], seen = {};
+      function fill(list, allowOverCode) {
+        var k, it2;
+        for (k = 0; k < list.length && out.length < want; k++) {
+          it2 = list[k].it;
+          if (seen[it2.id]) continue;          /* 완화 패스에서 같은 문항을 또 담지 않게 */
+          if (it2.t === 'code') {
+            if (!allowOverCode && codeGot >= codeWant) continue;   /* 예산 초과 */
+            codeGot++;
+          }
+          seen[it2.id] = 1;
+          out.push(it2);
+        }
       }
+      fill(bySc(fresh), false);
+      if (out.length < want) fill(bySc(stale), false);   /* 신규가 모자라면 완화 */
+      /* 그래도 못 채웠으면 코드 예산을 넘겨서라도 채운다 —
+         빈 자리로 두는 것보다 낫다 (은행이 얇은 단원에서 일어난다) */
+      if (out.length < want) { fill(bySc(fresh), true); fill(bySc(stale), true); }
       return out;
     }
 
@@ -363,7 +430,17 @@
       j2 = Math.floor(rng() * (i2 + 1));
       tmp = picked[i2]; picked[i2] = picked[j2]; picked[j2] = tmp;
     }
-    return picked;
+
+    /* 🔒 **실제 시험은 프로그래밍이 뒤쪽에 몰린다** — 최근 회차는 뒤 7~9문항이고
+       끝은 늘 20번이다. 무작위로 흩어 놓으면 시간 배분 연습이 안 된다.
+       섞은 결과를 유지한 채 **코드 문항만 뒤로 옮긴다** (안정 분할).
+       → EIPStudy-notes/exam-archive/README.md 2장 「배치」 */
+    var head = [], tail = [], i3;
+    for (i3 = 0; i3 < picked.length; i3++) {
+      if (picked[i3].t === 'code') tail.push(picked[i3]);
+      else head.push(picked[i3]);
+    }
+    return head.concat(tail);
   }
 
   /* ============================================================== 화면 */
@@ -410,7 +487,10 @@
       evenOpt.text = '균형 — 모든 단원 최소 1문항 (전 단원 은행이 채워지면 열립니다)';
     }
     mode.appendChild(evenOpt);
-    for (i = 0; i < ROUNDS.length; i++) {
+    /* 최신 회차부터 — 고를 일이 많은 것이 위에 있어야 한다.
+       ⚠️ ROUNDS 자체는 오래된 순서다 (`real` 모드의 무작위 추출이 그 순서에 걸려 있어
+          뒤집으면 같은 seed 가 다른 회차를 가리킨다). **표시만 뒤집는다.** */
+    for (i = ROUNDS.length - 1; i >= 0; i--) {
       mode.appendChild(new Option(roundLabel(ROUNDS[i]) + ' 구성으로', 'r:' + ROUNDS[i]));
     }
     form.appendChild(field('분포', mode));
@@ -479,7 +559,8 @@
       var li = el('li', 'exam__histrow');
 
       var top = el('div', 'exam__histtop');
-      top.appendChild(el('span', 'exam__histat', r.at));
+      /* 같은 문제지를 두 번 풀면 날짜·seed 가 같다 — 시각이 있어야 구분된다 */
+      top.appendChild(el('span', 'exam__histat', r.at + (r.hm ? ' ' + r.hm : '')));
       top.appendChild(el('span', 'exam__histseed', '#' + r.seed));
       /* pt 가 있으면 배점으로 — 없으면 옛 기록이라 문항 수로 보여 준다 */
       var hasPt = typeof r.pt === 'number' && r.ptMax;
@@ -502,7 +583,7 @@
       var acts = el('div', 'exam__histacts');
 
       /* 답안이 남아 있는 회차만 복기할 수 있다 — 상한을 넘겨 밀려난 것은 못 연다 */
-      if (has(book, String(r.seed))) {
+      if (has(book, histKey(r))) {
         var rev = el('button', 'exam__histbtn', '복기 →');
         rev.type = 'button';
         rev.addEventListener('click', function () { renderReview(r); });
@@ -514,7 +595,7 @@
       var again = el('button', 'exam__histbtn', '↻ 같은 문제지 다시 풀기');
       again.type = 'button';
       again.addEventListener('click', function () {
-        generate({ scope: 'all', mode: 'real', n: r.total, mins: 0, boost: false, seed: r.seed });
+        replayRecord(r);
       });
       acts.appendChild(again);
 
@@ -571,12 +652,14 @@
 
     /* 이력에서 사라졌으니 그 회차 답안도 함께 지운다 — 아무도 못 여는 데이터다.
        ⚠️ 같은 seed 가 이력에 또 있으면 남긴다 (다른 날 같은 문제지를 푼 경우). */
-    var stillThere = false;
-    for (i = 0; i < out.length; i++) { if (out[i].seed === r.seed) { stillThere = true; break; } }
+    /* 🔒 응시 단위(histKey)로 본다 — seed 로 보면 **같은 문제지의 다른 응시 답안**을
+       같이 지운다. 같은 seed 가 이력에 또 있어도 그 응시의 답안은 따로 있다. */
+    var key = histKey(r), stillThere = false;
+    for (i = 0; i < out.length; i++) { if (histKey(out[i]) === key) { stillThere = true; break; } }
     if (!stillThere) {
       var book = answerBook();
-      if (has(book, String(r.seed))) {
-        delete book[String(r.seed)];
+      if (has(book, key)) {
+        delete book[key];
         write('exam.answers', book);
       }
     }
@@ -613,7 +696,7 @@
      복기 전용 렌더를 따로 만들면 채점 화면과 생김새가 갈린다. */
   function renderReview(rec) {
     var book = answerBook();
-    var saved = book[String(rec.seed)];
+    var saved = book[histKey(rec)];
     if (!saved || !saved.a) return;
 
     stopTimer();
@@ -648,10 +731,10 @@
       var li = el('li', 'quiz__item');
       var card = window.EIP_QCARD.create(item, li);
       var mine = saved.a[id];
-      var ok = matchesSaved(item, mine);
+      var g = gradeSaved(item, mine);
       card.lock();
-      card.showResult({ ok: ok, mine: mine });
-      li.className = 'quiz__item ' + (ok ? 'is-ok' : 'is-no');
+      card.showResult({ ok: g.ok, mine: mine, got: g.got, max: g.max });
+      li.className = 'quiz__item ' + (g.ok ? 'is-ok' : (g.got ? 'is-part' : 'is-no'));
       list.appendChild(li);
     }
     sheetBox.appendChild(list);
@@ -670,7 +753,7 @@
     var again = el('button', 'quiz__grade', '↻ 같은 문제지 다시 풀기');
     again.type = 'button';
     again.addEventListener('click', function () {
-      generate({ scope: 'all', mode: 'real', n: rec.total, mins: 0, boost: false, seed: rec.seed });
+      replayRecord(rec);
     });
     foot.appendChild(again);
     sheetBox.appendChild(foot);
@@ -691,6 +774,24 @@
   /* 소수 첫째 자리까지만 — 2.5 는 그대로, 5.0 은 5 로 */
   function ptText(n) {
     return (Math.round(n * 10) / 10).toString();
+  }
+
+  /* 저장된 답을 다시 채점한다 — 칸 수까지 돌려줘야 복기에서도 부분 정답이 보인다. */
+  function gradeSaved(item, mine) {
+    var Q = window.EIP_QCARD;
+    var max = (item.parts && item.parts.length) || 1;
+    if (max === 1) {
+      var ok1 = matchesSaved(item, mine);
+      return { ok: ok1, got: ok1 ? 1 : 0, max: 1 };
+    }
+    var got = 0, i, p;
+    if (Q && Q.matchText && Object.prototype.toString.call(mine) === '[object Array]') {
+      for (i = 0; i < item.parts.length; i++) {
+        p = item.parts[i];
+        if (Q.matchText(mine[i] || '', p.a || [], p.t === 'code')) got++;
+      }
+    }
+    return { ok: got === max, got: got, max: max };
   }
 
   /* 저장된 답이 정답이었는지 — 채점 규칙은 qcard 것을 그대로 쓴다.
@@ -983,8 +1084,7 @@
        이력에도 「12문항 중 12점」 같은 왜곡된 줄이 남는다.
        원래 회차의 기록을 지키는 쪽이 맞다. */
     if (!current.partial) {
-      saveHistory(okCount, score, perCh);
-      saveAnswers(current.seed, answers);
+      saveAnswers(histKey(saveHistory(okCount, score, perCh)), answers);
     }
     renderResult(score, perCh, wrongItems, byTimeout);
   }
@@ -1002,17 +1102,28 @@
     var hist = read('exam.history', []) || [];
     var d = new Date();
     var mm = d.getMonth() + 1, dd = d.getDate();
-    hist.unshift({
+    var hh = d.getHours(), mi = d.getMinutes();
+    var rec = {
       seed: current.seed,
+      /* 🔒 **응시 시각.** 같은 문제지를 두 번 풀면 seed·날짜가 같아
+         병합에서 한 줄이 조용히 사라진다. 응시마다 다른 값이 있어야 한다. */
+      ts: d.getTime(),
       at: d.getFullYear() + '-' + (mm < 10 ? '0' : '') + mm + '-' + (dd < 10 ? '0' : '') + dd,
+      hm: (hh < 10 ? '0' : '') + hh + ':' + (mi < 10 ? '0' : '') + mi,
       score: okCount,                          /* 완전 정답 문항 수 (옛 뜻 그대로) */
       total: current.items.length,             /* 문항 수 */
       pt: Math.round(pt * 10) / 10,            /* 배점 합 — 소수 가능 */
       ptMax: current.items.length * fullPt(),  /* 만점 */
+      /* 🔒 **문제지의 정체는 seed 가 아니라 이 목록이다.**
+         seed 로 다시 뽑으면 그 사이 바뀐 것들(최근 출제 이력·오답 가중치·회차 수)
+         때문에 다른 문항이 나온다. 목록을 그대로 들고 있으면 그럴 일이 없다. */
+      ids: ids,
       chapters: perCh
-    });
+    };
+    hist.unshift(rec);
     while (hist.length > HISTORY_KEEP) hist.pop();
     writeHistory(hist);
+    return rec;
   }
 
   function renderResult(score, perCh, wrongItems, byTimeout) {
@@ -1039,8 +1150,12 @@
       box.appendChild(el('p', 'exam__timeout', '시간이 끝나 자동으로 제출되었습니다.'));
     }
 
-    /* 🚨 부분점수 규칙은 공개된 것이 아니라 추정이다. 그렇게 밝힌다. */
-    if (score !== Math.floor(score)) {
+    /* 🚨 부분점수 규칙은 공개된 것이 아니라 추정이다. 그렇게 밝힌다.
+       ⚠️ **점수가 소수인지로 판정하면 안 된다** — 2칸 부분점수는 2점이라 정수다.
+          부분점수가 붙을 수 있는 문항(여러 칸짜리)이 있었는지로 가른다. */
+    var hasParts = false;
+    current.items.forEach(function (it) { if (it.parts && it.parts.length > 1) hasParts = true; });
+    if (hasParts) {
       box.appendChild(el('p', 'exam__note',
         '⚠️ 여러 칸짜리 문항의 부분점수(2칸 2점 · 3칸 1.5점)는 공개된 채점기준이 아니라 추정입니다.'));
     }
