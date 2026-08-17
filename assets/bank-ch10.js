@@ -3048,5 +3048,257 @@ window.EIP_BANK_ch10 = [
        + '<b>어느 클래스로 불렀는지</b>가 정한다. 인스턴스 메소드만 실제 객체를 따라간다.',
     d: 3, y: [], tag: ['static', '오버라이딩', '다형성']
   }
+,
+
+  /* ======================================================================
+     🚨 T46 4절 — Python 코드 문항 (2026-08-17)
+
+     Python 이 11문항뿐이었다(목표 25). **길이보다 수가 먼저다** —
+     실제 Python 은 중앙 6줄(4~12줄)이라 C·Java 와 달리 격차가 크지 않았다.
+
+     📌 실제가 묻는 것 — 슬라이싱 · 자료형 넷의 차이 · 얕은 복사 ·
+        컴프리헨션 · 기본 매개변수의 함정 · 클래스. → exam-archive/README.md 2장
+     ====================================================================== */
+
+  {
+    id: 'ch10-s10-19', ch: 10, sec: 10,
+    t: 'code', lang: 'python',
+    code: 'a = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]\n'
+        + '\n'
+        + 'print(a[2:5])\n'
+        + 'print(a[:3])\n'
+        + 'print(a[-3:])\n'
+        + 'print(a[::3])',
+    q: '다음 Python 코드의 출력 결과를 차례로 쓰시오.',
+    a: ['[2, 3, 4] [0, 1, 2] [7, 8, 9] [0, 3, 6, 9]',
+        '[2,3,4] [0,1,2] [7,8,9] [0,3,6,9]'],
+    why: '🚨 <b>끝 인덱스는 포함되지 않는다.</b> <code>a[2:5]</code> 는 2·3·4 다. '
+       + '<code>a[-3:]</code> 는 <b>뒤에서 3개</b>, <code>a[::3]</code> 은 <b>3칸씩 건너뛴다</b>.',
+    d: 3, y: [], tag: ['슬라이싱', '리스트']
+  },
+
+  {
+    id: 'ch10-s10-20', ch: 10, sec: 10,
+    t: 'code', lang: 'python',
+    code: 's = "PYTHON"\n'
+        + '\n'
+        + 'print(s[1:4])\n'
+        + 'print(s[::-1])\n'
+        + 'print(s[-1])\n'
+        + 'print(len(s))',
+    q: '다음 Python 코드의 출력 결과를 차례로 쓰시오. (공백으로 구분)',
+    a: ['YTH NOHTYP N 6'],
+    why: '문자열도 <b>리스트처럼 잘린다</b>. <code>s[1:4]</code> 는 1·2·3번 글자라 YTH, '
+       + '<code>[::-1]</code> 은 <b>뒤집기</b>, <code>s[-1]</code> 은 <b>마지막 글자</b>다.',
+    d: 2, y: [], tag: ['문자열', '슬라이싱']
+  },
+
+  {
+    id: 'ch10-s10-21', ch: 10, sec: 10,
+    t: 'code', lang: 'python',
+    code: 'a = [1, 2, 2, 3, 3, 3]\n'
+        + 'b = set(a)\n'
+        + 'c = tuple(b)\n'
+        + 'd = {"x": 1, "y": 2, "x": 3}\n'
+        + '\n'
+        + 'print(len(a), len(b), len(c), len(d))',
+    q: '다음 Python 코드의 출력 결과를 쓰시오. (공백으로 구분)',
+    a: ['6 3 3 2'],
+    why: '<b>세트는 중복을 없앤다</b>(1·2·3 세 개). 튜플로 바꿔도 개수는 그대로다. '
+       + '<b>딕셔너리는 키가 중복될 수 없어</b> 뒤의 <code>"x": 3</code> 이 앞을 덮어 <b>2</b> 개다.',
+    d: 3, y: [], tag: ['세트', '튜플', '딕셔너리', '자료형']
+  },
+
+  {
+    id: 'ch10-s10-22', ch: 10, sec: 10,
+    t: 'code', lang: 'python',
+    code: 'a = [1, 2, 3]\n'
+        + 'b = a\n'
+        + 'c = a[:]\n'
+        + '\n'
+        + 'b.append(4)\n'
+        + 'c.append(5)\n'
+        + 'print(a, c)',
+    q: '다음 Python 코드의 출력 결과를 쓰시오.',
+    a: ['[1, 2, 3, 4] [1, 2, 3, 5]', '[1,2,3,4] [1,2,3,5]'],
+    why: '🚨 <code>b = a</code> 는 <b>같은 리스트를 가리킬 뿐</b>이라 b 에 붙이면 a 도 바뀐다. '
+       + '<code>c = a[:]</code> 는 <b>잘라서 새로 만든 것</b>이라 따로 논다.',
+    d: 3, y: [], tag: ['리스트', '얕은복사', '참조']
+  },
+
+  {
+    id: 'ch10-s10-23', ch: 10, sec: 10,
+    t: 'code', lang: 'python',
+    code: 'a = [x * 2 for x in range(5)]\n'
+        + 'b = [x for x in a if x % 4 == 0]\n'
+        + '\n'
+        + 'print(a)\n'
+        + 'print(b)\n'
+        + 'print(sum(b))',
+    q: '다음 Python 코드의 출력 결과를 차례로 쓰시오.',
+    a: ['[0, 2, 4, 6, 8] [0, 4, 8] 12', '[0,2,4,6,8] [0,4,8] 12'],
+    why: '<b>리스트 컴프리헨션</b>이다. <code>range(5)</code> 는 0~4 라 두 배 하면 '
+       + '0·2·4·6·8, 그중 4의 배수는 0·4·8 이고 합은 <b>12</b> 다.',
+    d: 3, y: [], tag: ['컴프리헨션', 'range', 'sum']
+  },
+
+  {
+    id: 'ch10-s10-24', ch: 10, sec: 10,
+    t: 'code', lang: 'python',
+    code: 'def f(a, b=10, *args):\n'
+        + '    return a + b + len(args)\n'
+        + '\n'
+        + 'print(f(1))\n'
+        + 'print(f(1, 2))\n'
+        + 'print(f(1, 2, 3, 4))',
+    q: '다음 Python 코드의 출력 결과를 차례로 쓰시오. (공백으로 구분)',
+    a: ['11 3 5'],
+    why: '<code>b</code> 는 <b>기본값 10</b> 이라 <code>f(1)</code> 은 1+10+0=11. '
+       + '<code>f(1, 2)</code> 는 b 가 2 로 덮여 3. '
+       + '<code>f(1, 2, 3, 4)</code> 는 <b><code>*args</code> 가 나머지 둘을 받아</b> 1+2+2=<b>5</b> 다.',
+    d: 3, y: [], tag: ['함수', '기본매개변수', '가변인자']
+  },
+
+  {
+    id: 'ch10-s10-25', ch: 10, sec: 10,
+    t: 'code', lang: 'python',
+    code: 'class Member:\n'
+        + '    count = 0\n'
+        + '\n'
+        + '    def __init__(self, name):\n'
+        + '        self.name = name\n'
+        + '        Member.count += 1\n'
+        + '\n'
+        + 'a = Member("kim")\n'
+        + 'b = Member("lee")\n'
+        + 'print(a.name, Member.count)',
+    q: '다음 Python 코드의 출력 결과를 쓰시오. (공백으로 구분)',
+    a: ['kim 2'],
+    why: '<code>self.name</code> 은 <b>객체마다 따로</b>지만 <code>Member.count</code> 는 '
+       + '<b>클래스가 하나만 가진다</b> — 생성자가 두 번 돌아 2 가 된다. '
+       + 'Python 의 메소드는 첫 매개변수로 <code>self</code> 를 받는다.',
+    d: 3, y: [], tag: ['클래스', '클래스변수', '생성자']
+  },
+
+  {
+    id: 'ch10-s10-26', ch: 10, sec: 10,
+    t: 'code', lang: 'python',
+    code: 'd = {"a": 1, "b": 2, "c": 3}\n'
+        + '\n'
+        + 'd["d"] = 4\n'
+        + 'del d["a"]\n'
+        + '\n'
+        + 'print(len(d))\n'
+        + 'print(sorted(d.keys()))\n'
+        + 'print(sum(d.values()))',
+    q: '다음 Python 코드의 출력 결과를 차례로 쓰시오.',
+    a: ["3 ['b', 'c', 'd'] 9", '3 [b, c, d] 9'],
+    why: 'd 를 넣고 a 를 지워 b·c·d 셋이 남는다. <code>sorted</code> 는 <b>정렬된 새 리스트</b>를 '
+       + '내놓고, 값의 합은 2+3+4=<b>9</b> 다.',
+    d: 3, y: [], tag: ['딕셔너리', 'sorted', 'sum']
+  },
+
+  {
+    id: 'ch10-s10-27', ch: 10, sec: 10,
+    t: 'code', lang: 'python',
+    code: 'n = 0\n'
+        + 'for i in range(1, 10, 2):\n'
+        + '    if i == 5:\n'
+        + '        continue\n'
+        + '    if i > 7:\n'
+        + '        break\n'
+        + '    n += i\n'
+        + '\n'
+        + 'print(n)',
+    q: '다음 Python 코드의 출력 결과를 쓰시오.',
+    a: ['11'],
+    why: '<code>range(1, 10, 2)</code> 는 1·3·5·7·9 다. 5 는 <code>continue</code> 로 건너뛰고 '
+       + '9 에서 <code>break</code> 로 빠진다. 더해진 것은 1+3+7=<b>11</b> 이다.',
+    d: 3, y: [], tag: ['range', 'continue', 'break']
+  },
+
+  {
+    id: 'ch10-s10-28', ch: 10, sec: 10,
+    t: 'code', lang: 'python',
+    code: 'a = [3, 1, 4, 1, 5]\n'
+        + 'b = sorted(a)\n'
+        + 'a.sort(reverse=True)\n'
+        + '\n'
+        + 'print(b[0], a[0])\n'
+        + 'print(max(a), min(a), len(a))',
+    q: '다음 Python 코드의 출력 결과를 차례로 쓰시오. (공백으로 구분)',
+    a: ['1 5 5 1 5'],
+    why: '🚨 <b><code>sorted</code> 는 새 리스트를 내놓고 <code>sort</code> 는 자기를 바꾼다.</b> '
+       + 'b 는 오름차순이라 b[0]=1, a 는 내림차순이 되어 a[0]=5 다. '
+       + '최댓값 5 · 최솟값 1 · 개수 5.',
+    d: 3, y: [], tag: ['sorted', 'sort', '내장함수']
+  },
+
+  {
+    id: 'ch10-s10-29', ch: 10, sec: 10,
+    t: 'code', lang: 'python',
+    code: 'def fib(n):\n'
+        + '    if n <= 1:\n'
+        + '        return n\n'
+        + '    return fib(n - 1) + fib(n - 2)\n'
+        + '\n'
+        + 'print([fib(i) for i in range(7)])',
+    q: '다음 Python 코드의 출력 결과를 쓰시오.',
+    a: ['[0, 1, 1, 2, 3, 5, 8]', '[0,1,1,2,3,5,8]'],
+    why: '<b>피보나치</b>다. fib(0)=0, fib(1)=1 부터 앞의 둘을 더해 나간다. '
+       + '<code>range(7)</code> 이 0~6 이라 일곱 개가 나온다.',
+    d: 3, y: [], tag: ['재귀', '피보나치', '컴프리헨션']
+  },
+
+  {
+    id: 'ch10-s10-30', ch: 10, sec: 10,
+    t: 'code', lang: 'python',
+    code: 's = "a-b-c-d"\n'
+        + 'p = s.split("-")\n'
+        + 'j = "+".join(p)\n'
+        + '\n'
+        + 'print(len(p))\n'
+        + 'print(j)\n'
+        + 'print(s.replace("-", ""))',
+    q: '다음 Python 코드의 출력 결과를 차례로 쓰시오. (공백으로 구분)',
+    a: ['4 a+b+c+d abcd'],
+    why: '<code>split</code> 은 <b>잘라서 리스트로</b>, <code>join</code> 은 <b>사이에 끼워 넣어 문자열로</b> 만든다. '
+       + '<code>replace</code> 는 바꾸는 것이고 원본 s 는 변하지 않는다.',
+    d: 2, y: [], tag: ['문자열', 'split', 'join']
+  },
+
+  {
+    id: 'ch10-s10-31', ch: 10, sec: 10,
+    t: 'code', lang: 'python',
+    code: 'a = (1, 2, 3)\n'
+        + 'b = a + (4,)\n'
+        + 'c = list(a)\n'
+        + 'c[0] = 9\n'
+        + '\n'
+        + 'print(len(b), c[0], a[0])',
+    q: '다음 Python 코드의 출력 결과를 쓰시오. (공백으로 구분)',
+    a: ['4 9 1'],
+    why: '🚨 <b>튜플은 변경할 수 없다</b> — 더하면 <b>새 튜플</b>이 생길 뿐이다(4개). '
+       + '리스트로 바꾼 c 는 고칠 수 있지만 <b>원래 튜플 a 는 그대로</b> 1 이다.',
+    d: 3, y: [], tag: ['튜플', '불변', '리스트']
+  },
+
+  {
+    id: 'ch10-s10-32', ch: 10, sec: 10,
+    t: 'code', lang: 'python',
+    code: 'a = [[0] * 3 for _ in range(3)]\n'
+        + '\n'
+        + 'for i in range(3):\n'
+        + '    for j in range(3):\n'
+        + '        a[i][j] = i * 3 + j\n'
+        + '\n'
+        + 'print(a[1])\n'
+        + 'print(a[2][1])',
+    q: '다음 Python 코드의 출력 결과를 차례로 쓰시오.',
+    a: ['[3, 4, 5] 7', '[3,4,5] 7'],
+    why: '<code>i * 3 + j</code> 라 0~8 이 차례로 들어간다. 두 번째 행(i=1)은 3·4·5 이고 '
+       + '<code>a[2][1]</code> 은 2×3+1=<b>7</b> 이다.',
+    d: 3, y: [], tag: ['2차원리스트', '컴프리헨션', '중첩반복문']
+  }
 
 ];
