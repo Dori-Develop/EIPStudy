@@ -454,6 +454,36 @@
 
   var setupBox, sheetBox, cards = [], timerId = null, current = null;
   var submitBtn = null, againBtn = null;
+  /* 남은 시간 — startTimer 안에 가둬 두면 시트를 감췄다 되살릴 때 이어 갈 수 없다 */
+  var timeLeft = 0;
+
+  /* ------------------------------------------------- 브라우저 뒤로가기
+     🚨 exam.html 은 한 페이지 안에서 **설정 ↔ 시험지**를 오간다.
+     히스토리에 아무것도 쌓지 않으면 브라우저 뒤로가기가 **사이트 홈으로 나가 버린다** —
+     방금 보던 문제지로 돌아가지 못한다.
+
+     화면을 바꿀 때마다 항목을 하나 쌓고, 뒤로 오면 그 항목이 말하는 화면을 되살린다.
+
+       exam.html(설정) → [문제지 생성] sheet → [홈으로] setup'
+       뒤로가기 → sheet → 뒤로가기 → 설정 → 뒤로가기 → 사이트 홈
+
+     🔑 **`eipD` 를 그대로 물려준다.** app.js 가 그 번호로 「뒤에 화면이 있나」를
+        판정하므로 빠뜨리면 왼쪽 아래 뒤로가기 버튼이 어긋난다. */
+  var sheetTag = '';        /* 지금 sheetBox 에 그려져 있는 것의 이름 */
+  var viewSeq = 0;
+
+  function pushView(tag) {
+    if (!window.history || !history.pushState) return;
+    var s = history.state || {};
+    try { history.pushState({ eipD: s.eipD, exam: tag }, ''); } catch (e) {}
+  }
+
+  /* 시험지·복기를 새로 그렸다고 알린다. 항목마다 이름이 달라야
+     옛 항목으로 돌아갔을 때 **엉뚱한 시험지**를 되살리지 않는다. */
+  function markSheet(kind, seed) {
+    sheetTag = kind + ':' + seed + ':' + (++viewSeq);
+    pushView(sheetTag);
+  }
 
   function chapterTitle(n) {
     var k = 'ch' + (n < 10 ? '0' : '') + n;
@@ -718,6 +748,7 @@
     sheetBox.appendChild(head);
 
     setBack('← 응시 이력', '문제지 복기 #' + rec.seed, backToSetup);
+    markSheet('review', rec.seed);
 
     if (window.EIP_QCARD.memoToggle) sheetBox.appendChild(window.EIP_QCARD.memoToggle());
 
@@ -953,14 +984,18 @@
       (current.partial ? '틀린 것만 다시 풀기' : '문제 풀기') + ' #' + current.seed,
       backToSetup);
 
+    timeLeft = 0;
     if (current.mins) startTimer(current.mins * 60);
+    markSheet('sheet', current.seed);
     window.scrollTo(0, 0);
   }
 
-  function backToSetup() {
+  /* 화면만 바꾼다 — 히스토리는 건드리지 않는다.
+     🚨 **시험지를 지우지 않고 감추기만 한다.** 지우면 뒤로가기로 돌아왔을 때
+        빈 화면이 뜬다. 새 시험지는 renderSheet 가 스스로 비우고 그린다. */
+  function showSetup() {
     stopTimer();
     sheetBox.style.display = "none";
-    sheetBox.innerHTML = "";
     setupBox.style.display = "";
     resetBack("모의 문제지 생성");
     /* 방금 푼 회차가 이력에 보여야 한다. 설정은 건드리지 않고 이력만 다시 그린다 —
@@ -968,6 +1003,32 @@
     refreshHistory();
     window.scrollTo(0, 0);
   }
+
+  function backToSetup() {
+    showSetup();
+    pushView('setup');
+  }
+
+  /* 뒤로가기로 시험지에 되돌아왔을 때 */
+  function showSheetAgain() {
+    setupBox.style.display = 'none';
+    sheetBox.style.display = '';
+    var graded = cards.length && cards[0].card.isGraded();
+    setBack('← 모의 문제지 생성',
+      (graded ? '채점 결과' : '문제 풀기') + (current && current.seed ? ' #' + current.seed : ''),
+      backToSetup);
+    /* 채점 전이면 남은 시간부터 이어 간다. 나갔다 온 사이는 흐르지 않는다 —
+       개인 학습 도구라 그 편이 쓸모 있고, 채점이 끝났으면 다시 세지 않는다. */
+    if (!graded && current && current.mins && timeLeft > 0) startTimer(timeLeft);
+    window.scrollTo(0, 0);
+  }
+
+  window.addEventListener('popstate', function () {
+    if (!setupBox || !sheetBox) return;
+    var s = history.state || {};
+    if (s.exam && s.exam === sheetTag && sheetBox.childNodes.length) showSheetAgain();
+    else showSetup();
+  });
 
   function refreshHistory() {
     var old = setupBox.querySelector('.exam__hist');
@@ -1027,19 +1088,19 @@
 
   /* ------------------------------------------------------------- 타이머 */
   function startTimer(sec) {
-    var left = sec;
+    timeLeft = sec;
     var node = document.getElementById('exam-timer');
     function paint() {
-      var m = Math.floor(left / 60), s = left % 60;
+      var m = Math.floor(timeLeft / 60), s = timeLeft % 60;
       if (node) {
         node.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
-        if (left <= 60) node.className = 'exam__timer is-urgent';
+        if (timeLeft <= 60) node.className = 'exam__timer is-urgent';
       }
     }
     paint();
     timerId = setInterval(function () {
-      left--;
-      if (left <= 0) { stopTimer(); paint(); doSubmit(true); return; }
+      timeLeft--;
+      if (timeLeft <= 0) { stopTimer(); paint(); doSubmit(true); return; }
       paint();
     }, 1000);
   }
