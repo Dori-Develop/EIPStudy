@@ -588,5 +588,428 @@ window.EIP_BANK_ch08 = [
     why: '<b>EXPLAIN PLAN</b> 이다. 조인 순서·조인 기법·액세스 기법 등이 표시된다.',
     d: 3, y: [], tag: ['실행계획'], lang: null, code: null
   }
+,
+
+  /* ======================================================================
+     🚨 T46 4절 — SQL 코드 문항 (2026-08-17)
+
+     SQL 이 12문항(1.7%)뿐이었다. 실제는 회차당 2.5문항(9%)이고 최근 15% 로 느는 중이다.
+     📌 **실제는 「결과값」을 묻는다.** 표를 주고 질의를 던져 몇 행·무슨 값이 나오는지 쓴다.
+        → exam-archive/README.md 2장
+
+     🔒 표는 문항 안에 함께 준다 — 본문 예제(회원·도서)의 결을 따르되 값은 새로 짠다.
+     ====================================================================== */
+
+  {
+    id: 'ch08-s06-05', ch: 8, sec: 6,
+    t: 'code', lang: 'sql',
+    code: '[회원]\n'
+        + '이름   | 등급   | 대출수\n'
+        + '-------+--------+------\n'
+        + '김하늘 | 일반   | 3\n'
+        + '이바다 | 우수   | 7\n'
+        + '박구름 | 일반   | NULL\n'
+        + '최나무 | 우수   | 5\n'
+        + '정보람 | 일반   | 2\n'
+        + '\n'
+        + 'SELECT COUNT(*), COUNT(대출수)\n'
+        + 'FROM 회원;',
+    q: '위 SQL 의 실행 결과를 쓰시오. (예: 3, 2)',
+    a: ['5, 4', '5,4', '5 4'],
+    why: '🚨 <b>COUNT(*) 는 NULL 을 포함해 세고, COUNT(속성명) 은 NULL 을 뺀다.</b> '
+       + '전체 5행이지만 대출수가 NULL 인 박구름이 빠져 <b>4</b> 다.',
+    d: 2, y: [], tag: ['COUNT', 'NULL', '그룹함수']
+  },
+
+  {
+    id: 'ch08-s07-04', ch: 8, sec: 7,
+    t: 'code', lang: 'sql',
+    code: '[회원]\n'
+        + '이름   | 등급 | 대출수\n'
+        + '-------+------+------\n'
+        + '김하늘 | 일반 | 3\n'
+        + '이바다 | 우수 | 7\n'
+        + '박구름 | 일반 | 1\n'
+        + '최나무 | 우수 | 5\n'
+        + '정보람 | 일반 | 2\n'
+        + '\n'
+        + 'SELECT 등급, SUM(대출수)\n'
+        + 'FROM 회원\n'
+        + 'GROUP BY 등급\n'
+        + 'HAVING COUNT(*) >= 3;',
+    q: '위 SQL 의 실행 결과로 나오는 <b>행 수</b>와 <b>SUM(대출수)</b> 값을 쓰시오. (예: 2, 10)',
+    a: ['1, 6', '1,6', '1 6'],
+    why: '일반 3명(3+1+2=6) · 우수 2명. <code>HAVING COUNT(*) &gt;= 3</code> 이 <b>그룹으로 묶은 뒤</b> '
+       + '거르므로 <b>일반 그룹 한 행</b>만 남는다.',
+    d: 3, y: [], tag: ['GROUP BY', 'HAVING', 'SUM']
+  },
+
+  {
+    id: 'ch08-s07-05', ch: 8, sec: 7,
+    t: 'code', lang: 'sql',
+    code: '[성적]\n'
+        + '학번 | 과목 | 점수\n'
+        + '-----+------+-----\n'
+        + '101  | DB   | 90\n'
+        + '101  | OS   | 70\n'
+        + '102  | DB   | 60\n'
+        + '102  | OS   | 80\n'
+        + '103  | DB   | 100\n'
+        + '\n'
+        + 'SELECT 과목, AVG(점수)\n'
+        + 'FROM 성적\n'
+        + 'WHERE 점수 >= 70\n'
+        + 'GROUP BY 과목;',
+    q: 'DB 과목의 <b>AVG(점수)</b> 값을 쓰시오.',
+    a: ['95'],
+    why: '🚨 <code>WHERE</code> 는 <b>묶기 전</b>에 거른다. DB 의 60점이 먼저 빠져 '
+       + '(90+100)÷2=<b>95</b> 다. <code>HAVING</code> 이었다면 평균이 83.3 이 된다.',
+    d: 3, y: [], tag: ['WHERE', 'GROUP BY', 'AVG']
+  },
+
+  {
+    id: 'ch08-s08-04', ch: 8, sec: 8,
+    t: 'code', lang: 'sql',
+    code: '[A]        [B]\n'
+        + '값         값\n'
+        + '---        ---\n'
+        + '1          2\n'
+        + '2          3\n'
+        + '3          4\n'
+        + '3\n'
+        + '\n'
+        + 'SELECT 값 FROM A\n'
+        + 'UNION\n'
+        + 'SELECT 값 FROM B;',
+    q: '위 SQL 의 결과 <b>행 수</b>를 쓰시오.',
+    a: ['4'],
+    why: '<b>UNION 은 중복을 제거</b>한다. A(1,2,3,3) ∪ B(2,3,4) 를 합쳐 <b>1,2,3,4</b> 네 행이다. '
+       + '<code>UNION ALL</code> 이었다면 7행이다.',
+    d: 2, y: [], tag: ['UNION', '집합연산자']
+  },
+
+  {
+    id: 'ch08-s08-05', ch: 8, sec: 8,
+    t: 'code', lang: 'sql',
+    code: '[회원]\n'
+        + '이름   | 대출수\n'
+        + '-------+------\n'
+        + '김하늘 | 3\n'
+        + '이바다 | 7\n'
+        + '박구름 | 1\n'
+        + '최나무 | 5\n'
+        + '\n'
+        + 'SELECT 이름\n'
+        + 'FROM 회원\n'
+        + 'WHERE 대출수 > (SELECT AVG(대출수) FROM 회원);',
+    q: '위 SQL 의 결과에 나오는 이름을 모두 쓰시오. (쉼표로 구분)',
+    a: ['이바다, 최나무', '이바다,최나무', '이바다 최나무'],
+    why: '평균은 (3+7+1+5)÷4=<b>4</b> 다. 4보다 큰 것은 7(이바다)과 5(최나무)다. '
+       + '<b>하위 질의를 먼저 수행</b>해 그 값을 조건에 쓴다.',
+    d: 3, y: [], tag: ['하위질의', 'AVG']
+  },
+
+  {
+    id: 'ch08-s09-06', ch: 8, sec: 9,
+    t: 'code', lang: 'sql',
+    code: '[학생]              [학과]\n'
+        + '학번 | 이름 | 학과코드   학과코드 | 학과명\n'
+        + '-----+------+---------   ---------+-------\n'
+        + '1    | 김   | A          A        | 컴퓨터\n'
+        + '2    | 이   | B          B        | 전자\n'
+        + '3    | 박   | NULL       C        | 기계\n'
+        + '\n'
+        + 'SELECT COUNT(*)\n'
+        + 'FROM 학생 S INNER JOIN 학과 D\n'
+        + '  ON S.학과코드 = D.학과코드;',
+    q: '위 SQL 의 결과값을 쓰시오.',
+    a: ['2'],
+    why: '<b>INNER JOIN 은 양쪽에 다 있는 것만</b> 남긴다. 학과코드가 NULL 인 박은 짝이 없고, '
+       + '학과 C 도 학생이 없다. 남는 것은 <b>2행</b>이다.',
+    d: 3, y: [], tag: ['JOIN', 'INNER JOIN', 'NULL']
+  },
+
+  {
+    id: 'ch08-s09-07', ch: 8, sec: 9,
+    t: 'code', lang: 'sql',
+    code: '[학생]              [학과]\n'
+        + '학번 | 이름 | 학과코드   학과코드 | 학과명\n'
+        + '-----+------+---------   ---------+-------\n'
+        + '1    | 김   | A          A        | 컴퓨터\n'
+        + '2    | 이   | B          B        | 전자\n'
+        + '3    | 박   | NULL       C        | 기계\n'
+        + '\n'
+        + 'SELECT COUNT(*)\n'
+        + 'FROM 학생 S LEFT OUTER JOIN 학과 D\n'
+        + '  ON S.학과코드 = D.학과코드;',
+    q: '위 SQL 의 결과값을 쓰시오.',
+    a: ['3'],
+    why: '<b>LEFT OUTER JOIN 은 왼쪽 표를 모두 남긴다.</b> 짝이 없는 박도 학과 쪽을 '
+       + 'NULL 로 채워 남으므로 <b>3행</b>이다. 오른쪽에만 있는 기계과는 안 나온다.',
+    d: 3, y: [], tag: ['JOIN', 'OUTER JOIN']
+  },
+
+  {
+    id: 'ch08-s06-06', ch: 8, sec: 6,
+    t: 'code', lang: 'sql',
+    code: '[도서]\n'
+        + '도서명       | 가격\n'
+        + '-------------+------\n'
+        + '자료구조     | 25000\n'
+        + '운영체제     | 30000\n'
+        + '데이터베이스 | 28000\n'
+        + '네트워크     | 22000\n'
+        + '\n'
+        + 'SELECT 도서명\n'
+        + 'FROM 도서\n'
+        + 'WHERE 가격 BETWEEN 25000 AND 30000\n'
+        + 'ORDER BY 가격 DESC;',
+    q: '결과의 <b>첫 번째 행</b>에 오는 도서명과 <b>전체 행 수</b>를 쓰시오. (예: 도서명, 2)',
+    a: ['운영체제, 3', '운영체제,3', '운영체제 3'],
+    why: '🚨 <code>BETWEEN</code> 은 <b>양 끝을 포함</b>한다(25000·30000 포함) — 세 권이 걸린다. '
+       + '<code>DESC</code> 라 가장 비싼 <b>운영체제</b>가 맨 앞이다.',
+    d: 2, y: [], tag: ['BETWEEN', 'ORDER BY']
+  },
+
+  {
+    id: 'ch08-s06-07', ch: 8, sec: 6,
+    t: 'code', lang: 'sql',
+    code: '[회원]\n'
+        + '이름\n'
+        + '------\n'
+        + '김하늘\n'
+        + '김바다\n'
+        + '이하늘\n'
+        + '박구름\n'
+        + '\n'
+        + "SELECT COUNT(*) FROM 회원 WHERE 이름 LIKE '김%';\n"
+        + "SELECT COUNT(*) FROM 회원 WHERE 이름 LIKE '_하늘';",
+    q: '두 SQL 의 결과값을 차례로 쓰시오. (예: 1, 1)',
+    a: ['2, 2', '2,2', '2 2'],
+    why: '<code>%</code> 는 <b>여러 글자</b>, <code>_</code> 는 <b>한 글자</b>다. '
+       + '<code>김%</code> 는 김하늘·김바다 <b>2</b>개, <code>_하늘</code> 은 '
+       + '김하늘·이하늘 <b>2</b>개다.',
+    d: 2, y: [], tag: ['LIKE', '와일드카드']
+  },
+
+  {
+    id: 'ch08-s05-04', ch: 8, sec: 5,
+    t: 'code', lang: 'sql',
+    code: '[재고]\n'
+        + '품번 | 수량\n'
+        + '-----+-----\n'
+        + '1    | 10\n'
+        + '2    | 5\n'
+        + '3    | 20\n'
+        + '\n'
+        + 'UPDATE 재고\n'
+        + 'SET 수량 = 수량 * 2\n'
+        + 'WHERE 수량 < 15;\n'
+        + '\n'
+        + 'SELECT SUM(수량) FROM 재고;',
+    q: '위 SQL 을 차례로 실행한 뒤 <b>SUM(수량)</b> 값을 쓰시오.',
+    a: ['50'],
+    why: '15 미만인 품번 1(10→20)과 2(5→10)만 두 배가 된다. 20+10+20=<b>50</b> 이다.',
+    d: 2, y: [], tag: ['UPDATE', 'SUM']
+  },
+
+  {
+    id: 'ch08-s05-05', ch: 8, sec: 5,
+    t: 'code', lang: 'sql',
+    code: '[사원]\n'
+        + '사번 | 부서 | 급여\n'
+        + '-----+------+------\n'
+        + '1    | 영업 | 300\n'
+        + '2    | 개발 | 500\n'
+        + '3    | 영업 | 400\n'
+        + '4    | 개발 | 200\n'
+        + '\n'
+        + "DELETE FROM 사원 WHERE 부서 = '영업';\n"
+        + '\n'
+        + 'SELECT COUNT(*), MAX(급여) FROM 사원;',
+    q: '위 SQL 을 차례로 실행한 결과를 쓰시오. (예: 3, 500)',
+    a: ['2, 500', '2,500', '2 500'],
+    why: '영업 두 행이 지워져 개발만 남는다 — <b>2</b>행이고 최고 급여는 <b>500</b> 이다. '
+       + '🚨 <code>DELETE</code> 는 <b>행</b>을 지우는 것이고 표 자체는 남는다.',
+    d: 2, y: [], tag: ['DELETE', 'COUNT', 'MAX']
+  },
+
+  {
+    id: 'ch08-s10-04', ch: 8, sec: 10,
+    t: 'code', lang: 'sql',
+    code: '[점수]\n'
+        + '이름 | 점수\n'
+        + '-----+-----\n'
+        + '김   | 90\n'
+        + '이   | 80\n'
+        + '박   | 80\n'
+        + '최   | 70\n'
+        + '\n'
+        + 'SELECT 이름,\n'
+        + '       RANK() OVER (ORDER BY 점수 DESC) AS R,\n'
+        + '       DENSE_RANK() OVER (ORDER BY 점수 DESC) AS D\n'
+        + 'FROM 점수;',
+    q: '<b>최</b> 의 R 과 D 값을 차례로 쓰시오. (예: 3, 3)',
+    a: ['4, 3', '4,3', '4 3'],
+    why: '🚨 <b>RANK 는 동점 다음 순위를 건너뛰고 DENSE_RANK 는 건너뛰지 않는다.</b> '
+       + '80점 둘이 공동 2위라 RANK 는 1,2,2,<b>4</b> · DENSE_RANK 는 1,2,2,<b>3</b> 이다.',
+    d: 3, y: [], tag: ['WINDOW함수', 'RANK', 'DENSE_RANK']
+  },
+
+  {
+    id: 'ch08-s04-05', ch: 8, sec: 4,
+    t: 'code', lang: 'sql',
+    code: 'GRANT SELECT, UPDATE ON 회원 TO 홍길동 WITH GRANT OPTION;\n'
+        + '\n'
+        + '-- 홍길동이 다음을 실행\n'
+        + 'GRANT SELECT ON 회원 TO 김철수;\n'
+        + '\n'
+        + '-- 관리자가 다음을 실행\n'
+        + 'REVOKE UPDATE ON 회원 FROM 홍길동;',
+    q: '위 실행 뒤 <b>홍길동</b>이 회원 테이블에 대해 가진 권한을 쓰시오.',
+    a: ['SELECT'],
+    why: '<code>WITH GRANT OPTION</code> 은 <b>받은 권한을 남에게 다시 줄 수 있게</b> 한다. '
+       + '뒤에 UPDATE 만 회수했으므로 <b>SELECT</b> 가 남는다.',
+    d: 3, y: [], tag: ['DCL', 'GRANT', 'REVOKE']
+  },
+
+  {
+    id: 'ch08-s03-04', ch: 8, sec: 3,
+    t: 'code', lang: 'sql',
+    code: 'ALTER TABLE 회원 ADD 전화번호 VARCHAR(20);\n'
+        + 'ALTER TABLE 회원 ALTER 등급 SET DEFAULT \'일반\';\n'
+        + 'ALTER TABLE 회원 DROP COLUMN 주소;',
+    q: '위 세 문장이 하는 일을 차례로 쓰시오. — 속성 (㉠), 기본값 (㉡), 속성 (㉢)',
+    parts: [
+      { label: '㉠', a: ['추가', 'ADD'] },
+      { label: '㉡', a: ['설정', '지정', 'SET'] },
+      { label: '㉢', a: ['삭제', '제거', 'DROP'] }
+    ],
+    why: '<code>ALTER</code> 는 표의 <b>구조</b>를 바꾼다 — <b>ADD</b> 추가 · '
+       + '<b>ALTER ~ SET DEFAULT</b> 기본값 설정 · <b>DROP COLUMN</b> 삭제.',
+    d: 2, y: [], tag: ['ALTER', 'DDL']
+  },
+
+  {
+    id: 'ch08-s06-08', ch: 8, sec: 6,
+    t: 'code', lang: 'sql',
+    code: '[주문]\n'
+        + '주문번호 | 고객 | 금액\n'
+        + '---------+------+------\n'
+        + '1        | 김   | 1000\n'
+        + '2        | 이   | 2000\n'
+        + '3        | 김   | 1500\n'
+        + '4        | 박   | 3000\n'
+        + '5        | 이   | 500\n'
+        + '\n'
+        + 'SELECT DISTINCT 고객\n'
+        + 'FROM 주문\n'
+        + 'WHERE 금액 >= 1000;',
+    q: '위 SQL 의 결과 <b>행 수</b>를 쓰시오.',
+    a: ['3'],
+    why: '1000 이상인 주문은 1·2·3·4 네 건이고 고객은 김·이·김·박이다. '
+       + '<b>DISTINCT 가 중복을 지워</b> 김·이·박 <b>3행</b>이 된다.',
+    d: 2, y: [], tag: ['DISTINCT', 'WHERE']
+  },
+
+  {
+    id: 'ch08-s08-06', ch: 8, sec: 8,
+    t: 'code', lang: 'sql',
+    code: '[사원]              [부서]\n'
+        + '이름 | 부서코드      부서코드 | 부서명\n'
+        + '-----+---------      ---------+-------\n'
+        + '김   | 10            10       | 영업\n'
+        + '이   | 20            20       | 개발\n'
+        + '박   | 10            30       | 총무\n'
+        + '\n'
+        + 'SELECT 부서명\n'
+        + 'FROM 부서\n'
+        + 'WHERE 부서코드 IN (SELECT 부서코드 FROM 사원);',
+    q: '위 SQL 의 결과에 나오는 부서명을 모두 쓰시오. (쉼표로 구분)',
+    a: ['영업, 개발', '영업,개발', '영업 개발'],
+    why: '하위 질의가 사원의 부서코드 <b>10, 20</b> 을 내놓는다. '
+       + '<code>IN</code> 은 그중 하나와 같은 행을 고르므로 <b>영업·개발</b>이다. '
+       + '사원이 없는 총무는 빠진다.',
+    d: 3, y: [], tag: ['하위질의', 'IN']
+  },
+
+  {
+    id: 'ch08-s07-06', ch: 8, sec: 7,
+    t: 'code', lang: 'sql',
+    code: '[판매]\n'
+        + '지점 | 품목 | 수량\n'
+        + '-----+------+-----\n'
+        + '서울 | A    | 10\n'
+        + '서울 | B    | 20\n'
+        + '부산 | A    | 30\n'
+        + '\n'
+        + 'SELECT 지점, SUM(수량)\n'
+        + 'FROM 판매\n'
+        + 'GROUP BY ROLLUP(지점);',
+    q: '위 SQL 의 결과 <b>행 수</b>를 쓰시오.',
+    a: ['3'],
+    why: '<b>ROLLUP 은 그룹별 소계에 전체 합계를 한 줄 더한다.</b> '
+       + '서울 30 · 부산 30 · <b>전체 60</b> 으로 <b>3행</b>이다.',
+    d: 3, y: [], tag: ['ROLLUP', 'GROUP BY']
+  },
+
+  {
+    id: 'ch08-s11-04', ch: 8, sec: 11,
+    t: 'code', lang: 'sql',
+    code: 'CREATE PROCEDURE 대출증가(IN 번호 VARCHAR(10))\n'
+        + 'BEGIN\n'
+        + '    DECLARE 현재 INT;\n'
+        + '    SELECT 대출수 INTO 현재 FROM 회원 WHERE 회원번호 = 번호;\n'
+        + '    IF 현재 < 5 THEN\n'
+        + '        UPDATE 회원 SET 대출수 = 대출수 + 1 WHERE 회원번호 = 번호;\n'
+        + '    END IF;\n'
+        + '    ( ㉠ );\n'
+        + 'END;',
+    q: '변경 내용을 데이터베이스에 <b>확정</b>하려 한다. ㉠ 에 들어갈 명령어를 쓰시오.',
+    a: ['COMMIT'],
+    why: '<b>COMMIT</b> 이다. 되돌리는 것은 <b>ROLLBACK</b>, 되돌릴 지점을 잡아 두는 것은 '
+       + '<b>SAVEPOINT</b> 다 — 셋을 묶어 <b>TCL</b> 이라 한다.',
+    d: 2, y: [], tag: ['프로시저', 'TCL', 'COMMIT']
+  },
+
+  {
+    id: 'ch08-s12-05', ch: 8, sec: 12,
+    t: 'code', lang: 'sql',
+    code: 'CREATE TRIGGER 대출로그\n'
+        + '( ㉠ ) INSERT ON 대출\n'
+        + 'FOR EACH ROW\n'
+        + 'BEGIN\n'
+        + '    INSERT INTO 로그(내용, 시각)\n'
+        + '    VALUES (CONCAT(\'대출 \', ( ㉡ ).회원번호), NOW());\n'
+        + 'END;',
+    q: '삽입이 <b>끝난 뒤</b>에 동작하고 <b>새로 들어온 행</b>을 참조하려 한다. ㉠·㉡ 을 쓰시오.',
+    parts: [
+      { label: '㉠', a: ['AFTER'] },
+      { label: '㉡', a: ['NEW'] }
+    ],
+    why: '<b>AFTER</b> 는 이벤트 뒤, <b>BEFORE</b> 는 앞이다. '
+       + '<b>NEW</b> 는 새로 들어온 값, <b>OLD</b> 는 바뀌기 전 값을 가리킨다.',
+    d: 3, y: [], tag: ['트리거', 'AFTER', 'NEW']
+  },
+
+  {
+    id: 'ch08-s06-09', ch: 8, sec: 6,
+    t: 'code', lang: 'sql',
+    code: '[회원]\n'
+        + '이름   | 등급 | 비고\n'
+        + '-------+------+------\n'
+        + '김하늘 | 일반 | NULL\n'
+        + '이바다 | 우수 | 우수\n'
+        + '박구름 | 일반 | NULL\n'
+        + '\n'
+        + 'SELECT COUNT(*) FROM 회원 WHERE 비고 IS NULL;\n'
+        + 'SELECT COUNT(*) FROM 회원 WHERE 비고 = NULL;',
+    q: '두 SQL 의 결과값을 차례로 쓰시오. (예: 1, 1)',
+    a: ['2, 0', '2,0', '2 0'],
+    why: '🚨 <b>NULL 은 = 로 비교할 수 없다.</b> 값이 아니라 「없음」이라 '
+       + '<code>= NULL</code> 은 참이 되는 행이 하나도 없어 <b>0</b> 이다. '
+       + '반드시 <code>IS NULL</code> 을 쓴다.',
+    d: 3, y: [], tag: ['NULL', 'IS NULL']
+  }
 
 ];
