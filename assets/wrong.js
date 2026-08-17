@@ -34,7 +34,7 @@
     { k: 'id', label: '챕터·섹션 순', dir: 1 }
   ];
 
-  var root, ctlEl, tabsEl, listEl, emptyEl;
+  var root, ctlEl, tabsEl, listEl, emptyEl, wipeBtn;
   var current = 1;
   var sortKey = 'at';
   var sortDir = -1;   /* 1 오름차순 · -1 내림차순 */
@@ -303,13 +303,25 @@
           여섯으로 늘리면 푸터가 그것만 남는다.
        🔑 **지금 보이는 목록만** 지운다. 탭도 챕터 필터도 그대로 따르므로
           「무엇이 지워지는가」가 화면에 그대로 떠 있다. */
-    var ids = idsFor(current);
-    if (ids.length) {
-      var wipe = el('button', 'wctl__wipe', '이 목록 비우기');
-      wipe.type = 'button';
-      wipe.addEventListener('click', function () { askWipe(ids); });
-      ctlEl.appendChild(wipe);
-    }
+    /* 🚨 **목록을 여기서 붙잡아 두면 안 된다.** 이 줄은 탭·필터가 바뀌어도 다시
+       그려지지 않아서, 「여러번 틀림」에서 눌렀는데 **이 줄이 처음 그려질 때의
+       탭**(한번 틀림)이 지워졌다. 버튼도 엉뚱한 탭에 남거나 사라졌다.
+       🔑 **누르는 순간에 다시 세고**, 보일지 말지는 `paintWipe()` 가 그때그때 정한다. */
+    wipeBtn = el('button', 'wctl__wipe', '이 목록 비우기');
+    wipeBtn.type = 'button';
+    wipeBtn.addEventListener('click', function () { askWipe(idsFor(current)); });
+    ctlEl.appendChild(wipeBtn);
+    paintWipe();
+  }
+
+  /* 지금 탭·필터에 지울 것이 있을 때만 보인다.
+     🔒 `renderList()` 가 부른다 — 목록이 바뀌는 길은 전부 거기를 지난다. */
+  function paintWipe() {
+    if (!wipeBtn) return;
+    var n = idsFor(current).length;
+    wipeBtn.hidden = !n;
+    wipeBtn.textContent = current === 0 ? '★ 저장 비우기' : '이 목록 비우기';
+    wipeBtn.title = n + '문항을 지웁니다';
   }
 
   function tabLabel(k) {
@@ -325,7 +337,7 @@
 
     /* 🚨 `confirm()` 을 쓰지 않는다 — 제목 줄에 앱 이름이 붙어 무슨 창인지 모른다.
        대화상자는 `dialog.js` 한 벌뿐이다. */
-    if (!D) return;
+    if (!D || !n) return;   /* 지울 것이 없으면 묻지도 않는다 */
     D.confirm({
       title: isFavTab ? '★ 저장을 비울까요?' : '이 목록을 비울까요?',
       sub: '「' + tabLabel(current) + '」 ' + n + '문항' +
@@ -357,7 +369,7 @@
         current = t.k;
         page = 0;
         renderTabs();
-        renderList();
+        renderList();   /* 🔑 여기서 paintWipe() 가 함께 돈다 */
       });
       tabsEl.appendChild(b);
     });
@@ -437,6 +449,7 @@
 
   function renderList() {
     listEl.innerHTML = '';
+    paintWipe();     /* 🔒 목록이 바뀌는 길은 전부 여기를 지난다 */
     var all = idsFor(current);
 
     /* 필터·정렬이 바뀌어 페이지가 범위를 넘으면 마지막 페이지로 당긴다 */

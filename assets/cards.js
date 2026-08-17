@@ -277,29 +277,43 @@
     ctlEl.appendChild(un);
 
     /* 🔒 **초기화는 「그 데이터를 보는 화면」에 둔다** (T32).
-       저장함에 있을 때만 낸다 — 전체 카드 화면에서는 지울 것이 눈앞에 없다. */
-    if (stage === 2 && savedCount()) {
-      var wipe = el('button', 'cctl__btn cctl__btn--wipe', '저장함 비우기');
+       저장함에 있을 때만 낸다 — 전체 카드 화면에서는 지울 것이 눈앞에 없다.
+       🔑 **챕터를 골라 뒀으면 그 챕터만 비운다** — 화면에 보이는 것과 같아야 한다. */
+    if (stage === 2 && wipeTargets().length) {
+      var wipe = el('button', 'cctl__btn cctl__btn--wipe',
+                    chFilter ? '이 챕터만 비우기' : '저장함 비우기');
       wipe.type = 'button';
       wipe.addEventListener('click', askWipe);
       ctlEl.appendChild(wipe);
     }
   }
 
+  /* 지금 화면에 걸린 조건(챕터 필터)으로 **저장함에 든 카드**를 고른다.
+     🔒 `pick()` 을 그대로 쓴다 — 목록을 만드는 규칙이 두 벌이 되면 어긋난다. */
+  function wipeTargets() {
+    return pick(chFilter, 2);
+  }
+
   /* 🚨 `confirm()` 을 쓰지 않는다 — 제목 줄에 앱 이름이 붙어 무슨 창인지 모른다.
      대화상자는 `dialog.js` 한 벌뿐이다. */
   function askWipe() {
     var D = window.EIP_DIALOG;
-    if (!D) return;
-    var n = savedCount();
+    var targets = wipeTargets();
+    if (!D || !targets.length) return;
+
+    var chName = chFilter ? ((TOC[chFilter] && TOC[chFilter].t) || chFilter) : '';
     D.confirm({
-      title: '저장함을 비울까요?',
-      sub: '카드 ' + n + '장',
-      body: '저장해 둔 카드가 모두 빠집니다. 카드 자체는 「전체 카드」에 그대로 있습니다.',
+      title: chFilter ? '이 챕터만 비울까요?' : '저장함을 비울까요?',
+      sub: (chName ? chName + ' · ' : '') + '카드 ' + targets.length + '장' +
+           (chFilter ? ' (전체 저장 ' + savedCount() + '장)' : ''),
+      body: chFilter
+        ? '이 챕터의 저장만 빠집니다. 다른 챕터의 저장과 카드 자체는 그대로입니다.'
+        : '저장해 둔 카드가 모두 빠집니다. 카드 자체는 「전체 카드」에 그대로 있습니다.',
       ok: '비우기',
       danger: true,
       onOk: function () {
-        saved = {};
+        var i;
+        for (i = 0; i < targets.length; i++) delete saved[targets[i].id];
         persist();
         history = [];
         buildDeck();
