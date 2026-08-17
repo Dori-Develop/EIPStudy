@@ -3299,6 +3299,771 @@ window.EIP_BANK_ch10 = [
     why: '<code>i * 3 + j</code> 라 0~8 이 차례로 들어간다. 두 번째 행(i=1)은 3·4·5 이고 '
        + '<code>a[2][1]</code> 은 2×3+1=<b>7</b> 이다.',
     d: 3, y: [], tag: ['2차원리스트', '컴프리헨션', '중첩반복문']
+  },
+
+  /* ======================================================================
+     🚨 T46 5절 — Java 3차 15문항 (45 → 60, 목표 달성) · 2026-08-17
+
+     1차는 클래스·상속·배열·재귀·예외, 2차는 문자열 함정·컬렉션·초기화 순서·
+     instanceof·가변인자였다. 3차는 그 둘이 안 건드린 곳만 골랐다 —
+     람다식과 함수형 인터페이스(본문 13장) · 예외 객체의 이름 · Set · Math ·
+     toString · final · 캡슐화 · 추상 클래스 · 선택 정렬 · 문자 빈도 ·
+     String 메소드 · break 의 범위 · 연산자 우선순위 · 자료형 오버플로.
+     ====================================================================== */
+
+  {
+    id: 'ch10-s01-14', ch: 10, sec: 1,
+    t: 'code', lang: 'java',
+    code: 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        byte b = 127;\n'
+        + '        b++;\n'
+        + '        System.out.println(b);\n'
+        + '\n'
+        + '        int i = 10;\n'
+        + '        double d = i / 4;\n'
+        + '        System.out.println(d);\n'
+        + '\n'
+        + '        System.out.println(i / 4.0);\n'
+        + '\n'
+        + '        char ch = \'A\';\n'
+        + '        System.out.println((char)(ch + 2));\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 차례로 쓰시오. (공백으로 구분)',
+    a: ['-128 2.0 2.5 C'],
+    why: '🚨 <b><code>byte</code> 는 1Byte 라 −128 ~ 127 이다.</b> 127 에서 1 을 더하면 '
+       + '표현 범위를 넘어 <b>맨 아래인 −128 로 돌아간다</b>(오버플로). '
+       + '<code>i / 4</code> 는 <b>둘 다 정수라 몫만 남아 2</b> 이고, double 에 담기며 <b>2.0</b> 으로 보인다. '
+       + '한쪽이 실수인 <code>i / 4.0</code> 이라야 <b>2.5</b> 다. '
+       + '<code>\'A\' + 2</code> 는 정수 67 이 되고 다시 char 로 바꾸면 <b>C</b> 다.',
+    d: 3, y: [], tag: ['자료형', '오버플로']
+  },
+
+  {
+    id: 'ch10-s02-18', ch: 10, sec: 2,
+    t: 'code', lang: 'java',
+    code: 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        int a = 2, b = 3, c = 4;\n'
+        + '\n'
+        + '        System.out.println(a + b * c);\n'
+        + '        System.out.println(a << 1 + 1);\n'
+        + '        System.out.println((a > b) ? c : a + b);\n'
+        + '        System.out.println(a + b > c && b % a == 1);\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 차례로 쓰시오. (공백으로 구분)',
+    a: ['14 8 5 true'],
+    why: '🚨 <b><code>a &lt;&lt; 1 + 1</code> 은 <code>(a &lt;&lt; 1) + 1</code> 이 아니다.</b> '
+       + '덧셈이 시프트보다 <b>먼저</b>라 <code>a &lt;&lt; 2</code> = 8 이다. '
+       + '순서는 <b>단산시관비논삼대순</b> — 단항 → 산술 → 시프트 → 관계 → 비트 → 논리 → 삼항 → 대입 → 순서. '
+       + '넷째 줄도 <b>산술 → 관계 → 논리</b> 차례라 <code>(2+3 &gt; 4) &amp;&amp; (3%2 == 1)</code> 로 읽는다.',
+    d: 3, y: [], tag: ['연산자우선순위', '시프트']
+  },
+
+  {
+    id: 'ch10-s03-22', ch: 10, sec: 3,
+    t: 'code', lang: 'java',
+    code: 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        int cnt = 0, sum = 0;\n'
+        + '\n'
+        + '        for (int i = 1; i <= 3; i++) {\n'
+        + '            for (int j = 1; j <= 3; j++) {\n'
+        + '                if (i * j > 4) break;\n'
+        + '                sum += i * j;\n'
+        + '                cnt++;\n'
+        + '            }\n'
+        + '        }\n'
+        + '        System.out.println(cnt + " " + sum);\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 쓰시오.',
+    a: ['6 15'],
+    why: '🚨 <b><code>break</code> 는 자기를 감싼 반복문 하나만 빠져나온다</b> — 바깥 <code>i</code> 는 계속 돈다. '
+       + 'i=1 은 세 번 다 돌아 1+2+3, i=2 는 <code>2*3=6</code> 에서 끊겨 2+4, '
+       + 'i=3 은 <code>3*2=6</code> 에서 끊겨 3 만 더한다. '
+       + '📌 <code>i*j</code> 가 <b>4 일 때는 안 끊긴다</b> — 조건이 <code>&gt; 4</code> 다.',
+    d: 3, y: [], tag: ['break', '중첩반복문']
+  },
+
+  {
+    id: 'ch10-s04-21', ch: 10, sec: 4,
+    t: 'code', lang: 'java',
+    code: 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        int[] a = {5, 2, 9, 1, 7};\n'
+        + '\n'
+        + '        for (int i = 0; i < a.length - 1; i++) {\n'
+        + '            int min = i;\n'
+        + '            for (int j = i + 1; j < a.length; j++) {\n'
+        + '                if (a[j] < a[min]) min = j;\n'
+        + '            }\n'
+        + '            int t = a[i]; a[i] = a[min]; a[min] = t;\n'
+        + '        }\n'
+        + '\n'
+        + '        for (int i = 0; i < a.length; i++) System.out.print(a[i] + " ");\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 쓰시오. (공백으로 구분)',
+    a: ['1 2 5 7 9'],
+    why: '<b>선택 정렬</b>이다. 안쪽 반복문이 <b>남은 구간에서 가장 작은 값의 자리를 찾고</b>, '
+       + '한 바퀴가 끝날 때마다 그 값을 <code>i</code> 자리와 <b>한 번만</b> 바꾼다. '
+       + '📌 <b>버블 정렬은 이웃끼리 계속 바꾸고, 선택 정렬은 한 바퀴에 한 번만 바꾼다</b> — 교환 횟수가 다르다.',
+    d: 2, y: [], tag: ['배열', '정렬', '선택정렬']
+  },
+
+  {
+    id: 'ch10-s04-22', ch: 10, sec: 4,
+    t: 'code', lang: 'java',
+    code: 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        String s = "BANANA";\n'
+        + '        int[] cnt = new int[26];\n'
+        + '\n'
+        + '        for (int i = 0; i < s.length(); i++) {\n'
+        + '            cnt[s.charAt(i) - \'A\']++;\n'
+        + '        }\n'
+        + '\n'
+        + '        int max = 0, idx = 0;\n'
+        + '        for (int i = 0; i < 26; i++) {\n'
+        + '            if (cnt[i] > max) { max = cnt[i]; idx = i; }\n'
+        + '        }\n'
+        + '\n'
+        + '        System.out.println((char)(\'A\' + idx) + " " + max);\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 쓰시오.',
+    a: ['A 3'],
+    why: '<b>문자를 배열의 인덱스로 쓰는 흔한 수법</b>이다. <code>charAt(i) - \'A\'</code> 가 '
+       + 'A→0 · B→1 · N→13 으로 자리를 만든다. BANANA 는 <b>A 3개 · N 2개 · B 1개</b>. '
+       + '🚨 <code>cnt[i] &gt; max</code> 라 <b>같으면 안 바꾼다</b> — 최빈 문자가 여럿이면 <b>앞의 것</b>이 남는다.',
+    d: 3, y: [], tag: ['배열', '문자열', 'charAt']
+  },
+
+  {
+    id: 'ch10-s04-23', ch: 10, sec: 4,
+    t: 'code', lang: 'java',
+    code: 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        String s = "Engineer Information Processing";\n'
+        + '\n'
+        + '        System.out.println(s.length());\n'
+        + '        System.out.println(s.indexOf("Info"));\n'
+        + '        System.out.println(s.substring(9, 13).toUpperCase());\n'
+        + '        System.out.println(s.replace("i", "*").indexOf("*"));\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 차례로 쓰시오. (공백으로 구분)',
+    a: ['31 9 INFO 3'],
+    why: '공백까지 세어 길이는 <b>31</b>, <code>"Info"</code> 는 <b>9번</b> 자리에서 시작한다. '
+       + '<code>substring(9, 13)</code> 은 <b>9·10·11·12</b> 넉 자라 <code>Info</code> → <b>INFO</b> 다 — '
+       + '🚨 <b>끝 인덱스는 포함되지 않는다.</b> '
+       + '<code>replace("i", "*")</code> 는 <b>대소문자를 구분해</b> 소문자 i 만 바꾸므로 '
+       + '맨 앞 <code>Engineer</code> 의 <b>3번</b> 자리가 첫 <code>*</code> 다.',
+    d: 3, y: [], tag: ['문자열', 'substring', 'indexOf']
+  },
+
+  {
+    id: 'ch10-s08-21', ch: 10, sec: 8,
+    t: 'code', lang: 'java',
+    code: 'class 도서 {\n'
+        + '    String 제목;\n'
+        + '    int 대출수;\n'
+        + '    도서(String 제목, int 대출수) {\n'
+        + '        this.제목 = 제목;\n'
+        + '        this.대출수 = 대출수;\n'
+        + '    }\n'
+        + '    public String toString() { return 제목 + "(" + 대출수 + ")"; }\n'
+        + '}\n'
+        + '\n'
+        + 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        도서 a = new 도서("자료구조", 12);\n'
+        + '        도서 b = new 도서("운영체제", 7);\n'
+        + '        System.out.println(a);\n'
+        + '        System.out.println("" + b + a.대출수);\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 차례로 쓰시오. (공백으로 구분)',
+    a: ['자료구조(12) 운영체제(7)12'],
+    why: '<b>객체를 출력하거나 문자열과 <code>+</code> 로 이으면 <code>toString()</code> 이 자동으로 불린다.</b> '
+       + '재정의하지 않았다면 <code>클래스명@해시값</code> 이 찍힌다. '
+       + '둘째 줄은 왼쪽부터 이어 붙어 <code>""+b</code> 가 먼저 문자열이 되고, '
+       + '🚨 그 뒤의 <code>a.대출수</code> 는 <b>더해지지 않고 이어 붙는다</b>.',
+    d: 3, y: [], tag: ['toString', '클래스', '문자열']
+  },
+
+  {
+    id: 'ch10-s08-22', ch: 10, sec: 8,
+    t: 'code', lang: 'java',
+    code: 'class 설정 {\n'
+        + '    static final int 최대대출 = 5;\n'
+        + '    static int 발급수 = 0;\n'
+        + '    final int 번호;\n'
+        + '\n'
+        + '    설정() {\n'
+        + '        발급수++;\n'
+        + '        번호 = 발급수;\n'
+        + '    }\n'
+        + '}\n'
+        + '\n'
+        + 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        설정 a = new 설정();\n'
+        + '        설정 b = new 설정();\n'
+        + '        설정 c = new 설정();\n'
+        + '        System.out.println(설정.최대대출 + " " + 설정.발급수 + " " + (a.번호 + c.번호));\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 쓰시오.',
+    a: ['5 3 4'],
+    why: '<b><code>static</code> 은 객체마다가 아니라 클래스에 하나</b>라 셋을 만들면 발급수가 <b>3</b> 이 된다. '
+       + '<b><code>final</code> 은 한 번 정해지면 못 바꾼다</b>는 뜻이지 「모두 같은 값」이 아니다 — '
+       + '🚨 <b>인스턴스 <code>final</code> 은 생성자에서 정할 수 있어 객체마다 다르다.</b> '
+       + 'a.번호 1 + c.번호 3 = <b>4</b>. <code>static final</code> 이라야 상수 하나다.',
+    d: 3, y: [], tag: ['final', 'static', '생성자']
+  },
+
+  {
+    id: 'ch10-s08-23', ch: 10, sec: 8,
+    t: 'code', lang: 'java',
+    code: 'class 계좌 {\n'
+        + '    private int 잔액 = 0;\n'
+        + '\n'
+        + '    public void 입금(int 금액) {\n'
+        + '        if (금액 <= 0) return;\n'
+        + '        잔액 += 금액;\n'
+        + '    }\n'
+        + '    public boolean 출금(int 금액) {\n'
+        + '        if (금액 > 잔액) return false;\n'
+        + '        잔액 -= 금액;\n'
+        + '        return true;\n'
+        + '    }\n'
+        + '    public int get잔액() { return 잔액; }\n'
+        + '}\n'
+        + '\n'
+        + 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        계좌 c = new 계좌();\n'
+        + '        c.입금(1000);\n'
+        + '        c.입금(-500);\n'
+        + '        System.out.println(c.출금(1200) + " " + c.출금(400) + " " + c.get잔액());\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 차례로 쓰시오. (공백으로 구분)',
+    a: ['false true 600'],
+    why: '<b>캡슐화</b>다 — 필드를 <code>private</code> 로 감추고 <b>메소드로만 바꾸게</b> 해서 '
+       + '「음수 입금」·「잔액보다 큰 출금」 같은 잘못된 상태를 애초에 못 만들게 한다. '
+       + '입금 −500 은 <code>return</code> 으로 무시되고, 출금 1200 은 잔액 1000 보다 커 <b>false</b> 다. '
+       + '400 만 빠져 남는 것은 <b>600</b>.',
+    d: 2, y: [], tag: ['캡슐화', '접근제어자', 'private']
+  },
+
+  {
+    id: 'ch10-s09-21', ch: 10, sec: 9,
+    t: 'code', lang: 'java',
+    code: 'abstract class 도형 {\n'
+        + '    abstract int 넓이();\n'
+        + '    String 이름() { return "도형"; }\n'
+        + '    void 출력() { System.out.print(이름() + 넓이() + " "); }\n'
+        + '}\n'
+        + '\n'
+        + 'class 사각형 extends 도형 {\n'
+        + '    int w = 4, h = 3;\n'
+        + '    int 넓이() { return w * h; }\n'
+        + '    String 이름() { return "사각형"; }\n'
+        + '}\n'
+        + '\n'
+        + 'class 정사각형 extends 사각형 {\n'
+        + '    정사각형() { w = 5; h = 5; }\n'
+        + '}\n'
+        + '\n'
+        + 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        도형[] arr = { new 사각형(), new 정사각형() };\n'
+        + '        for (도형 d : arr) d.출력();\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 쓰시오. (공백으로 구분)',
+    a: ['사각형12 사각형25'],
+    why: '<b>추상 클래스는 객체를 못 만들지만 배열의 타입은 될 수 있다</b> — 담기는 것은 자식이다. '
+       + '<code>출력()</code> 은 도형에만 있지만 그 안의 <code>이름()</code>·<code>넓이()</code> 는 '
+       + '<b>실제 객체의 것</b>이 불린다. '
+       + '🚨 <b>정사각형은 <code>이름()</code> 을 재정의하지 않아 부모인 사각형 것을 그대로 쓴다</b> — '
+       + '그래서 둘 다 「사각형」이다. 필드는 부모 초기화(4·3) 뒤 <b>생성자가 5·5 로 덮는다.</b>',
+    d: 3, y: [], tag: ['추상클래스', '다형성', '상속']
+  },
+
+  {
+    id: 'ch10-s12-10', ch: 10, sec: 12,
+    t: 'code', lang: 'java',
+    code: 'import java.util.*;\n'
+        + '\n'
+        + 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        int[] data = {3, 7, 3, 9, 7, 1};\n'
+        + '        Set<Integer> set = new HashSet<>();\n'
+        + '        for (int d : data) set.add(d);\n'
+        + '\n'
+        + '        List<Integer> list = new ArrayList<>(set);\n'
+        + '        Collections.sort(list);\n'
+        + '\n'
+        + '        System.out.println(set.size());\n'
+        + '        System.out.println(list.get(0) + list.get(list.size() - 1));\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 차례로 쓰시오. (공백으로 구분)',
+    a: ['4 10'],
+    why: '<b><code>Set</code> 은 중복을 담지 않는다</b> — 3 과 7 이 두 번씩 들어가도 한 번만 남아 '
+       + '<b>{1, 3, 7, 9} 네 개</b>다. 🚨 <b>순서도 보장하지 않으므로</b> '
+       + '차례가 필요하면 위처럼 <b>List 로 옮겨 정렬</b>한다. 1 + 9 = <b>10</b>. '
+       + '📌 <code>Set</code>·<code>List</code>·<code>Collections</code> 는 모두 <b>java.util</b> 이라 import 가 필요하다.',
+    d: 3, y: [], tag: ['HashSet', '컬렉션', 'java.util']
+  },
+
+  {
+    id: 'ch10-s12-11', ch: 10, sec: 12,
+    t: 'code', lang: 'java',
+    code: 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        int a = -7, b = 3;\n'
+        + '\n'
+        + '        System.out.println(Math.abs(a));\n'
+        + '        System.out.println(Math.max(a, b));\n'
+        + '        System.out.println((int) Math.pow(b, 2));\n'
+        + '        System.out.println((int) Math.ceil(7.0 / b));\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 차례로 쓰시오. (공백으로 구분)',
+    a: ['7 3 9 3'],
+    why: '<b><code>Math</code> 는 java.lang 이라 <code>import</code> 없이 쓴다</b> — '
+       + 'java.lang 만 자동으로 포함된다. '
+       + '<code>abs</code> 절댓값 · <code>max</code> 큰 값 · <code>pow(3,2)</code> = 9.0 · '
+       + '<code>7.0/3</code> = 2.333… 을 <code>ceil</code> 이 <b>올려</b> 3.0 이 된다. '
+       + '🚨 <code>7 / 3</code> 이었으면 정수 나눗셈이라 2 였다 — <b>7.0 이라야 실수로 나뉜다.</b>',
+    d: 2, y: [], tag: ['Math', 'java.lang', '라이브러리']
+  },
+
+  {
+    id: 'ch10-s13-15', ch: 10, sec: 13,
+    t: 'code', lang: 'java',
+    code: '@FunctionalInterface\n'
+        + 'interface Calc {\n'
+        + '    int apply(int a, int b);\n'
+        + '}\n'
+        + '\n'
+        + 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        Calc add = (a, b) -> a + b;\n'
+        + '        Calc mul = (a, b) -> { return a * b; };\n'
+        + '        Calc sub = (a, b) -> a - b;\n'
+        + '\n'
+        + '        System.out.println(add.apply(3, 4));\n'
+        + '        System.out.println(mul.apply(3, 4));\n'
+        + '        System.out.println(sub.apply(add.apply(2, 3), 4));\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 차례로 쓰시오. (공백으로 구분)',
+    a: ['7 12 1'],
+    why: '<b>람다식은 함수형 인터페이스의 하나뿐인 추상 메소드의 몸통</b>이다. '
+       + '<code>(a, b) -&gt; a + b</code> 처럼 <b>식 하나면 <code>return</code> 과 중괄호를 생략</b>하고, '
+       + '여러 줄이면 <code>{ … return v; }</code> 로 쓴다. '
+       + '셋째 줄은 안쪽부터 — <code>add.apply(2,3)</code> = 5, 그 다음 <code>5 - 4</code> = <b>1</b>. '
+       + '🚨 <b>추상 메소드가 둘 이상이면 람다로 못 받는다</b> — 어느 메소드인지 알 수 없기 때문이다.',
+    d: 3, y: [], tag: ['람다식', '함수형인터페이스']
+  },
+
+  {
+    id: 'ch10-s13-16', ch: 10, sec: 13,
+    t: 'code', lang: 'java',
+    code: 'import java.util.function.*;\n'
+        + '\n'
+        + 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        Function<Integer, Integer> f = x -> x * 3;\n'
+        + '        Predicate<Integer> p = x -> x % 2 == 0;\n'
+        + '        Supplier<String> s = () -> "EIP";\n'
+        + '\n'
+        + '        int v = f.apply(4);\n'
+        + '        System.out.println(v);\n'
+        + '        System.out.println(p.test(v));\n'
+        + '        System.out.println(s.get() + v);\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 차례로 쓰시오. (공백으로 구분)',
+    a: ['12 true eip12', '12 true EIP12'],
+    why: '표준 함수형 인터페이스 넷은 <b>무엇을 받고 무엇을 내놓는가</b>로 갈린다 — '
+       + '<b>Function</b> 받아서 바꿔 돌려줌(<code>apply</code>) · <b>Predicate</b> 받아서 참·거짓(<code>test</code>) · '
+       + '<b>Supplier</b> 받지 않고 주기만(<code>get</code>) · <b>Consumer</b> 받아서 쓰기만(<code>accept</code>). '
+       + '4×3 = 12, 12 는 짝수라 <b>true</b>, 마지막은 문자열에 이어 붙어 <b>EIP12</b> 다.',
+    d: 3, y: [], tag: ['함수형인터페이스', '람다식', 'java.util']
+  },
+
+  {
+    id: 'ch10-s13-17', ch: 10, sec: 13,
+    t: 'code', lang: 'java',
+    code: 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        int[] arr = new int[3];\n'
+        + '        String s = null;\n'
+        + '\n'
+        + '        try { arr[3] = 10; }\n'
+        + '        catch (Exception e) { }          // ㉠ 이 잡힌다\n'
+        + '\n'
+        + '        try { int n = Integer.parseInt("12A"); }\n'
+        + '        catch (Exception e) { }          // ㉡ 이 잡힌다\n'
+        + '\n'
+        + '        try { int len = s.length(); }\n'
+        + '        catch (Exception e) { }          // ㉢ 이 잡힌다\n'
+        + '    }\n'
+        + '}',
+    q: '㉠~㉢ 에서 각각 발생하는 <b>예외 객체의 이름</b>을 쓰시오.',
+    parts: [
+      { label: '㉠', a: ['ArrayIndexOutOfBoundsException'] },
+      { label: '㉡', a: ['NumberFormatException'] },
+      { label: '㉢', a: ['NullPointerException'] }
+    ],
+    why: '🚨 <b>이름 자체를 쓰게 하는 출제가 많다.</b> '
+       + '<b>ArrayIndexOutOfBoundsException</b> 은 배열의 범위를 벗어난 인덱스 — '
+       + '<code>new int[3]</code> 의 인덱스는 <b>0~2</b> 라 3 은 없다. '
+       + '<b>NumberFormatException</b> 은 숫자로 바꿀 수 없는 문자열, '
+       + '<b>NullPointerException</b> 은 <code>null</code> 인 객체의 멤버에 접근할 때다.',
+    d: 2, y: [], tag: ['예외처리', '예외객체']
+  }
+  ,
+
+  /* ======================================================================
+     🚨 T46 6절 — C 3차 12문항 (53 → 65, 목표 달성) · 2026-08-17
+
+     1·2차가 포인터·구조체·재귀·비트·제어문을 채웠다. 3차는 남은 곳만 —
+     sizeof 와 자료형 범위 · 연산자 우선순위 · strcpy/strcmp ·
+     정수 나눗셈 · 문자열 배열 · 2차원 대각합 · malloc/free ·
+     typedef 구조체 배열 · 전역변수 가리기 · 재귀 진법 변환 · math.h · stdlib.h
+     ====================================================================== */
+
+  {
+    id: 'ch10-s01-15', ch: 10, sec: 1,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    char c = 200;\n'
+        + '    unsigned char u = 200;\n'
+        + '    int a = sizeof(int), b = sizeof(double);\n'
+        + '\n'
+        + '    printf("%d %d ", a, b);\n'
+        + '    printf("%d %d", c, u);\n'
+        + '    return 0;\n'
+        + '}',
+    q: '다음 C 코드의 출력 결과를 쓰시오.',
+    a: ['4 8 -56 200'],
+    why: '<code>int</code> 는 <b>4Byte</b>, <code>double</code> 은 <b>8Byte</b> 다. '
+       + '🚨 <b><code>char</code> 는 1Byte 라 −128 ~ 127</b> 이어서 200 이 안 들어간다 — '
+       + '한 바퀴 돌아 <b>200 − 256 = −56</b> 이 된다. '
+       + '<code>unsigned</code> 를 붙이면 음수를 안 쓰는 대신 <b>0 ~ 255</b> 라 200 이 그대로 있다.',
+    d: 3, y: [], tag: ['자료형', 'sizeof', 'unsigned']
+  },
+
+  {
+    id: 'ch10-s02-19', ch: 10, sec: 2,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    int a = 10, b = 4, c = 3;\n'
+        + '\n'
+        + '    printf("%d ", a - b % c);\n'
+        + '    printf("%d ", a & b | c);\n'
+        + '    printf("%d ", a > b == 1);\n'
+        + '    printf("%d", a > b ? b > c ? 1 : 2 : 3);\n'
+        + '    return 0;\n'
+        + '}',
+    q: '다음 C 코드의 출력 결과를 쓰시오.',
+    a: ['9 3 1 1'],
+    why: '<b>단산시관비논삼대순</b> — 단항 → 산술 → 시프트 → 관계 → 비트 → 논리 → 삼항 → 대입 → 순서. '
+       + '<code>%</code> 는 곱셈급이라 뺄셈보다 먼저라 <code>10 - 1</code> = 9. '
+       + '비트는 <b><code>&amp;</code> → <code>^</code> → <code>|</code></b> 순이라 '
+       + '<code>(10 &amp; 4) | 3</code> = <code>0 | 3</code> = 3. '
+       + '관계(대소)가 등가(<code>==</code>)보다 먼저라 <code>(10&gt;4) == 1</code> = 1. '
+       + '🚨 <b>삼항은 오른쪽부터 묶인다</b> — <code>a&gt;b ? (b&gt;c ? 1 : 2) : 3</code>.',
+    d: 3, y: [], tag: ['연산자우선순위', '비트연산자']
+  },
+
+  {
+    id: 'ch10-s04-24', ch: 10, sec: 4,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '#include <string.h>\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    char a[20] = "EIP";\n'
+        + '    char b[20];\n'
+        + '\n'
+        + '    strcpy(b, a);\n'
+        + '    strcat(b, "Study");\n'
+        + '\n'
+        + '    printf("%d ", strcmp(a, "EIP") == 0);\n'
+        + '    printf("%d ", strcmp(a, b) == 0);\n'
+        + '    printf("%d", (int)strlen(b));\n'
+        + '    return 0;\n'
+        + '}',
+    q: '다음 C 코드의 출력 결과를 쓰시오.',
+    a: ['1 0 8'],
+    why: '<code>strcpy</code> 는 <b>덮어쓰고</b> <code>strcat</code> 은 <b>뒤에 이어 붙인다</b> — '
+       + 'b 는 <code>EIPStudy</code> 가 되어 길이 <b>8</b> 이다(널 문자는 안 센다). '
+       + '🚨 <b><code>strcmp</code> 는 같을 때 0 을 돌려준다</b> — 1 이 아니다. '
+       + 'C 에서 0 은 거짓이라 <code>if (strcmp(x, y))</code> 라고 쓰면 <b>「다를 때」 참</b>이 되어 뜻이 뒤집힌다.',
+    d: 2, y: [], tag: ['문자열', 'strcpy', 'strcmp']
+  },
+
+  {
+    id: 'ch10-s04-25', ch: 10, sec: 4,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    int a[5] = {80, 75, 91, 66, 89};\n'
+        + '    int sum = 0, i;\n'
+        + '\n'
+        + '    for (i = 0; i < 5; i++) sum += a[i];\n'
+        + '\n'
+        + '    printf("%d ", sum);\n'
+        + '    printf("%d ", sum / 5);\n'
+        + '    printf("%.1f", sum / 5.0);\n'
+        + '    return 0;\n'
+        + '}',
+    q: '다음 C 코드의 출력 결과를 쓰시오.',
+    a: ['401 80 80.2'],
+    why: '합은 <b>401</b> 이다. 🚨 <code>sum / 5</code> 는 <b>둘 다 정수라 소수점 아래를 버려 80</b> 이고, '
+       + '<code>sum / 5.0</code> 이라야 실수로 나뉘어 <b>80.2</b> 다. '
+       + '평균을 구하는 코드에서 가장 자주 나오는 함정이다 — <b>나누는 쪽 하나만 실수로 바꿔도 된다.</b>',
+    d: 2, y: [], tag: ['배열', '정수나눗셈', '평균']
+  },
+
+  {
+    id: 'ch10-s04-26', ch: 10, sec: 4,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '#include <string.h>\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    char s[3][10] = {"apple", "kiwi", "banana"};\n'
+        + '    int i, max = 0;\n'
+        + '\n'
+        + '    for (i = 1; i < 3; i++) {\n'
+        + '        if (strlen(s[i]) > strlen(s[max])) max = i;\n'
+        + '    }\n'
+        + '\n'
+        + '    printf("%s %d %c", s[max], (int)strlen(s[max]), s[1][2]);\n'
+        + '    return 0;\n'
+        + '}',
+    q: '다음 C 코드의 출력 결과를 쓰시오.',
+    a: ['banana 6 w'],
+    why: 'C 에서 <b>문자열의 배열은 2차원 문자 배열</b>이다 — <code>s[i]</code> 는 문자열 하나, '
+       + '<code>s[i][j]</code> 는 그 안의 글자 하나다. '
+       + '길이는 apple 5 · kiwi 4 · banana 6 이라 가장 긴 것은 <b>banana</b>. '
+       + '<code>s[1][2]</code> 는 <code>kiwi</code> 의 <b>인덱스 2</b> 라 <b>w</b> 다 — 인덱스는 0부터다.',
+    d: 3, y: [], tag: ['문자열', '2차원', 'strlen']
+  },
+
+  {
+    id: 'ch10-s04-27', ch: 10, sec: 4,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    int m[3][3] = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};\n'
+        + '    int i, d1 = 0, d2 = 0;\n'
+        + '\n'
+        + '    for (i = 0; i < 3; i++) {\n'
+        + '        d1 += m[i][i];\n'
+        + '        d2 += m[i][2 - i];\n'
+        + '    }\n'
+        + '\n'
+        + '    printf("%d %d %d", d1, d2, m[1][2] + m[2][1]);\n'
+        + '    return 0;\n'
+        + '}',
+    q: '다음 C 코드의 출력 결과를 쓰시오.',
+    a: ['15 15 14'],
+    why: '<code>m[i][i]</code> 가 <b>왼쪽 위에서 오른쪽 아래로 가는 대각선</b>(1·5·9 = 15), '
+       + '<code>m[i][2-i]</code> 가 <b>그 반대 방향 대각선</b>(3·5·7 = 15)이다. '
+       + '🚨 <b><code>m[1][2]</code> 와 <code>m[2][1]</code> 은 다른 칸이다</b> — 앞이 행, 뒤가 열이라 '
+       + '6 과 8 이고 합은 <b>14</b> 다.',
+    d: 2, y: [], tag: ['2차원', '배열', '인덱스']
+  },
+
+  {
+    id: 'ch10-s05-22', ch: 10, sec: 5,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '#include <stdlib.h>\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    int n = 5, i, sum = 0;\n'
+        + '    int *p = (int *)malloc(sizeof(int) * n);\n'
+        + '\n'
+        + '    for (i = 0; i < n; i++) p[i] = (i + 1) * 2;\n'
+        + '    for (i = 0; i < n; i++) sum += p[i];\n'
+        + '\n'
+        + '    printf("%d %d %d", sum, *(p + 2), p[n - 1]);\n'
+        + '    free(p);\n'
+        + '    return 0;\n'
+        + '}',
+    q: '다음 C 코드의 출력 결과를 쓰시오.',
+    a: ['30 6 10'],
+    why: '<code>malloc</code>·<code>free</code> 는 <b>stdlib.h</b> 에 있고, 크기는 <b>바이트로</b> 준다 — '
+       + '<code>sizeof(int) * n</code> 이라야 정수 다섯 칸이다. '
+       + '값은 2·4·6·8·10 이라 합은 <b>30</b>. '
+       + '📌 <b><code>p[i]</code> 와 <code>*(p + i)</code> 는 완전히 같은 뜻</b>이라 '
+       + '<code>*(p+2)</code> 는 <b>6</b>, <code>p[4]</code> 는 <b>10</b> 이다. '
+       + '🚨 <code>free</code> 를 빠뜨리면 <b>메모리 누수</b>가 된다.',
+    d: 3, y: [], tag: ['포인터', 'malloc', '동적할당']
+  },
+
+  {
+    id: 'ch10-s06-11', ch: 10, sec: 6,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '\n'
+        + 'typedef struct {\n'
+        + '    char 이름[10];\n'
+        + '    int  점수;\n'
+        + '} 학생;\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    학생 s[3] = {{"김", 80}, {"이", 95}, {"박", 88}};\n'
+        + '    학생 *p = s;\n'
+        + '    int i, max = 0;\n'
+        + '\n'
+        + '    for (i = 1; i < 3; i++) {\n'
+        + '        if (s[i].점수 > s[max].점수) max = i;\n'
+        + '    }\n'
+        + '\n'
+        + '    printf("%s %d %d", s[max].이름, (p + 2)->점수, p->점수 + s[1].점수);\n'
+        + '    return 0;\n'
+        + '}',
+    q: '다음 C 코드의 출력 결과를 쓰시오.',
+    a: ['이 88 175'],
+    why: '<b><code>typedef</code> 를 쓰면 <code>struct</code> 를 안 붙이고 <code>학생</code> 만으로 쓴다.</b> '
+       + '점수가 가장 높은 것은 95 인 <b>이</b> 다. '
+       + '🚨 <b><code>p + 2</code> 는 주소에 2 를 더하는 것이 아니라 구조체 <b>두 개 크기</b>만큼 건너뛴다</b> — '
+       + '<code>s[2]</code> 를 가리켜 <b>88</b> 이다. '
+       + '<code>p</code> 는 <code>s[0]</code> 이므로 80 + 95 = <b>175</b>. '
+       + '📌 변수는 <code>.</code>, 포인터는 <code>-&gt;</code> 로 멤버에 접근한다.',
+    d: 3, y: [], tag: ['구조체', 'typedef', '구조체배열']
+  },
+
+  {
+    id: 'ch10-s07-16', ch: 10, sec: 7,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '\n'
+        + 'int x = 10;\n'
+        + '\n'
+        + 'void f() {\n'
+        + '    int x = 20;\n'
+        + '    x++;\n'
+        + '    printf("%d ", x);\n'
+        + '}\n'
+        + '\n'
+        + 'void g() {\n'
+        + '    x++;\n'
+        + '    printf("%d ", x);\n'
+        + '}\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    f();\n'
+        + '    g();\n'
+        + '    printf("%d", x);\n'
+        + '    return 0;\n'
+        + '}',
+    q: '다음 C 코드의 출력 결과를 쓰시오.',
+    a: ['21 11 11'],
+    why: '🚨 <b>같은 이름이 있으면 지역 변수가 전역 변수를 가린다.</b> '
+       + '<code>f</code> 안의 <code>x</code> 는 <b>자기 것</b>이라 21 이 되고 <b>전역은 10 그대로</b>다. '
+       + '<code>g</code> 에는 지역 <code>x</code> 가 없어 <b>전역을 1 올려 11</b> 이 되고, '
+       + 'main 에서 찍는 것도 그 전역이라 <b>11</b> 이다. '
+       + '📌 전역 변수는 <b>데이터 영역</b>에 있어 프로그램이 끝날 때까지 산다.',
+    d: 3, y: [], tag: ['전역변수', '지역변수', '기억클래스']
+  },
+
+  {
+    id: 'ch10-s07-17', ch: 10, sec: 7,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '\n'
+        + 'void bin(int n) {\n'
+        + '    if (n == 0) return;\n'
+        + '    bin(n / 2);\n'
+        + '    printf("%d", n % 2);\n'
+        + '}\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    bin(13);\n'
+        + '    printf(" ");\n'
+        + '    bin(8);\n'
+        + '    return 0;\n'
+        + '}',
+    q: '다음 C 코드의 출력 결과를 쓰시오.',
+    a: ['1101 1000'],
+    why: '10진수를 2진수로 바꾸는 재귀다. '
+       + '🚨 <b><code>printf</code> 가 재귀 호출 <b>뒤에</b> 있다</b> — 몫을 끝까지 내려간 다음 '
+       + '<b>되돌아 나오면서</b> 나머지를 찍으므로 순서가 제대로 선다. '
+       + '두 줄의 자리를 바꾸면 13 이 <b>1011</b> 로 거꾸로 나온다. '
+       + '📌 <code>n == 0</code> 이 <b>종료 조건</b>이다 — 없으면 스택 오버플로가 난다.',
+    d: 3, y: [], tag: ['재귀함수', '진법변환']
+  },
+
+  {
+    id: 'ch10-s12-12', ch: 10, sec: 12,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '#include <math.h>\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    double a = 7.6, b = -3.2;\n'
+        + '\n'
+        + '    printf("%d ", (int)sqrt(16.0));\n'
+        + '    printf("%d ", (int)pow(2, 5));\n'
+        + '    printf("%d ", (int)ceil(a));\n'
+        + '    printf("%d", (int)floor(b));\n'
+        + '    return 0;\n'
+        + '}',
+    q: '다음 C 코드의 출력 결과를 쓰시오.',
+    a: ['4 32 8 -4'],
+    why: '<b>math.h</b> — <code>sqrt</code> 제곱근 · <code>pow</code> 거듭제곱 · '
+       + '<code>ceil</code> 올림 · <code>floor</code> 내림 · <code>abs</code> 절댓값. '
+       + '🚨 <b><code>floor</code> 는 「소수점 버림」이 아니라 「작은 쪽」</b>이다 — '
+       + '−3.2 는 −3 이 아니라 <b>−4</b> 다. 양수에서만 버림과 결과가 같다.',
+    d: 3, y: [], tag: ['math.h', '라이브러리', '헤더파일']
+  },
+
+  {
+    id: 'ch10-s12-13', ch: 10, sec: 12,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '#include <stdlib.h>\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    char s1[] = "42";\n'
+        + '    char s2[] = "7kg";\n'
+        + '    char s3[] = "kg7";\n'
+        + '\n'
+        + '    printf("%d ", atoi(s1) + abs(-8));\n'
+        + '    printf("%d ", atoi(s2));\n'
+        + '    printf("%d", atoi(s3));\n'
+        + '    return 0;\n'
+        + '}',
+    q: '다음 C 코드의 출력 결과를 쓰시오.',
+    a: ['50 7 0'],
+    why: '<b>stdlib.h</b> — <code>atoi</code> 문자열을 정수로 · <code>atof</code> 실수로 · '
+       + '<code>rand</code> 난수 · <code>malloc</code>·<code>free</code> 메모리. '
+       + '<code>atoi</code> 는 <b>앞에서부터 숫자로 읽히는 데까지만</b> 읽고 멈춘다 — '
+       + '<code>"7kg"</code> 는 <b>7</b>, 처음부터 숫자가 아닌 <code>"kg7"</code> 는 <b>0</b> 이다. '
+       + '🚨 그래서 <b>「변환 실패」와 「진짜 0」을 구분할 수 없다.</b>',
+    d: 2, y: [], tag: ['stdlib.h', 'atoi', '라이브러리']
   }
 
 ];
