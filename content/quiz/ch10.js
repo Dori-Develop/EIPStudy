@@ -2525,5 +2525,528 @@ window.EIP_BANK_ch10 = [
        + '두 번째 mid=(3+4)/2=3(값 7)에서 찾는다. 인덱스 <b>3</b>, 비교 <b>2</b>번.',
     d: 3, y: [], tag: ['배열', '이진탐색']
   }
+,
+
+  /* ======================================================================
+     🚨 T46 4절 — Java 코드 문항 2차 (2026-08-17)
+
+     1차 20문항은 클래스·상속·배열·재귀·예외를 덮었다. 여기는 그 밖의 것 —
+     문자열 비교와 불변성 · 컬렉션 · 초기화 순서 · instanceof · 인터페이스 기본 메소드 ·
+     하노이 탑 · 비트 연산 · Arrays 유틸.
+
+     📌 길이 11~20줄, 상한 28줄. → exam-archive/README.md 2장
+     ====================================================================== */
+
+  {
+    id: 'ch10-s04-17', ch: 10, sec: 4,
+    t: 'code', lang: 'java',
+    code: 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        String a = "java";\n'
+        + '        String b = "java";\n'
+        + '        String c = new String("java");\n'
+        + '\n'
+        + '        System.out.print(a == b);\n'
+        + '        System.out.print(" " + (a == c));\n'
+        + '        System.out.print(" " + a.equals(c));\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 쓰시오. (공백으로 구분)',
+    a: ['true false true'],
+    why: '🚨 <b><code>==</code> 는 주소를, <code>equals</code> 는 내용을 비교한다.</b> '
+       + '리터럴 <code>"java"</code> 는 상수 풀에서 <b>같은 객체를 공유</b>해 a==b 가 true 지만, '
+       + '<code>new String</code> 은 <b>새 객체</b>라 a==c 는 false 다.',
+    d: 3, y: [], tag: ['문자열', 'equals', '상수풀']
+  },
+
+  {
+    id: 'ch10-s04-18', ch: 10, sec: 4,
+    t: 'code', lang: 'java',
+    code: 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        String s = "abc";\n'
+        + '        s.concat("def");\n'
+        + '        s = s.concat("!");\n'
+        + '\n'
+        + '        StringBuilder sb = new StringBuilder("abc");\n'
+        + '        sb.append("def");\n'
+        + '        sb.reverse();\n'
+        + '\n'
+        + '        System.out.print(s + " " + sb.toString());\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 쓰시오. (공백으로 구분)',
+    a: ['abc! fedcba'],
+    why: '🚨 <b><code>String</code> 은 불변이라</b> <code>s.concat("def")</code> 의 결과를 '
+       + '받지 않으면 버려진다. 다시 대입한 <code>"!"</code> 만 남아 <b>abc!</b> 다. '
+       + '<b><code>StringBuilder</code> 는 자기를 바꾸므로</b> abcdef 를 뒤집어 <b>fedcba</b> 가 된다.',
+    d: 3, y: [], tag: ['문자열', '불변성', 'StringBuilder']
+  },
+
+  {
+    id: 'ch10-s04-19', ch: 10, sec: 4,
+    t: 'code', lang: 'java',
+    code: 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        String s = "a,b,,c";\n'
+        + '        String[] p = s.split(",");\n'
+        + '        int len = 0;\n'
+        + '\n'
+        + '        for (String x : p) len += x.length();\n'
+        + '        System.out.print(p.length + " " + len);\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 쓰시오. (공백으로 구분)',
+    a: ['4 3'],
+    why: '<code>split(",")</code> 이 <code>a</code>·<code>b</code>·<b>빈 문자열</b>·<code>c</code> '
+       + '넷으로 자른다 — <b>가운데 빈 칸도 한 조각</b>이다. 길이 합은 1+1+0+1=<b>3</b> 이다.',
+    d: 3, y: [], tag: ['문자열', 'split']
+  },
+
+  {
+    id: 'ch10-s12-07', ch: 10, sec: 12,
+    t: 'code', lang: 'java',
+    code: 'import java.util.ArrayList;\n'
+        + '\n'
+        + 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        ArrayList<Integer> a = new ArrayList<>();\n'
+        + '        a.add(10);\n'
+        + '        a.add(20);\n'
+        + '        a.add(30);\n'
+        + '        a.remove(1);\n'
+        + '        a.add(1, 40);\n'
+        + '\n'
+        + '        int sum = 0;\n'
+        + '        for (int v : a) sum += v;\n'
+        + '        System.out.print(a.size() + " " + a.get(1) + " " + sum);\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 쓰시오. (공백으로 구분)',
+    a: ['3 40 80'],
+    why: '10·20·30 에서 <code>remove(1)</code> 이 <b>인덱스 1</b>(20)을 지워 10·30 이 되고, '
+       + '<code>add(1, 40)</code> 이 그 자리에 끼워 넣어 <b>10·40·30</b> 이 된다. '
+       + '크기 3 · 1번 40 · 합 <b>80</b>.',
+    d: 3, y: [], tag: ['ArrayList', '컬렉션', 'java.util']
+  },
+
+  {
+    id: 'ch10-s12-08', ch: 10, sec: 12,
+    t: 'code', lang: 'java',
+    code: 'import java.util.HashMap;\n'
+        + '\n'
+        + 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        HashMap<String, Integer> m = new HashMap<>();\n'
+        + '        String s = "banana";\n'
+        + '\n'
+        + '        for (int i = 0; i < s.length(); i++) {\n'
+        + '            String k = String.valueOf(s.charAt(i));\n'
+        + '            if (m.containsKey(k)) m.put(k, m.get(k) + 1);\n'
+        + '            else m.put(k, 1);\n'
+        + '        }\n'
+        + '        System.out.print(m.size() + " " + m.get("a") + " " + m.get("n"));\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 쓰시오. (공백으로 구분)',
+    a: ['3 3 2'],
+    why: '<code>banana</code> 의 글자는 b·a·n 세 가지라 <b>key 는 3개</b>다. '
+       + 'a 가 3번, n 이 2번 나온다. <b>Map 은 같은 키를 덮어쓰므로</b> 개수 세기에 쓴다.',
+    d: 3, y: [], tag: ['HashMap', '컬렉션']
+  },
+
+  {
+    id: 'ch10-s12-09', ch: 10, sec: 12,
+    t: 'code', lang: 'java',
+    code: 'import java.util.Arrays;\n'
+        + '\n'
+        + 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        int[] a = { 5, 2, 9, 1, 7 };\n'
+        + '        int[] b = a;\n'
+        + '        int[] c = a.clone();\n'
+        + '\n'
+        + '        Arrays.sort(a);\n'
+        + '        System.out.print(b[0] + " " + c[0] + " ");\n'
+        + '        System.out.print(Arrays.binarySearch(a, 7));\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 쓰시오. (공백으로 구분)',
+    a: ['1 5 3'],
+    why: '🚨 <code>b = a</code> 는 <b>같은 배열을 가리킬 뿐</b>이라 정렬이 b 에도 보인다(1). '
+       + '<code>clone()</code> 은 <b>따로 복사</b>해 원래 순서를 지킨다(5). '
+       + '정렬 뒤 {1,2,5,7,9} 에서 7 은 인덱스 <b>3</b> 이다.',
+    d: 3, y: [], tag: ['배열', 'clone', 'Arrays', '이진탐색']
+  },
+
+  {
+    id: 'ch10-s08-18', ch: 10, sec: 8,
+    t: 'code', lang: 'java',
+    code: 'class T {\n'
+        + '    static int s;\n'
+        + '    int i;\n'
+        + '\n'
+        + '    static { s = 1; System.out.print("S"); }\n'
+        + '    { i = 2; System.out.print("I"); }\n'
+        + '    T() { System.out.print("C"); }\n'
+        + '}\n'
+        + '\n'
+        + 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        new T();\n'
+        + '        new T();\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 쓰시오.',
+    a: ['SICIC'],
+    why: '🚨 <b>정적 초기화 블록은 클래스가 처음 쓰일 때 딱 한 번</b> 돈다(S). '
+       + '인스턴스 초기화 블록과 생성자는 <b>객체마다</b> 돌고, '
+       + '순서는 <b>블록이 먼저 생성자가 나중</b>이라 IC 가 두 번 이어진다.',
+    d: 3, y: [], tag: ['초기화블록', 'static', '생성자']
+  },
+
+  {
+    id: 'ch10-s08-19', ch: 10, sec: 8,
+    t: 'code', lang: 'java',
+    code: 'class Node {\n'
+        + '    int v;\n'
+        + '    Node next;\n'
+        + '    Node(int v) { this.v = v; }\n'
+        + '}\n'
+        + '\n'
+        + 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        Node h = new Node(1);\n'
+        + '        h.next = new Node(2);\n'
+        + '        h.next.next = new Node(3);\n'
+        + '\n'
+        + '        int sum = 0;\n'
+        + '        Node p = h;\n'
+        + '        while (p != null) {\n'
+        + '            sum += p.v;\n'
+        + '            p = p.next;\n'
+        + '        }\n'
+        + '        System.out.print(sum + " " + h.next.v);\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 쓰시오. (공백으로 구분)',
+    a: ['6 2'],
+    why: '<b>연결 리스트</b>다. 1→2→3 을 따라가며 더하면 <b>6</b> 이고, '
+       + '<code>h.next.v</code> 는 두 번째 노드라 <b>2</b> 다. '
+       + '<code>p != null</code> 이 끝을 알리는 조건이다.',
+    d: 3, y: [], tag: ['연결리스트', '참조', '자료구조']
+  },
+
+  {
+    id: 'ch10-s09-18', ch: 10, sec: 9,
+    t: 'code', lang: 'java',
+    code: 'class A { void go() { System.out.print("A"); } }\n'
+        + 'class B extends A { void go() { System.out.print("B"); }\n'
+        + '                    void only() { System.out.print("b"); } }\n'
+        + '\n'
+        + 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        A x = new B();\n'
+        + '        x.go();\n'
+        + '        if (x instanceof B) {\n'
+        + '            B y = (B) x;\n'
+        + '            y.only();\n'
+        + '        }\n'
+        + '        System.out.print(x instanceof A);\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 쓰시오.',
+    a: ['Bbtrue'],
+    why: '재정의된 <code>go()</code> 가 불려 <b>B</b>. 참조 타입이 A 라 '
+       + '<code>only()</code> 는 <b>다운캐스팅</b>해야 부를 수 있다(b). '
+       + '<b>자식 객체는 부모 타입이기도 하므로</b> <code>instanceof A</code> 는 true 다.',
+    d: 3, y: [], tag: ['instanceof', '다운캐스팅', '다형성']
+  },
+
+  {
+    id: 'ch10-s09-19', ch: 10, sec: 9,
+    t: 'code', lang: 'java',
+    code: 'interface Greet {\n'
+        + '    String name();\n'
+        + '    default void hello() {\n'
+        + '        System.out.print("Hi " + name());\n'
+        + '    }\n'
+        + '}\n'
+        + '\n'
+        + 'class Kor implements Greet {\n'
+        + '    public String name() { return "Kim"; }\n'
+        + '}\n'
+        + 'class Eng implements Greet {\n'
+        + '    public String name() { return "Lee"; }\n'
+        + '    public void hello() { System.out.print("Hello " + name()); }\n'
+        + '}\n'
+        + '\n'
+        + 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        new Kor().hello();\n'
+        + '        System.out.print("/");\n'
+        + '        new Eng().hello();\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 쓰시오.',
+    a: ['Hi Kim/Hello Lee'],
+    why: '<b>인터페이스의 <code>default</code> 메소드는 몸통을 가진다</b> — 구현하지 않으면 '
+       + '그대로 쓰고(Kor), 재정의하면 그쪽이 이긴다(Eng).',
+    d: 3, y: [], tag: ['인터페이스', 'default메소드', '오버라이딩']
+  },
+
+  {
+    id: 'ch10-s13-14', ch: 10, sec: 13,
+    t: 'code', lang: 'java',
+    code: 'class MyEx extends Exception {\n'
+        + '    MyEx(String m) { super(m); }\n'
+        + '}\n'
+        + '\n'
+        + 'public class Main {\n'
+        + '    static void check(int n) throws MyEx {\n'
+        + '        if (n < 0) throw new MyEx("neg");\n'
+        + '        System.out.print(n);\n'
+        + '    }\n'
+        + '    public static void main(String[] args) {\n'
+        + '        try {\n'
+        + '            check(1);\n'
+        + '            check(-1);\n'
+        + '            check(2);\n'
+        + '        } catch (MyEx e) {\n'
+        + '            System.out.print("[" + e.getMessage() + "]");\n'
+        + '        }\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 쓰시오.',
+    a: ['1[neg]'],
+    why: 'check(1) 이 1 을 찍고, check(−1) 이 예외를 던지는 순간 <b>try 블록의 나머지를 건너뛰고</b> '
+       + 'catch 로 간다 — check(2) 는 실행되지 않는다. '
+       + '<code>throw</code> 는 던지는 것, <code>throws</code> 는 「던질 수 있다」는 선언이다.',
+    d: 3, y: [], tag: ['예외처리', '사용자정의예외', 'throw']
+  },
+
+  {
+    id: 'ch10-s03-20', ch: 10, sec: 3,
+    t: 'code', lang: 'java',
+    code: 'public class Main {\n'
+        + '    static int cnt = 0;\n'
+        + '\n'
+        + '    static void hanoi(int n, char a, char b, char c) {\n'
+        + '        if (n == 0) return;\n'
+        + '        hanoi(n - 1, a, c, b);\n'
+        + '        cnt++;\n'
+        + '        hanoi(n - 1, c, b, a);\n'
+        + '    }\n'
+        + '\n'
+        + '    public static void main(String[] args) {\n'
+        + '        hanoi(4, \'A\', \'B\', \'C\');\n'
+        + '        System.out.print(cnt);\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 쓰시오.',
+    a: ['15'],
+    why: '<b>하노이 탑</b>의 이동 횟수는 <code>2ⁿ − 1</code> 이다. '
+       + 'n=4 이므로 16−1=<b>15</b> 다.',
+    d: 3, y: [], tag: ['재귀', '하노이탑']
+  },
+
+  {
+    id: 'ch10-s03-21', ch: 10, sec: 3,
+    t: 'code', lang: 'java',
+    code: 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        int n = 5;\n'
+        + '        int r = 0;\n'
+        + '\n'
+        + '        switch (n) {\n'
+        + '            case 3:\n'
+        + '            case 4: r += 1;\n'
+        + '            case 5: r += 2;\n'
+        + '            case 6: r += 4; break;\n'
+        + '            case 7: r += 8;\n'
+        + '            default: r += 16;\n'
+        + '        }\n'
+        + '        System.out.print(r);\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 쓰시오.',
+    a: ['6'],
+    why: '🚨 <b><code>break</code> 가 없으면 아래로 흘러내린다</b>(폴스루). '
+       + 'case 5 로 들어가 2 를 더하고, case 6 의 4 까지 더한 뒤 <code>break</code> 로 나온다 → '
+       + '2+4=<b>6</b>. case 7·default 는 닿지 않는다.',
+    d: 3, y: [], tag: ['switch', '폴스루']
+  },
+
+  {
+    id: 'ch10-s02-16', ch: 10, sec: 2,
+    t: 'code', lang: 'java',
+    code: 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        int a = 20, b = 7;\n'
+        + '        int max = (a > b) ? a : b;\n'
+        + '        String s = (a % 2 == 0) ? ((a > 10) ? "BIG" : "SMALL") : "ODD";\n'
+        + '\n'
+        + '        System.out.print(max + " " + s + " " + (a / b) + " " + (a % b));\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 쓰시오. (공백으로 구분)',
+    a: ['20 BIG 2 6'],
+    why: '<b>삼항 연산자</b>는 중첩할 수 있다 — 20 은 짝수이고 10 보다 크니 <b>BIG</b>. '
+       + '정수 나눗셈은 몫만 남아 20/7=<b>2</b>, 나머지는 <b>6</b> 이다.',
+    d: 2, y: [], tag: ['삼항연산자', '정수나눗셈']
+  },
+
+  {
+    id: 'ch10-s02-17', ch: 10, sec: 2,
+    t: 'code', lang: 'java',
+    code: 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        int a = 13;\n'
+        + '        int b = 6;\n'
+        + '\n'
+        + '        System.out.print((a & b) + " ");\n'
+        + '        System.out.print((a | b) + " ");\n'
+        + '        System.out.print((a ^ b) + " ");\n'
+        + '        System.out.print((a >> 2) + " ");\n'
+        + '        System.out.print(a << 2);\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 쓰시오. (공백으로 구분)',
+    a: ['4 15 11 3 52'],
+    why: '13=1101, 6=0110. <b>AND</b> 0100=4 · <b>OR</b> 1111=15 · <b>XOR</b> 1011=11. '
+       + '<code>&gt;&gt;2</code> 는 4로 나눈 몫 <b>3</b>, <code>&lt;&lt;2</code> 는 4배 <b>52</b> 다.',
+    d: 3, y: [], tag: ['비트연산', '시프트']
+  },
+
+  {
+    id: 'ch10-s01-13', ch: 10, sec: 1,
+    t: 'code', lang: 'java',
+    code: 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        char c = \'A\';\n'
+        + '        c += 2;\n'
+        + '        int i = \'Z\' - \'A\';\n'
+        + '        char d = (char) (\'a\' + 1);\n'
+        + '\n'
+        + '        System.out.print(c);\n'
+        + '        System.out.print(" " + i);\n'
+        + '        System.out.print(" " + d);\n'
+        + '        System.out.print(" " + (int) c);\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 쓰시오. (공백으로 구분)',
+    a: ['C 25 b 67'],
+    why: '<code>char</code> 는 숫자처럼 더할 수 있다. A(65)+2=67 이라 <b>C</b>, '
+       + '<code>(int)</code> 로 보면 <b>67</b> 이다. Z(90)−A(65)=<b>25</b>, a(97)+1=98 이라 <b>b</b>.',
+    d: 3, y: [], tag: ['char', '아스키', '형변환']
+  },
+
+  {
+    id: 'ch10-s07-15', ch: 10, sec: 7,
+    t: 'code', lang: 'java',
+    code: 'public class Main {\n'
+        + '    static int sum(int... nums) {\n'
+        + '        int s = 0;\n'
+        + '        for (int n : nums) s += n;\n'
+        + '        return s;\n'
+        + '    }\n'
+        + '    static int sum(int a, int b) {\n'
+        + '        return a * b;\n'
+        + '    }\n'
+        + '\n'
+        + '    public static void main(String[] args) {\n'
+        + '        System.out.print(sum(1, 2) + " " + sum(1, 2, 3) + " " + sum());\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 쓰시오. (공백으로 구분)',
+    a: ['2 6 0'],
+    why: '🚨 <b>정확히 맞는 메소드가 가변인자보다 먼저 뽑힌다.</b> '
+       + '<code>sum(1, 2)</code> 는 두 개짜리가 걸려 1×2=<b>2</b>, '
+       + '나머지는 가변인자로 가 6 과 <b>0</b> 이다.',
+    d: 3, y: [], tag: ['가변인자', '오버로딩']
+  },
+
+  {
+    id: 'ch10-s04-20', ch: 10, sec: 4,
+    t: 'code', lang: 'java',
+    code: 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        int[][] a = new int[3][];\n'
+        + '        a[0] = new int[1];\n'
+        + '        a[1] = new int[2];\n'
+        + '        a[2] = new int[3];\n'
+        + '\n'
+        + '        int cnt = 0;\n'
+        + '        for (int i = 0; i < a.length; i++) {\n'
+        + '            for (int j = 0; j < a[i].length; j++) {\n'
+        + '                a[i][j] = i + j;\n'
+        + '                cnt++;\n'
+        + '            }\n'
+        + '        }\n'
+        + '        System.out.print(cnt + " " + a[2][2]);\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 쓰시오. (공백으로 구분)',
+    a: ['6 4'],
+    why: '<b>가변 배열</b>이라 행마다 길이가 다르다(1·2·3). 칸은 1+2+3=<b>6</b> 개이고 '
+       + '<code>a[2][2]</code> 는 2+2=<b>4</b> 다. <code>a[i].length</code> 로 행마다 재야 한다.',
+    d: 3, y: [], tag: ['2차원배열', '가변배열']
+  },
+
+  {
+    id: 'ch10-s08-20', ch: 10, sec: 8,
+    t: 'code', lang: 'java',
+    code: 'class Queue {\n'
+        + '    private int[] buf = new int[5];\n'
+        + '    private int front = 0, rear = 0;\n'
+        + '\n'
+        + '    void put(int v) { buf[rear++] = v; }\n'
+        + '    int get() {\n'
+        + '        if (front == rear) return -1;\n'
+        + '        return buf[front++];\n'
+        + '    }\n'
+        + '}\n'
+        + '\n'
+        + 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        Queue q = new Queue();\n'
+        + '        q.put(1); q.put(2); q.put(3);\n'
+        + '        q.get();\n'
+        + '        q.put(4);\n'
+        + '        System.out.print(q.get() + "" + q.get());\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 쓰시오.',
+    a: ['23'],
+    why: '<b>큐는 FIFO</b> 다. 1·2·3 을 넣고 한 번 꺼내면 1 이 나가고 2·3 이 남는다. '
+       + '4 를 넣은 뒤 두 번 꺼내면 <b>2</b>, 그다음 <b>3</b> 이다. '
+       + '스택(LIFO)과 반대다.',
+    d: 3, y: [], tag: ['큐', 'FIFO', '자료구조']
+  },
+
+  {
+    id: 'ch10-s09-20', ch: 10, sec: 9,
+    t: 'code', lang: 'java',
+    code: 'class P {\n'
+        + '    static String who() { return "P-static"; }\n'
+        + '    String me() { return "P-me"; }\n'
+        + '}\n'
+        + 'class C extends P {\n'
+        + '    static String who() { return "C-static"; }\n'
+        + '    String me() { return "C-me"; }\n'
+        + '}\n'
+        + '\n'
+        + 'public class Main {\n'
+        + '    public static void main(String[] args) {\n'
+        + '        P x = new C();\n'
+        + '        System.out.print(x.me() + " " + P.who());\n'
+        + '    }\n'
+        + '}',
+    q: '다음 Java 코드의 출력 결과를 쓰시오. (공백으로 구분)',
+    a: ['C-me P-static'],
+    why: '🚨 <b><code>static</code> 메소드는 오버라이딩되지 않는다</b> — 감춰질 뿐이고 '
+       + '<b>어느 클래스로 불렀는지</b>가 정한다. 인스턴스 메소드만 실제 객체를 따라간다.',
+    d: 3, y: [], tag: ['static', '오버라이딩', '다형성']
+  }
 
 ];
