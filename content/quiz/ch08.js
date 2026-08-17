@@ -1599,6 +1599,174 @@ window.EIP_BANK_ch08 = [
        + '<b>OPEN</b> 이 쿼리를 실행해 결과를 커서에 담고, <b>FETCH</b> 가 <b>한 행씩</b> 읽어 변수에 넣고, '
        + '<b>CLOSE</b> 가 메모리를 놓는다. 사용자가 직접 정의했으므로 <b>명시적 커서</b>다.',
     d: 2, y: [], tag: ['커서', '명시적커서']
+  },
+
+  /* ======================================================================
+     🚨 T46 7절 — 보기 선택 문항 (`pool` + `t:'pick'`) · 2026-08-17
+     ====================================================================== */
+
+  {
+    id: 'ch08-s01-03', ch: 8, sec: 1,
+    t: 'multi-blank',
+    q: '다음 설명에 해당하는 SQL 명령어를 <b>보기에서 골라</b> 쓰시오.<br>'
+     + '㉠ 이미 만들어진 테이블의 <b>구조를 변경</b>한다<br>'
+     + '㉡ 사용자에게 준 <b>권한을 거둔다</b><br>'
+     + '㉢ 트랜잭션에서 수행한 변경 내용을 <b>취소</b>한다',
+    pool: ['CREATE', 'ALTER', 'DROP', 'SELECT', 'INSERT',
+           'GRANT', 'REVOKE', 'COMMIT', 'ROLLBACK'],
+    parts: [
+      { label: '㉠', t: 'pick', a: ['ALTER'] },
+      { label: '㉡', t: 'pick', a: ['REVOKE'] },
+      { label: '㉢', t: 'pick', a: ['ROLLBACK'] }
+    ],
+    why: '<b>DDL</b> 은 구조를 만들고 바꾸고 지운다 — <b>CREATE·ALTER·DROP</b>. '
+       + '<b>DCL</b> 은 권한을 준다 뺏는다 — <b>GRANT·REVOKE</b>. '
+       + '<b>TCL</b> 은 트랜잭션을 확정하거나 되돌린다 — <b>COMMIT·ROLLBACK·SAVEPOINT</b>. '
+       + '🚨 <b>DROP 은 구조를 지우고 ROLLBACK 은 데이터 변경을 되돌린다</b> — 「취소」라는 말에 끌려가지 말 것.',
+    d: 1, y: [], tag: ['SQL분류', 'DDL', 'DCL', 'TCL'], lang: null, code: null
+  },
+
+  {
+    id: 'ch08-s02-09', ch: 8, sec: 2,
+    t: 'multi-blank',
+    q: '<code>CREATE TABLE</code> 의 참조 무결성 옵션(<code>ON DELETE</code>·<code>ON UPDATE</code>)에 대한 설명이다. '
+     + '각 설명에 해당하는 옵션을 <b>보기에서 골라</b> 쓰시오.<br>'
+     + '㉠ 참조 테이블의 튜플이 삭제·변경되면 관련 튜플도 함께 삭제·변경된다<br>'
+     + '㉡ 참조 테이블에 변화가 있으면 관련 튜플의 속성 값을 <b>NULL 로</b> 바꾼다<br>'
+     + '㉢ 참조 테이블에 변화가 있어도 <b>아무 조치도 하지 않는다</b>',
+    pool: ['NO ACTION', 'CASCADE', 'SET NULL', 'SET DEFAULT', 'RESTRICT'],
+    parts: [
+      { label: '㉠', t: 'pick', a: ['CASCADE'] },
+      { label: '㉡', t: 'pick', a: ['SET NULL'] },
+      { label: '㉢', t: 'pick', a: ['NO ACTION'] }
+    ],
+    why: '🚨 <b>같은 <code>CASCADE</code> 라도 자리에 따라 뜻이 다르다.</b> '
+       + '<code>ON DELETE CASCADE</code> 는 <b>참조하던 행을 같이 지우는 것</b>이고, '
+       + '<code>DROP TABLE ~ CASCADE</code> 는 <b>참조하는 개체까지 지우는 것</b>이다. '
+       + '📌 <code>RESTRICT</code> 는 <code>DROP</code> 쪽 옵션이라 여기서는 답이 아니다.',
+    d: 3, y: [], tag: ['CREATE', '참조무결성', 'CASCADE'], lang: null, code: null
+  },
+
+  {
+    id: 'ch08-s04-08', ch: 8, sec: 4,
+    t: 'multi-blank',
+    q: 'DCL 의 사용자 등급과 옵션에 대한 설명이다. 각 설명에 해당하는 것을 <b>보기에서 골라</b> 쓰시오.<br>'
+     + '㉠ 데이터베이스 및 <b>테이블을 생성</b>할 수 있는 등급<br>'
+     + '㉡ 부여받은 권한을 <b>다른 사용자에게 다시 부여</b>할 수 있게 해 주는 옵션<br>'
+     + '㉢ 권한을 거둘 때 <b>다른 사용자에게 부여된 권한까지 연쇄적으로</b> 거두는 옵션',
+    pool: ['DBA', 'RESOURCE', 'CONNECT',
+           'WITH GRANT OPTION', 'GRANT OPTION FOR', 'CASCADE', 'RESTRICT'],
+    parts: [
+      { label: '㉠', t: 'pick', a: ['RESOURCE'] },
+      { label: '㉡', t: 'pick', a: ['WITH GRANT OPTION'] },
+      { label: '㉢', t: 'pick', a: ['CASCADE'] }
+    ],
+    why: '등급은 셋이다 — <b>DBA</b>(관리자) · <b>RESOURCE</b>(DB·테이블 생성) · <b>CONNECT</b>(단순 사용자). '
+       + '🚨 <b><code>WITH GRANT OPTION</code> 과 <code>GRANT OPTION FOR</code> 는 방향이 반대다</b> — '
+       + '앞은 <b>줄 때</b> 재부여 권한까지 주는 것, 뒤는 <b>거둘 때</b> 그 재부여 권한만 거두는 것이다.',
+    d: 3, y: [], tag: ['DCL', '사용자등급', 'WITH GRANT OPTION'], lang: null, code: null
+  },
+
+  {
+    id: 'ch08-s06-13', ch: 8, sec: 6,
+    t: 'multi-blank',
+    q: '<code>WHERE</code> 절의 조건 연산자에 대한 설명이다. 각 설명에 해당하는 연산자를 <b>보기에서 골라</b> 쓰시오.<br>'
+     + '㉠ 두 값 사이의 값을 고른다. <b>양 끝을 포함</b>한다<br>'
+     + '㉡ 패턴이 일치하는 것을 고른다. <code>%</code> 는 임의의 문자열, <code>_</code> 는 임의의 한 문자<br>'
+     + '㉢ 값이 <b>없는지</b> 판단한다. <code>= NULL</code> 로는 비교할 수 없다',
+    pool: ['BETWEEN A AND B', 'IN (값1, 값2, ...)', 'LIKE', 'IS NULL',
+           'ALL', 'DISTINCT', 'EXISTS'],
+    parts: [
+      { label: '㉠', t: 'pick', a: ['BETWEEN A AND B'] },
+      { label: '㉡', t: 'pick', a: ['LIKE'] },
+      { label: '㉢', t: 'pick', a: ['IS NULL'] }
+    ],
+    why: '🚨 <b>NULL 은 값이 아니라 「없음」</b> 이라 <code>=</code> 로 비교하면 참이 되는 행이 하나도 없다 — '
+       + '반드시 <code>IS NULL</code> 을 쓴다. '
+       + '📌 <code>BETWEEN 20 AND 29</code> 는 <b>20 과 29 를 포함</b>한다 — 「사이」라는 말에 속아 빼지 말 것.',
+    d: 1, y: [], tag: ['WHERE', 'BETWEEN', 'LIKE', 'IS NULL'], lang: null, code: null
+  },
+
+  {
+    id: 'ch08-s08-11', ch: 8, sec: 8,
+    t: 'multi-blank',
+    q: '하위 질의와 집합 연산자에 대한 설명이다. 각 설명에 해당하는 것을 <b>보기에서 골라</b> 쓰시오.<br>'
+     + '㉠ 하위 질의 결과 <b>모두를 만족</b>해야 한다<br>'
+     + '㉡ 하위 질의 결과가 <b>존재하기만 하면</b> 참이다<br>'
+     + '㉢ 두 SELECT 결과의 <b>공통된 행만</b> 남긴다',
+    pool: ['IN', 'ANY / SOME', 'ALL', 'EXISTS',
+           'UNION', 'UNION ALL', 'INTERSECT', 'EXCEPT'],
+    parts: [
+      { label: '㉠', t: 'pick', a: ['ALL'] },
+      { label: '㉡', t: 'pick', a: ['EXISTS'] },
+      { label: '㉢', t: 'pick', a: ['INTERSECT'] }
+    ],
+    why: '앞의 넷은 <b>다중행 하위 질의</b> 연산자다 — <b>IN</b>(하나와 일치) · '
+       + '<b>ANY/SOME</b>(어느 하나라도 만족) · <b>ALL</b>(모두 만족) · <b>EXISTS</b>(있기만 하면 참). '
+       + '🚨 <b>EXISTS 는 몇 행인지 세지 않는다</b> — 있는지 없는지만 본다. '
+       + '뒤의 넷은 집합 연산자이고 <b>UNION 은 중복을 지우지만 UNION ALL 은 그대로 둔다.</b>',
+    d: 2, y: [], tag: ['하위질의', 'ALL', 'EXISTS', '집합연산자'], lang: null, code: null
+  },
+
+  {
+    id: 'ch08-s09-12', ch: 8, sec: 9,
+    t: 'multi-blank',
+    q: 'JOIN 에 대한 설명이다. 각 설명에 해당하는 것을 <b>보기에서 골라</b> 쓰시오.<br>'
+     + '㉠ EQUI JOIN 에서 <b>중복된 속성을 한 번만</b> 표기하는 방법<br>'
+     + '㉡ 두 테이블의 <b>모든 행을 조합</b>한다. 결과 행 수는 두 테이블 행 수의 곱이다<br>'
+     + '㉢ <b>오른쪽 테이블의 모든 행</b>을 포함하고 왼쪽에 짝이 없으면 NULL 을 채운다',
+    pool: ['EQUI JOIN', 'NON-EQUI JOIN', 'NATURAL JOIN', 'SELF JOIN', 'CROSS JOIN',
+           'LEFT OUTER JOIN', 'RIGHT OUTER JOIN', 'FULL OUTER JOIN'],
+    parts: [
+      { label: '㉠', t: 'pick', a: ['NATURAL JOIN'] },
+      { label: '㉡', t: 'pick', a: ['CROSS JOIN'] },
+      { label: '㉢', t: 'pick', a: ['RIGHT OUTER JOIN'] }
+    ],
+    why: 'INNER 는 <b>양쪽에 다 있는 것만</b>, OUTER 는 <b>짝이 없는 쪽까지</b> 남긴다. '
+       + '🚨 <b>LEFT 인지 RIGHT 인지는 「모두 남기는 쪽」으로 정해진다</b> — '
+       + '「NULL 이 채워지는 쪽」이 아니다. '
+       + '<b>SELF JOIN</b> 은 같은 테이블을 별칭 둘로 나눠 붙이는 것이다.',
+    d: 2, y: [], tag: ['JOIN', 'NATURAL JOIN', 'CROSS JOIN', 'OUTER JOIN'], lang: null, code: null
+  },
+
+  {
+    id: 'ch08-s10-07', ch: 8, sec: 10,
+    t: 'multi-blank',
+    q: 'WINDOW 함수에 대한 설명이다. 각 설명에 해당하는 함수를 <b>보기에서 골라</b> 쓰시오.<br>'
+     + '㉠ 같은 값에 같은 순위를 주고 <b>그 개수만큼 다음 순위를 건너뛴다</b> (1, 2, 2, 4)<br>'
+     + '㉡ <b>이전 행</b>의 값을 가져온다<br>'
+     + '㉢ 파티션 내에서 <b>가장 먼저 나온</b> 값을 가져온다',
+    pool: ['ROW_NUMBER()', 'RANK()', 'DENSE_RANK()',
+           'FIRST_VALUE()', 'LAST_VALUE()', 'LAG()', 'LEAD()'],
+    parts: [
+      { label: '㉠', t: 'pick', a: ['RANK()'] },
+      { label: '㉡', t: 'pick', a: ['LAG()'] },
+      { label: '㉢', t: 'pick', a: ['FIRST_VALUE()'] }
+    ],
+    why: '🚨 <b>RANK 는 건너뛰고 DENSE_RANK 는 안 건너뛴다</b> (1,2,2,4 대 1,2,2,3). '
+       + '<b>ROW_NUMBER 는 같은 값에도 다른 번호</b>를 준다 (1,2,3,4). '
+       + '💡 <b>LAG 은 뒤처진다(이전 행), LEAD 는 앞선다(다음 행)</b> 로 뜻을 붙잡아 둔다.',
+    d: 2, y: [], tag: ['WINDOW함수', 'RANK', 'LAG', 'FIRST_VALUE'], lang: null, code: null
+  },
+
+  {
+    id: 'ch08-s14-05', ch: 8, sec: 14,
+    t: 'multi-blank',
+    q: '묵시적 커서의 속성에 대한 설명이다. 각 설명에 해당하는 속성을 <b>보기에서 골라</b> 쓰시오.<br>'
+     + '㉠ 실행 결과로 <b>영향을 받은 행의 수</b><br>'
+     + '㉡ 실행 결과가 <b>0행이면</b> TRUE<br>'
+     + '㉢ 커서가 열려 있으면 TRUE. <b>묵시적 커서에서는 항상 FALSE</b> 다',
+    pool: ['SQL%FOUND', 'SQL%NOTFOUND', 'SQL%ROWCOUNT', 'SQL%ISOPEN'],
+    parts: [
+      { label: '㉠', t: 'pick', a: ['SQL%ROWCOUNT'] },
+      { label: '㉡', t: 'pick', a: ['SQL%NOTFOUND'] },
+      { label: '㉢', t: 'pick', a: ['SQL%ISOPEN'] }
+    ],
+    why: '<b>묵시적 커서</b>는 DBMS 가 알아서 만들어 쓰는 커서라 <b>직전 SQL 문의 결과</b>를 이 속성들로 알 수 있다. '
+       + '🚨 <b><code>SQL%ISOPEN</code> 이 늘 FALSE 인 이유</b> — 묵시적 커서는 '
+       + '문장이 끝나는 순간 <b>자동으로 닫히기</b> 때문이다. '
+       + '사용자가 직접 <code>OPEN → FETCH → CLOSE</code> 하는 것은 <b>명시적 커서</b> 다.',
+    d: 3, y: [], tag: ['커서', '묵시적커서'], lang: null, code: null
   }
 
 ];
