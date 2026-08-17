@@ -320,6 +320,111 @@ echo "  ✓ assets/toc.js (전 챕터 목차)"
 #    범위 대신 ASCII 여부([A-Za-z] · [^ -~])로 뒤집어 판정한다.
 #    (같은 이유로 2) 의 섹션 제목도 sed 로 처리하고 있다)
 GLOSS_TSV=".glossarytmp"
+GLOSS_KO=".glossaryko"
+
+# 8-1) 🔒 한글명 덮어쓰기 표 — **본문에서 캔 값보다 이 표를 우선한다.**
+#
+# 본문이 한글명을 늘 나란히 적어 주지는 않는다. `**NAC**(Network Access Control)` 처럼
+# 풀네임만 붙는 자리가 많아 62개까지만 자동으로 채워졌다. 나머지를 여기서 채운다.
+#
+# 🚨 **음역(소리만 옮긴 것)은 넣지 않는다.** JSON·REST·SOAP·SSD·XP 처럼
+#    한국어로 부르는 이름이 따로 없는 것은 **비워 두는 편이 옳다** —
+#    「제이슨」 같은 것을 넣으면 사전이 거짓말을 한다.
+# 🚨 **고유명사도 비운다.** RSA·ARIA·GoF·MD5·TFN·NTAF 는 사람·기관 이름의 머리글자다.
+#
+# 📌 생성물(assets/glossary-data.js)을 직접 고치면 다음 빌드에 날아간다. 표는 여기다.
+cat > "$GLOSS_KO" <<'GLOSSKO'
+AES	고급 암호화 표준
+AH	인증 헤더
+API	응용 프로그램 인터페이스
+APM	애플리케이션 성능 관리
+ARP	주소 결정 프로토콜
+BaaS	서비스형 블록체인
+BGP	경계 게이트웨이 프로토콜
+CBD	컴포넌트 기반 개발
+COCOMO	구성적 비용 산정 모형
+CRM	고객 관계 관리
+CVS	동시 버전 시스템
+DBMS	데이터베이스 관리 시스템
+DCL	데이터 제어어
+DES	데이터 암호화 표준
+DSA	전자 서명 알고리즘
+DTD	문서 형식 정의
+EAI	전사적 응용 통합
+ECC	타원 곡선 암호
+ERP	전사적 자원 관리
+ESM	통합 보안 관리
+ESP	캡슐화 보안 페이로드
+ETL	추출·변환·적재
+FCFS	선입 선처리
+FDD	기능 중심 개발
+FP	기능 점수
+HCI	인간 컴퓨터 상호작용
+HDLC	고급 데이터 링크 제어
+HIDS	호스트 기반 침입 탐지 시스템
+HIPO	계층적 입력 처리 출력
+HRN	최고 응답률 우선
+HTML	하이퍼텍스트 마크업 언어
+HTTP	하이퍼텍스트 전송 규약
+ICMP	인터넷 제어 메시지 프로토콜
+IDEA	국제 데이터 암호화 알고리즘
+IGMP	인터넷 그룹 관리 프로토콜
+IP	인터넷 프로토콜
+IPSec	IP 보안 프로토콜
+JDBC	자바 데이터베이스 연결
+KDSI	전달된 소스 코드 천 줄
+KLOC	소스 코드 천 줄
+L2TP	2계층 터널링 프로토콜
+LFU	최소 빈도 사용
+LRU	최근 최소 사용
+MEMS	초소형 정밀 기계 기술
+NAC	네트워크 접근 제어
+NDN	데이터 중심 네트워킹
+NFC	근거리 무선 통신
+NFV	네트워크 기능 가상화
+NIDS	네트워크 기반 침입 탐지 시스템
+NUR	최근 미사용
+ODBC	개방형 데이터베이스 연결
+OLAP	온라인 분석 처리
+OMG	객체 관리 그룹
+OMT	객체 모델링 기법
+ORM	객체 관계 매핑
+OSI	개방형 시스템 상호 연결
+OSPF	최단 경로 우선
+OTP	일회용 비밀번호
+PERT	프로그램 평가 및 검토 기법
+PnP	자동 인식 기능
+RAID	복수 배열 독립 디스크
+RARP	역주소 결정 프로토콜
+RIP	라우팅 정보 프로토콜
+RPA	로봇 프로세스 자동화
+RPO	목표 복구 시점
+RTO	목표 복구 시간
+SCM	공급망 관리 · 형상 관리
+SCR	2차 기회 교체
+SDN	소프트웨어 정의 네트워킹
+SIEM	보안 정보·이벤트 관리
+SJF	최단 작업 우선
+SPICE	소프트웨어 처리 개선 및 능력 평가
+SRT	최단 잔여 시간 우선
+SSH	보안 셸
+SSO	통합 인증
+TCL	트랜잭션 제어어
+TCP	전송 제어 프로토콜
+TDE	투명 데이터 암호화
+TKIP	임시 키 무결성 프로토콜
+TOCTOU	검사 시점과 사용 시점
+TPM	신뢰 플랫폼 모듈
+UDP	사용자 데이터그램 프로토콜
+UML	통합 모델링 언어
+URL	통합 자원 위치
+UWB	초광대역
+UX	사용자 경험
+WEP	유선 동등 프라이버시
+WSDL	웹 서비스 기술 언어
+XML	확장 마크업 언어
+XSL	확장 스타일시트 언어
+GLOSSKO
 : > "$GLOSS_TSV"
 
 for md in "${sources[@]}"; do
@@ -334,10 +439,37 @@ for md in "${sources[@]}"; do
 
     function trim(s) { gsub(/^[ \t]+|[ \t]+$/, "", s); return s }
 
+    # 🚨 **awk 의 length() 는 바이트를 센다.** 한글 한 자가 3바이트라
+    #    "침입 탐지 시스템"(8자)이 26바이트로 세어져 길이 제한에 걸려 버려졌다 —
+    #    **한글명 151개 중 122개가 비어 있던 진짜 이유가 이것이었다** (T20, 08-17).
+    #    ASCII 는 [ -~] 로 안전하게 세고(문자 범위·부정 클래스는 금지),
+    #    나머지는 한글·전각 문장부호라 전부 3바이트다.
+    function charLen(s,   i, c, a) {
+      a = 0
+      for (i = 1; i <= length(s); i++) {
+        c = substr(s, i, 1)
+        if (c ~ /[ -~]/) a++
+      }
+      return a + (length(s) - a) / 3
+    }
+
     function plain(s) {
       gsub(/\*\*/, "", s); gsub(/`/, "", s)
       gsub(/<br>/, " ", s); gsub(/<br\/>/, " ", s)
       return s
+    }
+
+    # 괄호 뒤가 그 칸(또는 줄)의 끝인가. 별표(★)와 공백은 끝으로 친다.
+    function cellEnds(rest) {
+      gsub(/[ \t]/, "", rest)
+      gsub(/★|☆/, "", rest)
+      return (rest == "" || substr(rest, 1, 1) == "|")
+    }
+
+    # 마지막 콤마의 자리. awk 에 lastIndexOf 가 없어 직접 찾는다.
+    function lastComma(s,   i) {
+      for (i = length(s); i >= 1; i--) { if (substr(s, i, 1) == ",") return i }
+      return 0
     }
 
     # 약어답게 생겼는가 — 대문자 둘 이상, 소문자는 둘 이하.
@@ -384,7 +516,7 @@ for md in "${sources[@]}"; do
       sub(/^[ \t]*[(]?[0-9]+[).][ \t]*/, "", s)
       gsub(/①|②|③|④|⑤|⑥|⑦|⑧|⑨|⑩|⑪|⑫/, "", s)
       s = trim(s); sub(/[ \t]*[-·:,]+$/, "", s); s = trim(s)
-      if (s == "" || length(s) > 20) { korRank = 0; return "" }
+      if (s == "" || charLen(s) > 20) { korRank = 0; return "" }   # 🚨 바이트가 아니라 글자 수
       if (s ~ /[A-Za-z]/) { korRank = 0; return "" }   # 영문이 섞였으면 이름이 아니다
       if (s !~ /[^ -~]/) { korRank = 0; return "" }    # ASCII 뿐이면 한글이 없다 ("&")
       return s
@@ -418,12 +550,32 @@ for md in "${sources[@]}"; do
         before = substr(work, 1, start - 1)
         pos = start + RLENGTH
 
-        kor = korean(before, isHead && start > 1)
+        # 🚨 **이름은 칸(또는 제목) 전체여야 한다.** 괄호 뒤에 그 칸의 글이 더 있으면
+        #    앞의 한글은 이름이 아니라 **문장 조각**이다.
+        #      | **API 방식** | **애플리케이션 레벨**에서 암호 모듈(API)을 적용 |
+        #    ← 이것을 이름으로 캐서 "애플리케이션 레벨에서 암호 모듈" 이 들어갔었다.
+        atEnd = cellEnds(substr(work, pos))
+        kor = atEnd ? korean(before, isHead && start > 1) : ""
+
+        # 괄호 안에 한글명이 함께 있는 꼴 — ABBR(Full Name, 한글명)
+        #   | **VPN**(Virtual Private Network, 가상 사설 통신망) | …
+        # 이 자리를 안 보고 있어서 보안 솔루션 아홉 개가 통째로 비어 있었다.
+        innerKor = ""
+        ci = lastComma(inner)
+        if (ci > 0) {
+          tail2 = trim(substr(inner, ci + 1))
+          if (tail2 !~ /[A-Za-z]/ && tail2 ~ /[^ -~]/ && charLen(tail2) <= 20) {
+            innerKor = tail2
+            inner = trim(substr(inner, 1, ci - 1))
+          }
+        }
 
         # ① 한글명(ABBR; Full Name)
         if (inner ~ /;/) {
           p = index(inner, ";")
-          emit(trim(substr(inner, 1, p - 1)), trim(substr(inner, p + 1)), kor)
+          korRank = 2
+          emit(trim(substr(inner, 1, p - 1)), trim(substr(inner, p + 1)),
+               (kor != "" ? kor : innerKor))
           continue
         }
         # ② ABBR(Full Name) — 괄호 바로 앞 낱말이 약어
@@ -432,12 +584,21 @@ for md in "${sources[@]}"; do
           sub(/^.*[^A-Za-z0-9\/&.+-]/, "", tail)
           a = trim(tail)
           if (isAbbr(a)) {
-            emit(a, inner, korean(substr(before, 1, length(before) - length(a)), isHead && start > 1))
+            kor2 = ""
+            if (atEnd) kor2 = korean(substr(before, 1, length(before) - length(a)), isHead && start > 1)
+            if (kor2 == "") { kor2 = innerKor; if (kor2 != "") korRank = 2 }
+            emit(a, inner, kor2)
             continue
           }
         }
         # ③ 한글명(ABBR) — 풀네임 없이 이름만
         if (inner ~ /^[A-Za-z][A-Za-z0-9\/&.+-]*$/ && kor != "") emit(inner, "", kor)
+
+        # 🚨 **`ABBR(한글명)` 꼴은 캐지 않는다.** 부록 요약이 그 모양이라 한때 넣어 봤는데
+        #    `SUM(속성명)` · `CREATE(생성)` 처럼 **문법 예시와 낱말 풀이까지** 딸려 들어와
+        #    항목이 151 → 224 로 불고 절반이 틀린 이름이 됐다.
+        #    **괄호 안의 한글은 이름일 수도, 그냥 설명일 수도 있다** — 가릴 방법이 없다.
+        #    남는 것은 아래 8-1) 의 **덮어쓰기 표**로 채운다.
       }
     }
   ' "$md" >> "$GLOSS_TSV"
@@ -475,7 +636,7 @@ done
   printf '   a 약어 · f 풀네임 · k 한글명 · s 나오는 곳 [챕터, 섹션 순번(0부터)]\n'
   printf '   섹션 제목은 assets/toc.js 에 있으므로 여기에 담지 않는다. */\n'
   printf 'window.EIP_GLOSSARY = [\n'
-  awk -F'\t' -v cap=8 '
+  awk -F'	' -v cap=8 -v kofile="$GLOSS_KO" -v deffile="$GLOSS_TSV" '
     function esc(s) { gsub(/\\/, "\\\\", s); gsub(/"/, "\\\"", s); return s }
 
     # 섹션 하나를 "나오는 곳" 에 더한다. 목록은 cap 개까지만 담고
@@ -491,7 +652,10 @@ done
     }
 
     # ---- 첫 파일: 정의 지점 (약어 · 풀네임 · 한글명) ----
-    FNR == NR {
+    # 🔒 덮어쓰기 표 — 본문에서 캔 값보다 이것이 이긴다
+    FILENAME == kofile { if ($2 != "") KO[$1] = $2; next }
+
+    FILENAME == deffile {
       a = $3
       if (!(a in seen)) { seen[a] = 1; order[++n] = a; kr[a] = ""; krank[a] = 9 }
       # 풀네임은 서로 다른 뜻이 있을 수 있다 — SCM 은 형상 관리이자 공급망 관리다
@@ -519,17 +683,21 @@ done
       first = 1
       for (k in sortkey) {
         a = sortkey[k]
+        ko = (a in KO) ? KO[a] : kr[a]     # 🔒 표가 본문보다 세다
         printf "%s{a:\"%s\",f:\"%s\",k:\"%s\",n:%d,s:[%s]}\n", (first ? "" : ","), \
-               esc(a), esc(full[a]), esc(kr[a]), total[a], secs[a]
+               esc(a), esc(full[a]), esc(ko), total[a], secs[a]
         first = 0
       }
+      # 🚨 표에만 있고 본문에 없는 약어는 **오타다.** 조용히 버리지 않고 알린다 —
+      #    본문에서 약어가 사라지거나 이름이 바뀌면 표가 낡은 채로 남는다.
+      for (a in KO) { if (!(a in seen)) print "!! 표에 있는데 본문에 없는 약어: " a > "/dev/stderr" }
     }
-  ' "$GLOSS_TSV" "$GLOSS_HITS"
+  ' "$GLOSS_KO" "$GLOSS_TSV" "$GLOSS_HITS"
   printf '];\n'
 } > "assets/glossary-data.js"
 
 gloss_n="$(wc -l < "$GLOSS_ABBR" | tr -d ' ')"
-rm -f "$GLOSS_TSV" "$GLOSS_ABBR" "$GLOSS_HITS"
+rm -f "$GLOSS_TSV" "$GLOSS_ABBR" "$GLOSS_HITS" "$GLOSS_KO"
 echo "  ✓ assets/glossary-data.js (약어 ${gloss_n}개)"
 
 # ---- 9) 암기 카드 (cards.html) ----
