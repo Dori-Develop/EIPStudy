@@ -1010,6 +1010,595 @@ window.EIP_BANK_ch08 = [
        + '<code>= NULL</code> 은 참이 되는 행이 하나도 없어 <b>0</b> 이다. '
        + '반드시 <code>IS NULL</code> 을 쓴다.',
     d: 3, y: [], tag: ['NULL', 'IS NULL']
+  },
+
+
+  /* ===== T46 2차 — SQL 코드 문항 28 (32 → 60, 목표 달성) ===== */
+
+  {
+    id: 'ch08-s02-06', ch: 8, sec: 2,
+    t: 'code', lang: 'sql',
+    code: 'CREATE TABLE 대출\n'
+        + '    (대출번호 VARCHAR(10) NOT NULL,\n'
+        + '     회원번호 VARCHAR(10),\n'
+        + '     대출일   DATE,\n'
+        + '     ( ㉠ ) KEY(대출번호),\n'
+        + '     ( ㉡ ) KEY(회원번호) ( ㉢ ) 회원(회원번호)\n'
+        + '        ON DELETE CASCADE);',
+    q: '대출번호를 <b>기본키</b>로, 회원번호를 회원 테이블을 <b>참조하는 외래키</b>로 지정하려 한다. ㉠~㉢ 에 들어갈 예약어를 쓰시오.',
+    parts: [
+      { label: '㉠', a: ['PRIMARY'] },
+      { label: '㉡', a: ['FOREIGN'] },
+      { label: '㉢', a: ['REFERENCES'] }
+    ],
+    why: '<b>PRIMARY KEY</b> 가 기본키, <b>FOREIGN KEY ~ REFERENCES ~</b> 가 외래키다. '
+       + '<code>ON DELETE CASCADE</code> 는 참조하던 회원이 지워지면 <b>그 회원의 대출 기록도 함께 지운다.</b> '
+       + '아무것도 하지 않으려면 <b>NO ACTION</b>, NULL 로 바꾸려면 <b>SET NULL</b> 이다.',
+    d: 2, y: [], tag: ['CREATE', '외래키', '참조무결성']
+  },
+
+  {
+    id: 'ch08-s02-07', ch: 8, sec: 2,
+    t: 'code', lang: 'sql',
+    code: 'CREATE ( ㉠ ) 우수회원(회원번호, 이름)\n'
+        + '( ㉡ ) SELECT 회원번호, 이름\n'
+        + '   FROM 회원\n'
+        + '   WHERE 등급 = \'우수\';',
+    q: '등급이 우수인 회원만 보여 주는 <b>가상 테이블</b>을 만들려 한다. ㉠·㉡ 에 들어갈 예약어를 쓰시오.',
+    parts: [
+      { label: '㉠', a: ['VIEW', '뷰'] },
+      { label: '㉡', a: ['AS'] }
+    ],
+    why: '<b>CREATE VIEW ~ AS SELECT문</b> 이다. <b>AS 절의 SELECT 문이 곧 뷰의 정의</b>가 된다. '
+       + '🚨 그 서브 쿼리에는 <b>UNION 과 ORDER BY 를 쓸 수 없다.</b> '
+       + '속성명을 안 적으면 SELECT 문의 속성명이 그대로 쓰인다.',
+    d: 2, y: [], tag: ['CREATE', '뷰']
+  },
+
+  {
+    id: 'ch08-s02-08', ch: 8, sec: 2,
+    t: 'code', lang: 'sql',
+    code: 'CREATE ( ㉠ ) INDEX 회원_IDX\n'
+        + 'ON 회원(회원번호 ( ㉡ ));',
+    q: '<b>중복 값을 허용하지 않고</b> 회원번호를 <b>오름차순</b>으로 정렬하는 인덱스를 만들려 한다. ㉠·㉡ 에 들어갈 예약어를 쓰시오.',
+    parts: [
+      { label: '㉠', a: ['UNIQUE'] },
+      { label: '㉡', a: ['ASC'] }
+    ],
+    why: '<b>UNIQUE</b> 를 빼면 중복 값을 허용한다. 정렬은 <b>ASC</b>(오름차순) · <b>DESC</b>(내림차순)이고 '
+       + '생략하면 오름차순이다. 뒤에 <b>CLUSTER</b> 를 붙이면 그 속성 기준으로 레코드를 묶는다.',
+    d: 2, y: [], tag: ['CREATE', '인덱스']
+  },
+
+  {
+    id: 'ch08-s03-05', ch: 8, sec: 3,
+    t: 'code', lang: 'sql',
+    code: '-- 뷰 \'우수회원\' 이 테이블 \'회원\' 을 참조하고 있다.\n'
+        + '\n'
+        + 'DROP TABLE 회원 ( ㉠ );   -- 뷰까지 함께 지운다\n'
+        + 'DROP TABLE 회원 ( ㉡ );   -- 참조 중이므로 취소된다',
+    q: '㉠·㉡ 에 들어갈 옵션을 쓰시오.',
+    parts: [
+      { label: '㉠', a: ['CASCADE'] },
+      { label: '㉡', a: ['RESTRICT'] }
+    ],
+    why: '🚨 <b>CASCADE = 참조하는 것까지 같이 삭제</b>, <b>RESTRICT = 참조 중이면 삭제를 취소</b>. '
+       + '둘 다 참조 무결성을 지키려는 것인데 <b>방향이 반대다.</b>',
+    d: 2, y: [], tag: ['DROP', 'CASCADE', 'RESTRICT']
+  },
+
+  {
+    id: 'ch08-s04-06', ch: 8, sec: 4,
+    t: 'code', lang: 'sql',
+    code: 'GRANT UPDATE ON 회원 TO 홍길동 ( ㉠ );\n'
+        + '\n'
+        + 'REVOKE ( ㉡ ) UPDATE ON 회원 FROM 홍길동;',
+    q: '홍길동에게 갱신 권한을 주면서 <b>그 권한을 남에게 다시 줄 수 있게</b> 하려면 ㉠, 나중에 그 <b>「남에게 줄 수 있는 권한」만</b> 거두려면 ㉡ 에 무엇을 쓰는가?',
+    parts: [
+      { label: '㉠', a: ['WITH GRANT OPTION', 'WITH GRANT OPTION;'] },
+      { label: '㉡', a: ['GRANT OPTION FOR'] }
+    ],
+    why: '<b>WITH GRANT OPTION</b> 은 「받은 권한을 남에게 다시 줄 권한」까지 준다. '
+       + '<b>GRANT OPTION FOR</b> 는 그 <b>재부여 권한만</b> 거두고 본인의 UPDATE 권한은 남긴다. '
+       + '권한 자체를 연쇄로 거두려면 뒤에 <b>CASCADE</b> 를 붙인다.',
+    d: 3, y: [], tag: ['DCL', 'GRANT', 'WITH GRANT OPTION']
+  },
+
+  {
+    id: 'ch08-s04-07', ch: 8, sec: 4,
+    t: 'code', lang: 'sql',
+    code: 'GRANT ( ㉠ ) TO 홍길동 IDENTIFIED BY 1234;\n'
+        + '\n'
+        + 'GRANT SELECT ON 회원 TO 이순신;\n'
+        + 'REVOKE SELECT ON 회원 FROM 이순신 ( ㉡ );',
+    q: '홍길동에게 <b>테이블을 생성할 수 있는 등급</b>을 주고(㉠), 이순신의 검색 권한을 거두면서 <b>이순신이 남에게 준 권한까지 연쇄로</b> 거두려 한다(㉡).',
+    parts: [
+      { label: '㉠', a: ['RESOURCE'] },
+      { label: '㉡', a: ['CASCADE'] }
+    ],
+    why: '사용자 등급은 셋이다 — <b>DBA</b>(관리자) · <b>RESOURCE</b>(DB·테이블 생성 가능) · '
+       + '<b>CONNECT</b>(단순 사용자). 권한 취소의 <b>CASCADE</b> 는 그 사용자가 남에게 부여한 권한까지 함께 거둔다.',
+    d: 2, y: [], tag: ['DCL', 'GRANT', '사용자등급']
+  },
+
+  {
+    id: 'ch08-s05-06', ch: 8, sec: 5,
+    t: 'code', lang: 'sql',
+    code: '[회원]\n'
+        + '회원번호 | 이름   | 등급\n'
+        + '---------+--------+------\n'
+        + 'M001     | 김하늘 | 일반\n'
+        + 'M002     | 이바다 | 우수\n'
+        + 'M003     | 박구름 | 우수\n'
+        + 'M004     | 최나무 | 일반\n'
+        + '\n'
+        + '-- 우수회원목록 은 비어 있다.\n'
+        + 'INSERT INTO 우수회원목록\n'
+        + 'SELECT 회원번호, 이름 FROM 회원 WHERE 등급 = \'우수\';\n'
+        + '\n'
+        + 'SELECT COUNT(*) FROM 우수회원목록;',
+    q: '위 SQL 의 마지막 문장의 결과값을 쓰시오.',
+    a: ['2'],
+    why: '<b>INSERT INTO ~ SELECT</b> 는 VALUES 대신 <b>다른 테이블의 검색 결과를 그대로 넣는다.</b> '
+       + '등급이 우수인 이바다·박구름 <b>2행</b>이 들어간다.',
+    d: 2, y: [], tag: ['INSERT', 'SELECT']
+  },
+
+  {
+    id: 'ch08-s05-07', ch: 8, sec: 5,
+    t: 'code', lang: 'sql',
+    code: '[도서]\n'
+        + '도서번호 | 제목     | 대출횟수\n'
+        + '---------+----------+--------\n'
+        + 'B001     | 자료구조 | 12\n'
+        + 'B002     | 운영체제 | 7\n'
+        + 'B003     | 네트워크 | 3\n'
+        + '\n'
+        + 'UPDATE 도서 SET 대출횟수 = 대출횟수 * 2 WHERE 대출횟수 >= 7;\n'
+        + '\n'
+        + 'SELECT SUM(대출횟수) FROM 도서;',
+    q: '위 SQL 의 마지막 문장의 결과값을 쓰시오.',
+    a: ['41'],
+    why: 'WHERE 조건에 걸리는 것은 <b>12 와 7</b> 이다 — <code>&gt;=</code> 라서 <b>7 도 포함된다.</b> '
+       + '두 배가 되어 24 · 14 가 되고, 3 은 그대로다. 24 + 14 + 3 = <b>41</b>.',
+    d: 2, y: [], tag: ['UPDATE', 'WHERE', 'SUM']
+  },
+
+  {
+    id: 'ch08-s06-10', ch: 8, sec: 6,
+    t: 'code', lang: 'sql',
+    code: '[회원]\n'
+        + '이름   | 등급\n'
+        + '-------+--------\n'
+        + '김하늘 | 일반\n'
+        + '이바다 | 우수\n'
+        + '박구름 | 최우수\n'
+        + '최나무 | 일반\n'
+        + '정보람 | 우수\n'
+        + '\n'
+        + 'SELECT COUNT(*)\n'
+        + 'FROM 회원\n'
+        + 'WHERE 등급 NOT IN (\'일반\', \'우수\');',
+    q: '위 SQL 의 결과값을 쓰시오.',
+    a: ['1'],
+    why: '<b>IN</b> 은 목록 중 하나와 일치하는 것을 고르고, <b>NOT IN</b> 은 그것을 뒤집는다. '
+       + '일반·우수가 아닌 것은 <b>최우수 한 명</b>뿐이다.',
+    d: 1, y: [], tag: ['IN', 'WHERE']
+  },
+
+  {
+    id: 'ch08-s06-11', ch: 8, sec: 6,
+    t: 'code', lang: 'sql',
+    code: '[성적]\n'
+        + '학번 | 점수\n'
+        + '-----+-----\n'
+        + '1001 | 85\n'
+        + '1002 | 90\n'
+        + '1003 | 85\n'
+        + '1004 | 90\n'
+        + '\n'
+        + 'SELECT 학번\n'
+        + 'FROM 성적\n'
+        + 'ORDER BY 점수 DESC, 학번 ASC;',
+    q: '위 SQL 의 결과를 <b>나오는 순서대로</b> 쓰시오. (예: 1001, 1002, 1003, 1004)',
+    a: ['1002, 1004, 1001, 1003', '1002,1004,1001,1003'],
+    why: '<b>정렬 기준이 여럿이면 앞의 것이 먼저다.</b> 점수를 내림차순으로 90 · 85 로 나눈 뒤, '
+       + '점수가 같은 것끼리 학번 오름차순으로 정렬한다. '
+       + '💡 <b>ASC 는 기본값이라 생략해도 되지만 DESC 는 반드시 적어야 한다.</b>',
+    d: 2, y: [], tag: ['ORDER BY', 'SELECT']
+  },
+
+  {
+    id: 'ch08-s06-12', ch: 8, sec: 6,
+    t: 'code', lang: 'sql',
+    code: '[대출]\n'
+        + '회원번호 | 연체일수\n'
+        + '---------+--------\n'
+        + 'M001     | 3\n'
+        + 'M002     | 0\n'
+        + 'M003     | 12\n'
+        + '\n'
+        + 'SELECT 회원번호, 연체일수 * 100 AS 연체료\n'
+        + 'FROM 대출\n'
+        + 'WHERE 연체일수 > 0;',
+    q: '결과 표의 <b>연체료</b> 열 값을 위에서부터 차례로 쓰시오. (예: 100, 200)',
+    a: ['300, 1200', '300,1200'],
+    why: 'SELECT 절에는 속성뿐 아니라 <b>계산식</b>도 쓸 수 있고, <b>AS 로 별칭</b>을 붙여 결과 열 이름을 정한다. '
+       + '연체일수가 0 인 M002 는 <code>&gt; 0</code> 에 걸려 빠진다.',
+    d: 2, y: [], tag: ['SELECT', '별칭', 'WHERE']
+  },
+
+  {
+    id: 'ch08-s07-07', ch: 8, sec: 7,
+    t: 'code', lang: 'sql',
+    code: '[대출]\n'
+        + '대출번호 | 회원번호\n'
+        + '---------+--------\n'
+        + 'L001     | M001\n'
+        + 'L002     | M002\n'
+        + 'L003     | M001\n'
+        + 'L004     | M003\n'
+        + 'L005     | M002\n'
+        + '\n'
+        + 'SELECT COUNT(*), COUNT(DISTINCT 회원번호)\n'
+        + 'FROM 대출;',
+    q: '위 SQL 의 결과값을 쓰시오. (예: 3, 2)',
+    a: ['5, 3', '5,3', '5 3'],
+    why: '<b>COUNT(*)</b> 는 전체 5행, <b>COUNT(DISTINCT 회원번호)</b> 는 중복을 지운 뒤 세므로 '
+       + 'M001 · M002 · M003 <b>3</b> 이다. 「몇 번 빌렸나」와 「몇 명이 빌렸나」는 다른 질문이다.',
+    d: 2, y: [], tag: ['COUNT', 'DISTINCT', '그룹함수']
+  },
+
+  {
+    id: 'ch08-s07-08', ch: 8, sec: 7,
+    t: 'code', lang: 'sql',
+    code: '[회원]\n'
+        + '이름   | 대출수\n'
+        + '-------+------\n'
+        + '김하늘 | 6\n'
+        + '이바다 | NULL\n'
+        + '박구름 | 4\n'
+        + '최나무 | 2\n'
+        + '\n'
+        + 'SELECT SUM(대출수), AVG(대출수)\n'
+        + 'FROM 회원;',
+    q: '위 SQL 의 결과값을 쓰시오. (예: 10, 5)',
+    a: ['12, 4', '12,4', '12 4'],
+    why: '🚨 <b>AVG 의 분모는 4 가 아니라 3 이다.</b> 그룹 함수는 <b>NULL 을 계산에서 아예 뺀다</b> — '
+       + '더하는 값에서도 빠지고 <b>세는 개수에서도 빠진다.</b> 12 ÷ 3 = <b>4</b>.',
+    d: 3, y: [], tag: ['AVG', 'SUM', 'NULL', '그룹함수']
+  },
+
+  {
+    id: 'ch08-s07-09', ch: 8, sec: 7,
+    t: 'code', lang: 'sql',
+    code: '[회원]\n'
+        + '이름   | 등급 | 대출수\n'
+        + '-------+------+------\n'
+        + '김하늘 | 일반 | 3\n'
+        + '이바다 | 우수 | 7\n'
+        + '박구름 | 일반 | 5\n'
+        + '최나무 | 우수 | 2\n'
+        + '정보람 | 일반 | 6\n'
+        + '\n'
+        + 'SELECT 등급, COUNT(*)\n'
+        + 'FROM 회원\n'
+        + 'WHERE 대출수 >= 3\n'
+        + 'GROUP BY 등급\n'
+        + 'HAVING COUNT(*) >= 3;',
+    q: '위 SQL 의 결과를 쓰시오. (예: 우수, 2)',
+    a: ['일반, 3', '일반,3', '일반 3'],
+    why: '🚨 <b>WHERE 는 묶기 전에 행을 거르고, HAVING 은 묶은 뒤에 그룹을 거른다.</b> '
+       + '대출수 2 인 최나무가 <b>WHERE 에서</b> 먼저 빠진다. 남은 것을 묶으면 일반 3명 · 우수 1명이고, '
+       + '<b>HAVING 에서</b> 우수 그룹이 빠져 <b>일반, 3</b> 한 행만 남는다.',
+    d: 3, y: [], tag: ['GROUP BY', 'HAVING', 'WHERE']
+  },
+
+  {
+    id: 'ch08-s07-10', ch: 8, sec: 7,
+    t: 'code', lang: 'sql',
+    code: '[대출]\n'
+        + '등급 | 월 | 건수\n'
+        + '-----+----+-----\n'
+        + '일반 | 1  | 3\n'
+        + '일반 | 2  | 2\n'
+        + '우수 | 1  | 5\n'
+        + '\n'
+        + 'SELECT 등급, 월, SUM(건수)\n'
+        + 'FROM 대출\n'
+        + 'GROUP BY CUBE(등급, 월);',
+    q: '위 SQL 의 결과는 몇 행인가?',
+    a: ['8', '8행', '8개'],
+    why: '<b>CUBE 는 모든 조합의 소계를 낸다</b> — (등급,월) 3행 + 등급별 2행 + 월별 2행 + 전체 1행 = <b>8행</b>. '
+       + '같은 자리에 <b>ROLLUP(등급, 월)</b> 을 쓰면 <b>계층적으로만</b> 집계해 '
+       + '(등급,월) 3행 + 등급별 2행 + 전체 1행 = <b>6행</b>이다.',
+    d: 3, y: [], tag: ['CUBE', 'ROLLUP', 'GROUP BY']
+  },
+
+  {
+    id: 'ch08-s08-07', ch: 8, sec: 8,
+    t: 'code', lang: 'sql',
+    code: '[회원]                 [대출]\n'
+        + '회원번호 | 이름        회원번호 | 도서번호\n'
+        + '---------+--------     ---------+--------\n'
+        + 'M001     | 김하늘      M001     | B001\n'
+        + 'M002     | 이바다      M003     | B002\n'
+        + 'M003     | 박구름      M001     | B003\n'
+        + 'M004     | 최나무\n'
+        + '\n'
+        + 'SELECT COUNT(*)\n'
+        + 'FROM 회원 A\n'
+        + 'WHERE EXISTS (SELECT 1 FROM 대출 B\n'
+        + '              WHERE B.회원번호 = A.회원번호);',
+    q: '위 SQL 의 결과값을 쓰시오.',
+    a: ['2'],
+    why: '<b>EXISTS 는 하위 질의에 행이 하나라도 있으면 참</b>이다. 대출 기록이 있는 회원은 M001 · M003 <b>둘</b>. '
+       + '🚨 <b>몇 행인지는 세지 않는다</b> — 대출이 두 건인 M001 도 <b>한 번만</b> 센다.',
+    d: 3, y: [], tag: ['하위질의', 'EXISTS']
+  },
+
+  {
+    id: 'ch08-s08-08', ch: 8, sec: 8,
+    t: 'code', lang: 'sql',
+    code: '[대출2024]     [대출2025]\n'
+        + '회원번호       회원번호\n'
+        + '--------       --------\n'
+        + 'M001           M002\n'
+        + 'M002           M003\n'
+        + 'M003           M001\n'
+        + 'M004\n'
+        + '\n'
+        + 'SELECT 회원번호 FROM 대출2024\n'
+        + 'INTERSECT\n'
+        + 'SELECT 회원번호 FROM 대출2025;',
+    q: '위 SQL 의 결과는 몇 행인가?',
+    a: ['3', '3행', '3개'],
+    why: '<b>INTERSECT 는 양쪽에 다 있는 행만</b> 남긴다 — M001 · M002 · M003 <b>3행</b>이다. '
+       + '2025 에 없는 M004 가 빠진다. 「두 해 모두 빌린 회원」을 묻는 것과 같다.',
+    d: 2, y: [], tag: ['집합연산자', 'INTERSECT']
+  },
+
+  {
+    id: 'ch08-s08-09', ch: 8, sec: 8,
+    t: 'code', lang: 'sql',
+    code: '[전체회원]     [탈퇴회원]\n'
+        + '아이디         아이디\n'
+        + '------         ------\n'
+        + 'A              B\n'
+        + 'B              D\n'
+        + 'C\n'
+        + 'D\n'
+        + 'E\n'
+        + '\n'
+        + 'SELECT 아이디 FROM 전체회원\n'
+        + 'EXCEPT\n'
+        + 'SELECT 아이디 FROM 탈퇴회원;',
+    q: '위 SQL 의 결과를 <b>오름차순으로</b> 쓰시오. (예: A, B)',
+    a: ['A, C, E', 'A,C,E', 'A C E'],
+    why: '<b>EXCEPT 는 첫 결과에서 두 번째 결과를 뺀다</b> — 오라클에서는 <b>MINUS</b> 라고 쓴다. '
+       + '탈퇴한 B · D 가 빠지고 <b>A · C · E</b> 가 남는다. '
+       + '⚠️ 집합 연산자를 쓰려면 두 SELECT 의 <b>속성 개수와 데이터 타입이 같아야 한다.</b>',
+    d: 2, y: [], tag: ['집합연산자', 'EXCEPT', 'MINUS']
+  },
+
+  {
+    id: 'ch08-s08-10', ch: 8, sec: 8,
+    t: 'code', lang: 'sql',
+    code: '[A]     [B]\n'
+        + '값      값\n'
+        + '---     ---\n'
+        + '1       2\n'
+        + '2       3\n'
+        + '3       4\n'
+        + '\n'
+        + 'SELECT 값 FROM A UNION     SELECT 값 FROM B;   -- ㉠\n'
+        + 'SELECT 값 FROM A UNION ALL SELECT 값 FROM B;   -- ㉡',
+    q: '두 문장의 결과 행 수를 각각 쓰시오.',
+    parts: [
+      { label: '㉠', a: ['4', '4행'] },
+      { label: '㉡', a: ['6', '6행'] }
+    ],
+    why: '<b>UNION 은 중복을 지우고 UNION ALL 은 그대로 둔다.</b> 2 와 3 이 양쪽에 겹치므로 '
+       + 'UNION 은 1·2·3·4 <b>4행</b>, UNION ALL 은 3 + 3 = <b>6행</b>이다.',
+    d: 2, y: [], tag: ['UNION', 'UNION ALL', '집합연산자']
+  },
+
+  {
+    id: 'ch08-s09-08', ch: 8, sec: 9,
+    t: 'code', lang: 'sql',
+    code: '[회원]                 [대출]\n'
+        + '회원번호 | 이름        회원번호 | 도서\n'
+        + '---------+--------     ---------+-----\n'
+        + 'M001     | 김하늘      M001     | B001\n'
+        + 'M002     | 이바다      M001     | B002\n'
+        + 'M003     | 박구름      M003     | B003\n'
+        + '\n'
+        + 'SELECT COUNT(*)\n'
+        + 'FROM 회원 A LEFT OUTER JOIN 대출 B\n'
+        + '  ON A.회원번호 = B.회원번호;',
+    q: '위 SQL 의 결과값을 쓰시오.',
+    a: ['4'],
+    why: '<b>LEFT OUTER JOIN 은 왼쪽(회원)의 모든 행을 남긴다.</b> 다만 M001 은 대출이 둘이라 '
+       + '<b>2행으로 늘고</b>, 대출이 없는 M002 는 오른쪽이 NULL 인 1행으로 남는다. 2 + 1 + 1 = <b>4행</b>. '
+       + '🚨 「왼쪽 행 수만큼 나온다」가 아니다 — <b>짝이 여럿이면 늘어난다.</b>',
+    d: 3, y: [], tag: ['JOIN', 'OUTER JOIN']
+  },
+
+  {
+    id: 'ch08-s09-09', ch: 8, sec: 9,
+    t: 'code', lang: 'sql',
+    code: '[학생]                [동아리]\n'
+        + '학번 | 동아리코드     코드 | 이름\n'
+        + '-----+-----------     -----+------\n'
+        + '1    | C1             C1   | 사진\n'
+        + '2    | C2             C2   | 등산\n'
+        + '3    | NULL           C3   | 요리\n'
+        + '\n'
+        + 'SELECT COUNT(*)\n'
+        + 'FROM 학생 S FULL OUTER JOIN 동아리 D\n'
+        + '  ON S.동아리코드 = D.코드;',
+    q: '위 SQL 의 결과값을 쓰시오.',
+    a: ['4'],
+    why: '<b>FULL OUTER JOIN 은 양쪽 모두를 남긴다</b> — 짝이 맞는 2행 + 동아리가 없는 학생 3번 1행 + '
+       + '학생이 없는 동아리 C3 1행 = <b>4행</b>. 같은 자료로 <b>INNER JOIN 이었으면 2행</b>이다.',
+    d: 3, y: [], tag: ['JOIN', 'OUTER JOIN', 'NULL']
+  },
+
+  {
+    id: 'ch08-s09-10', ch: 8, sec: 9,
+    t: 'code', lang: 'sql',
+    code: '[색상]     [사이즈]\n'
+        + '이름       이름\n'
+        + '----       ----\n'
+        + '빨강       S\n'
+        + '파랑       M\n'
+        + '초록       L\n'
+        + '           XL\n'
+        + '\n'
+        + 'SELECT COUNT(*) FROM 색상 CROSS JOIN 사이즈;',
+    q: '위 SQL 의 결과값을 쓰시오.',
+    a: ['12'],
+    why: '<b>CROSS JOIN(교차 조인)은 모든 조합을 만든다.</b> 결과 행 수는 두 테이블 행 수의 '
+       + '<b>곱</b>(교차곱, Cartesian Product)이라 3 × 4 = <b>12</b> 다. 조인 조건이 없다.',
+    d: 2, y: [], tag: ['JOIN', 'CROSS JOIN']
+  },
+
+  {
+    id: 'ch08-s09-11', ch: 8, sec: 9,
+    t: 'code', lang: 'sql',
+    code: '[회원]\n'
+        + '회원번호 | 이름   | 추천인번호\n'
+        + '---------+--------+----------\n'
+        + 'M001     | 김하늘 | NULL\n'
+        + 'M002     | 이바다 | M001\n'
+        + 'M003     | 박구름 | M001\n'
+        + 'M004     | 최나무 | M002\n'
+        + '\n'
+        + 'SELECT COUNT(*)\n'
+        + 'FROM 회원 A, 회원 B\n'
+        + 'WHERE A.추천인번호 = B.회원번호;',
+    q: '위 SQL 의 결과값을 쓰시오.',
+    a: ['3'],
+    why: '<b>같은 테이블을 별칭 둘로 나눠 붙이는 자체 조인(SELF JOIN)</b> 이다. '
+       + '추천인이 있는 M002 · M003 · M004 <b>3행</b>이 맞는다. '
+       + '🚨 추천인이 <b>NULL 인 김하늘은 빠진다</b> — NULL 은 <code>=</code> 로 비교할 수 없다.',
+    d: 3, y: [], tag: ['JOIN', 'SELF JOIN', 'NULL']
+  },
+
+  {
+    id: 'ch08-s10-05', ch: 8, sec: 10,
+    t: 'code', lang: 'sql',
+    code: '[회원]\n'
+        + '이름   | 대출수\n'
+        + '-------+------\n'
+        + '김하늘 | 9\n'
+        + '이바다 | 7\n'
+        + '박구름 | 7\n'
+        + '최나무 | 5\n'
+        + '\n'
+        + 'SELECT 이름,\n'
+        + '       ROW_NUMBER() OVER (ORDER BY 대출수 DESC) AS 번호\n'
+        + 'FROM 회원;',
+    q: '결과 표의 <b>번호</b> 열 값을 위에서부터 차례로 쓰시오. (예: 1, 2, 3, 4)',
+    a: ['1, 2, 3, 4', '1,2,3,4', '1 2 3 4'],
+    why: '<b>ROW_NUMBER 는 값이 같아도 다른 순위를 준다</b> — 7 이 둘이지만 <b>2 · 3</b> 으로 갈린다. '
+       + '같은 자료로 <b>RANK 는 1, 2, 2, 4</b>(건너뜀) · <b>DENSE_RANK 는 1, 2, 2, 3</b>(안 건너뜀)이다.',
+    d: 2, y: [], tag: ['WINDOW함수', 'ROW_NUMBER']
+  },
+
+  {
+    id: 'ch08-s10-06', ch: 8, sec: 10,
+    t: 'code', lang: 'sql',
+    code: '[성적]\n'
+        + '반 | 이름 | 점수\n'
+        + '---+------+-----\n'
+        + 'A  | 김   | 90\n'
+        + 'A  | 이   | 80\n'
+        + 'B  | 박   | 95\n'
+        + 'B  | 최   | 85\n'
+        + 'B  | 정   | 85\n'
+        + '\n'
+        + 'SELECT 이름,\n'
+        + '       RANK() OVER (PARTITION BY 반 ORDER BY 점수 DESC) AS 순위\n'
+        + 'FROM 성적;',
+    q: '결과 표의 <b>순위</b> 열 값을 위에서부터 차례로 쓰시오. (예: 1, 2, 1, 2, 3)',
+    a: ['1, 2, 1, 2, 2', '1,2,1,2,2', '1 2 1 2 2'],
+    why: '<b>PARTITION BY 는 그룹을 나눠 그 안에서만 순위를 매긴다</b> — 반이 바뀌면 <b>1 부터 다시</b> 센다. '
+       + 'B 반의 85 는 둘이 같은 <b>2위</b>다. '
+       + '💡 WINDOW 함수는 GROUP BY 와 달리 <b>행의 개수를 줄이지 않는다</b> — 5행 그대로 나온다.',
+    d: 3, y: [], tag: ['WINDOW함수', 'PARTITION BY', 'RANK']
+  },
+
+  {
+    id: 'ch08-s12-06', ch: 8, sec: 12,
+    t: 'code', lang: 'sql',
+    code: 'CREATE OR REPLACE TRIGGER 반납감소 ( ㉠ ) DELETE ON 대출\n'
+        + 'REFERENCING ( ㉡ ) AS 이전\n'
+        + 'FOR EACH ROW\n'
+        + 'BEGIN\n'
+        + '    UPDATE 회원 SET 누적대출수 = 누적대출수 - 1\n'
+        + '    WHERE 회원번호 = :이전.회원번호;\n'
+        + 'END;',
+    q: '대출 기록이 <b>삭제되기 직전에</b> 실행되고, <b>삭제되기 전의 데이터</b>를 참조하게 하려 한다. ㉠·㉡ 에 들어갈 예약어를 쓰시오.',
+    parts: [
+      { label: '㉠', a: ['BEFORE'] },
+      { label: '㉡', a: ['OLD'] }
+    ],
+    why: '동작 시기는 조작 <b>전이면 BEFORE</b>, <b>후면 AFTER</b> 다. 별칭은 '
+       + '<b>OLD = 변경·삭제 전 데이터</b>, <b>NEW = 새로 추가·변경될 데이터</b>. '
+       + '🚨 트리거 안에는 <b>COMMIT·ROLLBACK·GRANT·REVOKE 같은 DCL 을 쓸 수 없다.</b>',
+    d: 3, y: [], tag: ['트리거', 'BEFORE', 'OLD']
+  },
+
+  {
+    id: 'ch08-s13-04', ch: 8, sec: 13,
+    t: 'code', lang: 'sql',
+    code: 'CREATE OR REPLACE ( ㉠ ) 연체료계산(i_연체일수 IN NUMBER)\n'
+        + 'RETURN NUMBER\n'
+        + 'IS\n'
+        + '    v_연체료 NUMBER;\n'
+        + 'BEGIN\n'
+        + '    v_연체료 := i_연체일수 * 100;\n'
+        + '    ( ㉡ ) v_연체료;\n'
+        + 'END;\n'
+        + '\n'
+        + 'SELECT 연체료계산(7) FROM DUAL;   -- 결과: ( ㉢ )',
+    q: '㉠·㉡ 에 들어갈 예약어와 ㉢ 의 결과값을 쓰시오.',
+    parts: [
+      { label: '㉠', a: ['FUNCTION'] },
+      { label: '㉡', a: ['RETURN'] },
+      { label: '㉢', a: ['700'] }
+    ],
+    why: '<b>사용자 정의 함수는 반드시 반환값이 있어</b> RETURN 이 두 번 나온다 — '
+       + '위는 <b>반환 타입 선언</b>, 아래가 <b>실제 반환</b>이다. 7 × 100 = <b>700</b>. '
+       + '🚨 프로시저는 <code>EXECUTE·CALL</code> 로 부르지만 <b>함수는 SQL 문 안에서 바로 쓴다.</b>',
+    d: 2, y: [], tag: ['사용자정의함수', 'RETURN']
+  },
+
+  {
+    id: 'ch08-s14-04', ch: 8, sec: 14,
+    t: 'code', lang: 'sql',
+    code: 'DECLARE\n'
+        + '    CURSOR c_회원 IS SELECT 이름 FROM 회원;\n'
+        + '    v_이름 VARCHAR2(20);\n'
+        + 'BEGIN\n'
+        + '    ( ㉠ ) c_회원;\n'
+        + '    LOOP\n'
+        + '        ( ㉡ ) c_회원 INTO v_이름;\n'
+        + '        EXIT WHEN c_회원%NOTFOUND;\n'
+        + '    END LOOP;\n'
+        + '    ( ㉢ ) c_회원;\n'
+        + 'END;',
+    q: '㉠~㉢ 에 들어갈 커서 명령어를 순서대로 쓰시오.',
+    parts: [
+      { label: '㉠', a: ['OPEN'] },
+      { label: '㉡', a: ['FETCH'] },
+      { label: '㉢', a: ['CLOSE'] }
+    ],
+    why: '커서의 수행 순서는 <b>OPEN → FETCH → CLOSE</b> 다. '
+       + '<b>OPEN</b> 이 쿼리를 실행해 결과를 커서에 담고, <b>FETCH</b> 가 <b>한 행씩</b> 읽어 변수에 넣고, '
+       + '<b>CLOSE</b> 가 메모리를 놓는다. 사용자가 직접 정의했으므로 <b>명시적 커서</b>다.',
+    d: 2, y: [], tag: ['커서', '명시적커서']
   }
 
 ];
