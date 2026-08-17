@@ -2002,5 +2002,528 @@ window.EIP_BANK_ch10 = [
        + '<code>child</code> 가 나온다.',
     d: 3, y: [], tag: ['오버라이딩', '다형성', '필드은닉']
   }
+,
+
+  /* ======================================================================
+     🚨 T46 4절 — C 코드 문항 (2026-08-17)
+
+     C 는 33문항이 있었지만 **전부 2~9줄**이었다. 실제는 11~20줄(중앙 15)이다.
+     수보다 길이가 문제라 **긴 것을 새로 만든다** — 짧은 것은 섹션 퀴즈에 그대로 둔다.
+
+     📌 실제 회차의 주제 — 포인터 산술 · 배열 인덱스 · 구조체 · 재귀 ·
+        중첩 반복 · 문자열 · 자료구조. → exam-archive/README.md 2장
+     ====================================================================== */
+
+  {
+    id: 'ch10-s05-17', ch: 10, sec: 5,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    int a[5] = { 10, 20, 30, 40, 50 };\n'
+        + '    int *p = a;\n'
+        + '    int sum = 0;\n'
+        + '\n'
+        + '    p = p + 2;\n'
+        + '    sum += *p;\n'
+        + '    sum += *(p - 1);\n'
+        + '    sum += *(a + 4);\n'
+        + '    printf("%d", sum);\n'
+        + '    return 0;\n'
+        + '}',
+    q: '다음 C 코드의 출력 결과를 쓰시오.',
+    a: ['100'],
+    why: '<code>p = p + 2</code> 로 p 가 a[2] 를 가리킨다. '
+       + '<code>*p</code>=30, <code>*(p-1)</code>=a[1]=20, <code>*(a+4)</code>=a[4]=50 이라 '
+       + '30+20+50=<b>100</b> 이다. <b>포인터에 정수를 더하면 칸 단위로 움직인다.</b>',
+    d: 3, y: [], tag: ['포인터', '포인터연산', '배열']
+  },
+
+  {
+    id: 'ch10-s05-18', ch: 10, sec: 5,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '\n'
+        + 'void swap(int *x, int *y) {\n'
+        + '    int t = *x;\n'
+        + '    *x = *y;\n'
+        + '    *y = t;\n'
+        + '}\n'
+        + 'void bad(int x, int y) {\n'
+        + '    int t = x; x = y; y = t;\n'
+        + '}\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    int a = 1, b = 2, c = 3, d = 4;\n'
+        + '    swap(&a, &b);\n'
+        + '    bad(c, d);\n'
+        + '    printf("%d%d%d%d", a, b, c, d);\n'
+        + '    return 0;\n'
+        + '}',
+    q: '다음 C 코드의 출력 결과를 쓰시오.',
+    a: ['2134'],
+    why: '<code>swap</code> 은 <b>주소를 받아</b> 원본을 바꾸므로 a·b 가 2·1 이 된다. '
+       + '<code>bad</code> 는 <b>값을 복사</b>해 받아 밖의 c·d 는 3·4 그대로다.',
+    d: 3, y: [], tag: ['포인터', '매개변수전달', 'CallByReference']
+  },
+
+  {
+    id: 'ch10-s05-19', ch: 10, sec: 5,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    int a[3][3] = { {1,2,3}, {4,5,6}, {7,8,9} };\n'
+        + '    int *p = &a[0][0];\n'
+        + '    int i, sum = 0;\n'
+        + '\n'
+        + '    for (i = 0; i < 9; i += 2) {\n'
+        + '        sum += *(p + i);\n'
+        + '    }\n'
+        + '    printf("%d", sum);\n'
+        + '    return 0;\n'
+        + '}',
+    q: '다음 C 코드의 출력 결과를 쓰시오.',
+    a: ['25'],
+    why: '2차원 배열도 메모리에는 <b>한 줄로</b> 놓인다(1~9). i 가 0,2,4,6,8 이므로 '
+       + '1+3+5+7+9=<b>25</b> 다.',
+    d: 3, y: [], tag: ['포인터', '2차원배열', '메모리배치']
+  },
+
+  {
+    id: 'ch10-s05-20', ch: 10, sec: 5,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    char s[] = "ABCDEF";\n'
+        + '    char *p = s;\n'
+        + '    int cnt = 0;\n'
+        + '\n'
+        + '    while (*p != \'\\0\') {\n'
+        + '        if ((*p - \'A\') % 2 == 0) cnt++;\n'
+        + '        p++;\n'
+        + '    }\n'
+        + '    printf("%d %c", cnt, *(s + 3));\n'
+        + '    return 0;\n'
+        + '}',
+    q: '다음 C 코드의 출력 결과를 쓰시오. (공백으로 구분)',
+    a: ['3 D'],
+    why: '<code>*p - \'A\'</code> 가 0~5 이고 짝수는 A·C·E 세 개다. '
+       + '<code>*(s+3)</code> 은 s[3] 이라 <b>D</b>. 문자열의 끝은 <code>\'\\0\'</code> 이다.',
+    d: 3, y: [], tag: ['포인터', '문자열', '아스키']
+  },
+
+  {
+    id: 'ch10-s06-09', ch: 10, sec: 6,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '\n'
+        + 'struct Book {\n'
+        + '    int no;\n'
+        + '    int price;\n'
+        + '};\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    struct Book b[3] = { {1, 100}, {2, 200}, {3, 300} };\n'
+        + '    struct Book *p = b;\n'
+        + '    int sum = 0;\n'
+        + '\n'
+        + '    sum += p->price;\n'
+        + '    p++;\n'
+        + '    sum += p->price;\n'
+        + '    sum += (p + 1)->no;\n'
+        + '    printf("%d", sum);\n'
+        + '    return 0;\n'
+        + '}',
+    q: '다음 C 코드의 출력 결과를 쓰시오.',
+    a: ['303'],
+    why: '<b>포인터로 구조체를 가리키면 <code>-></code> 로 접근</b>한다. '
+       + '100 + 200 + (세 번째의 no)3 = <b>303</b> 이다. '
+       + '<code>p++</code> 는 구조체 <b>한 칸</b>만큼 움직인다.',
+    d: 3, y: [], tag: ['구조체', '포인터', '화살표연산자']
+  },
+
+  {
+    id: 'ch10-s06-10', ch: 10, sec: 6,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '\n'
+        + 'struct P {\n'
+        + '    char name[10];\n'
+        + '    int age;\n'
+        + '};\n'
+        + '\n'
+        + 'void grow(struct P *p) {\n'
+        + '    p->age += 10;\n'
+        + '}\n'
+        + 'void grow2(struct P p) {\n'
+        + '    p.age += 100;\n'
+        + '}\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    struct P a = { "kim", 20 };\n'
+        + '    grow(&a);\n'
+        + '    grow2(a);\n'
+        + '    printf("%d", a.age);\n'
+        + '    return 0;\n'
+        + '}',
+    q: '다음 C 코드의 출력 결과를 쓰시오.',
+    a: ['30'],
+    why: '구조체를 <b>값으로 넘기면 통째로 복사</b>되어 밖이 안 바뀐다(grow2). '
+       + '주소로 넘긴 grow 만 반영되어 20+10=<b>30</b> 이다.',
+    d: 3, y: [], tag: ['구조체', '포인터', '매개변수전달']
+  },
+
+  {
+    id: 'ch10-s07-12', ch: 10, sec: 7,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '\n'
+        + 'int gcd(int a, int b) {\n'
+        + '    if (b == 0) return a;\n'
+        + '    return gcd(b, a % b);\n'
+        + '}\n'
+        + 'int sum(int n) {\n'
+        + '    if (n <= 0) return 0;\n'
+        + '    return n + sum(n - 2);\n'
+        + '}\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    printf("%d %d", gcd(24, 18), sum(7));\n'
+        + '    return 0;\n'
+        + '}',
+    q: '다음 C 코드의 출력 결과를 쓰시오. (공백으로 구분)',
+    a: ['6 16'],
+    why: '<b>유클리드 호제법</b> — gcd(24,18)→gcd(18,6)→gcd(6,0)=<b>6</b>. '
+       + '<code>sum(7)</code> 은 7+5+3+1=<b>16</b> 이다(2씩 줄어 홀수만 더한다).',
+    d: 3, y: [], tag: ['재귀', '최대공약수']
+  },
+
+  {
+    id: 'ch10-s07-13', ch: 10, sec: 7,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '\n'
+        + 'int cnt = 0;\n'
+        + '\n'
+        + 'int f(int n) {\n'
+        + '    cnt++;\n'
+        + '    if (n < 2) return n;\n'
+        + '    return f(n - 1) + f(n - 2);\n'
+        + '}\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    int r = f(5);\n'
+        + '    printf("%d %d", r, cnt);\n'
+        + '    return 0;\n'
+        + '}',
+    q: '다음 C 코드의 출력 결과를 쓰시오. (공백으로 구분)',
+    a: ['5 15'],
+    why: '<b>피보나치</b> f(5)=5 다. 호출 횟수는 f(n) 이 <code>2·f(n+1)−1</code> 번이라 '
+       + 'f(5) 는 <b>15</b> 번 불린다 — 같은 값을 여러 번 다시 계산하는 것이 재귀의 약점이다.',
+    d: 3, y: [], tag: ['재귀', '피보나치', '전역변수']
+  },
+
+  {
+    id: 'ch10-s04-13', ch: 10, sec: 4,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    int a[8] = { 3, 7, 1, 9, 4, 6, 2, 8 };\n'
+        + '    int max = a[0], min = a[0];\n'
+        + '    int i;\n'
+        + '\n'
+        + '    for (i = 1; i < 8; i++) {\n'
+        + '        if (a[i] > max) max = a[i];\n'
+        + '        if (a[i] < min) min = a[i];\n'
+        + '    }\n'
+        + '    printf("%d", max - min);\n'
+        + '    return 0;\n'
+        + '}',
+    q: '다음 C 코드의 출력 결과를 쓰시오.',
+    a: ['8'],
+    why: '최댓값 9, 최솟값 1 이므로 9−1=<b>8</b> 이다.',
+    d: 2, y: [], tag: ['배열', '최대최소']
+  },
+
+  {
+    id: 'ch10-s04-14', ch: 10, sec: 4,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    int a[5] = { 1, 2, 3, 4, 5 };\n'
+        + '    int i, j, t;\n'
+        + '\n'
+        + '    for (i = 0, j = 4; i < j; i++, j--) {\n'
+        + '        t = a[i];\n'
+        + '        a[i] = a[j];\n'
+        + '        a[j] = t;\n'
+        + '    }\n'
+        + '    for (i = 0; i < 5; i++) printf("%d", a[i]);\n'
+        + '    return 0;\n'
+        + '}',
+    q: '다음 C 코드의 출력 결과를 쓰시오.',
+    a: ['54321'],
+    why: '양 끝에서 안쪽으로 오며 맞바꾸는 <b>배열 뒤집기</b>다. '
+       + '가운데(a[2])는 i&lt;j 가 깨져 그대로 남는다.',
+    d: 2, y: [], tag: ['배열', '뒤집기']
+  },
+
+  {
+    id: 'ch10-s04-15', ch: 10, sec: 4,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '#include <string.h>\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    char a[20] = "Hello";\n'
+        + '    char b[] = "World";\n'
+        + '\n'
+        + '    strcat(a, b);\n'
+        + '    printf("%d ", (int) strlen(a));\n'
+        + '    printf("%c", a[5]);\n'
+        + '    return 0;\n'
+        + '}',
+    q: '다음 C 코드의 출력 결과를 쓰시오. (공백으로 구분)',
+    a: ['10 W'],
+    why: '<code>strcat</code> 이 이어 붙여 <code>HelloWorld</code> 가 되므로 길이는 <b>10</b> '
+       + '(널 문자는 세지 않는다). a[5] 는 여섯 번째 글자라 <b>W</b> 다.',
+    d: 2, y: [], tag: ['문자열', 'strcat', 'strlen']
+  },
+
+  {
+    id: 'ch10-s03-17', ch: 10, sec: 3,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    int i, j;\n'
+        + '    int cnt = 0;\n'
+        + '\n'
+        + '    for (i = 2; i <= 20; i++) {\n'
+        + '        int prime = 1;\n'
+        + '        for (j = 2; j * j <= i; j++) {\n'
+        + '            if (i % j == 0) { prime = 0; break; }\n'
+        + '        }\n'
+        + '        if (prime) cnt++;\n'
+        + '    }\n'
+        + '    printf("%d", cnt);\n'
+        + '    return 0;\n'
+        + '}',
+    q: '다음 C 코드의 출력 결과를 쓰시오.',
+    a: ['8'],
+    why: '2 이상 20 이하의 <b>소수</b>를 센다 — 2, 3, 5, 7, 11, 13, 17, 19 로 <b>8개</b>다. '
+       + '<code>j*j &lt;= i</code> 는 제곱근까지만 나눠 보는 것이다.',
+    d: 3, y: [], tag: ['중첩반복문', '소수']
+  },
+
+  {
+    id: 'ch10-s03-18', ch: 10, sec: 3,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    int n = 1234;\n'
+        + '    int rev = 0;\n'
+        + '    int sum = 0;\n'
+        + '\n'
+        + '    while (n > 0) {\n'
+        + '        int d = n % 10;\n'
+        + '        sum += d;\n'
+        + '        rev = rev * 10 + d;\n'
+        + '        n /= 10;\n'
+        + '    }\n'
+        + '    printf("%d %d", rev, sum);\n'
+        + '    return 0;\n'
+        + '}',
+    q: '다음 C 코드의 출력 결과를 쓰시오. (공백으로 구분)',
+    a: ['4321 10'],
+    why: '<code>%10</code> 으로 뒤에서부터 한 자리씩 떼어 <code>rev*10+d</code> 로 쌓으면 '
+       + '<b>자릿수가 뒤집힌다</b>(4321). 자릿수 합은 1+2+3+4=<b>10</b> 이다.',
+    d: 3, y: [], tag: ['반복문', '자릿수', '나머지연산']
+  },
+
+  {
+    id: 'ch10-s03-19', ch: 10, sec: 3,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    int i = 0, s = 0;\n'
+        + '\n'
+        + '    do {\n'
+        + '        i++;\n'
+        + '        if (i % 2 == 0) continue;\n'
+        + '        s += i;\n'
+        + '    } while (i < 10);\n'
+        + '\n'
+        + '    switch (s % 4) {\n'
+        + '        case 0: s += 100;\n'
+        + '        case 1: s += 10;\n'
+        + '                break;\n'
+        + '        default: s += 1;\n'
+        + '    }\n'
+        + '    printf("%d", s);\n'
+        + '    return 0;\n'
+        + '}',
+    q: '다음 C 코드의 출력 결과를 쓰시오.',
+    a: ['35'],
+    why: '<code>do~while</code> 에서 <code>continue</code> 는 <b>조건 검사로 간다</b>(빠져나가지 않는다). '
+       + '홀수만 더해져 1+3+5+7+9=<b>25</b>. <code>25 % 4</code> 가 1 이라 '
+       + '<code>case 1</code> 로 <b>바로 들어가</b> 10 을 더하고 <code>break</code> 로 나온다 → <b>35</b>. '
+       + '🚨 <b>case 0 을 지나온 것이 아니므로 100 은 더해지지 않는다</b> — '
+       + '폴스루는 <b>들어온 자리부터 아래로</b> 흐르는 것이지 위로 거슬러 가지 않는다.',
+    d: 3, y: [], tag: ['do-while', 'switch', '폴스루']
+  },
+
+  {
+    id: 'ch10-s02-14', ch: 10, sec: 2,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    int a = 12;\n'
+        + '    int b = 10;\n'
+        + '\n'
+        + '    printf("%d ", a & b);\n'
+        + '    printf("%d ", a | b);\n'
+        + '    printf("%d ", a ^ b);\n'
+        + '    printf("%d", a << 1);\n'
+        + '    return 0;\n'
+        + '}',
+    q: '다음 C 코드의 출력 결과를 쓰시오. (공백으로 구분)',
+    a: ['8 14 6 24'],
+    why: '12=1100, 10=1010. <b>AND</b> 1000=8, <b>OR</b> 1110=14, <b>XOR</b> 0110=6. '
+       + '<code>&lt;&lt;1</code> 은 <b>2배</b>라 24 다.',
+    d: 3, y: [], tag: ['비트연산', '시프트']
+  },
+
+  {
+    id: 'ch10-s02-15', ch: 10, sec: 2,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    int a = 5, b = 0, c = 0;\n'
+        + '\n'
+        + '    if (a > 3 || ++b > 0) c += 1;\n'
+        + '    if (a < 3 && ++b > 0) c += 2;\n'
+        + '    if (a > 3 && ++b > 0) c += 4;\n'
+        + '    printf("%d %d", b, c);\n'
+        + '    return 0;\n'
+        + '}',
+    q: '다음 C 코드의 출력 결과를 쓰시오. (공백으로 구분)',
+    a: ['1 5'],
+    why: '🚨 <b>단축 평가</b>다. 첫 줄은 앞이 참이라 <code>||</code> 의 뒤를 <b>안 본다</b>. '
+       + '둘째 줄은 앞이 거짓이라 <code>&amp;&amp;</code> 의 뒤를 <b>안 본다</b>. '
+       + '셋째 줄에서만 <code>++b</code> 가 실행되어 b=<b>1</b>, c=1+4=<b>5</b> 다.',
+    d: 3, y: [], tag: ['논리연산자', '단축평가']
+  },
+
+  {
+    id: 'ch10-s01-12', ch: 10, sec: 1,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    char c = \'A\';\n'
+        + '    int i = c + 2;\n'
+        + '    double d = 10 / 4;\n'
+        + '    double e = (double) 10 / 4;\n'
+        + '\n'
+        + '    printf("%c ", c + 2);\n'
+        + '    printf("%d ", i);\n'
+        + '    printf("%.1f ", d);\n'
+        + '    printf("%.1f", e);\n'
+        + '    return 0;\n'
+        + '}',
+    q: '다음 C 코드의 출력 결과를 쓰시오. (공백으로 구분)',
+    a: ['C 67 2.0 2.5'],
+    why: '<code>\'A\'</code> 는 아스키 <b>65</b> 라 +2 는 67 이고 <code>%c</code> 로 찍으면 '
+       + '<b>C</b> 다. <code>10 / 4</code> 는 정수 나눗셈이라 2 → <b>2.0</b>, '
+       + '<code>(double)</code> 을 씌워야 <b>2.5</b> 다.',
+    d: 3, y: [], tag: ['형변환', '아스키', '정수나눗셈']
+  },
+
+  {
+    id: 'ch10-s05-21', ch: 10, sec: 5,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    int a = 10;\n'
+        + '    int *p = &a;\n'
+        + '    int **pp = &p;\n'
+        + '\n'
+        + '    **pp = **pp + 5;\n'
+        + '    *p = *p * 2;\n'
+        + '    printf("%d %d", a, **pp);\n'
+        + '    return 0;\n'
+        + '}',
+    q: '다음 C 코드의 출력 결과를 쓰시오. (공백으로 구분)',
+    a: ['30 30'],
+    why: '<b>이중 포인터</b> pp 는 p 를 가리키고 p 는 a 를 가리키므로 '
+       + '<code>**pp</code> 와 <code>*p</code> 와 <code>a</code> 는 <b>같은 자리</b>다. '
+       + '(10+5)×2=<b>30</b> 이고 둘 다 같은 값을 본다.',
+    d: 3, y: [], tag: ['포인터', '이중포인터']
+  },
+
+  {
+    id: 'ch10-s07-14', ch: 10, sec: 7,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '\n'
+        + 'int add(int n) {\n'
+        + '    static int total = 0;\n'
+        + '    int local = 0;\n'
+        + '    total += n;\n'
+        + '    local += n;\n'
+        + '    return total * 10 + local;\n'
+        + '}\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    add(1);\n'
+        + '    add(2);\n'
+        + '    printf("%d", add(3));\n'
+        + '    return 0;\n'
+        + '}',
+    q: '다음 C 코드의 출력 결과를 쓰시오.',
+    a: ['63'],
+    why: '<code>static</code> 지역 변수는 <b>함수가 끝나도 값이 남는다</b>. '
+       + 'total 은 1→3→6 으로 쌓이고 local 은 매번 0 에서 시작해 3 이다. '
+       + '6×10+3=<b>63</b>.',
+    d: 3, y: [], tag: ['함수', 'static', '지역변수']
+  },
+
+  {
+    id: 'ch10-s04-16', ch: 10, sec: 4,
+    t: 'code', lang: 'c',
+    code: '#include <stdio.h>\n'
+        + '\n'
+        + 'int main() {\n'
+        + '    int a[5] = { 1, 3, 5, 7, 9 };\n'
+        + '    int key = 7;\n'
+        + '    int lo = 0, hi = 4, cnt = 0;\n'
+        + '    int mid, found = -1;\n'
+        + '\n'
+        + '    while (lo <= hi) {\n'
+        + '        cnt++;\n'
+        + '        mid = (lo + hi) / 2;\n'
+        + '        if (a[mid] == key) { found = mid; break; }\n'
+        + '        else if (a[mid] < key) lo = mid + 1;\n'
+        + '        else hi = mid - 1;\n'
+        + '    }\n'
+        + '    printf("%d %d", found, cnt);\n'
+        + '    return 0;\n'
+        + '}',
+    q: '다음 C 코드의 출력 결과를 쓰시오. (공백으로 구분)',
+    a: ['3 2'],
+    why: '<b>이진 탐색</b>이다. 처음 mid=2(값 5)에서 작으니 lo=3 이 되고, '
+       + '두 번째 mid=(3+4)/2=3(값 7)에서 찾는다. 인덱스 <b>3</b>, 비교 <b>2</b>번.',
+    d: 3, y: [], tag: ['배열', '이진탐색']
+  }
 
 ];
