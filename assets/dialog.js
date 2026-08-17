@@ -101,5 +101,17 @@
     else go.focus();
   }
 
-  window.EIP_DIALOG = { shell: shell, confirm: ask, close: close };
+  /* 알림 한 줄 — `alert()` 도 같은 이유로 제목 줄을 못 바꾼다.
+     🔒 확인만 받으면 되는 자리라 버튼이 하나다. */
+  function tell(title, body) {
+    var b = shell(title, null);
+    if (body) b.appendChild(el('p', 'bkdlg__hint', body));
+    var go = el('button', 'bkdlg__go', '확인');
+    go.type = 'button';
+    go.addEventListener('click', close);
+    b.appendChild(go);
+    go.focus();
+  }
+
+  window.EIP_DIALOG = { shell: shell, confirm: ask, alert: tell, close: close };
 })();

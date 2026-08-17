@@ -90,6 +90,12 @@
     };
   }
 
+  /* 🚨 `alert()` 도 제목 줄을 못 바꾼다 — 알림도 `dialog.js` 한 벌로 낸다 (T32) */
+  function say(title, body) {
+    if (window.EIP_DIALOG) window.EIP_DIALOG.alert(title, body);
+    else window.alert(title + (body ? '\n\n' + body : ''));
+  }
+
   /* ------------------------------------------------------------- 저장소 */
   function store() { return (window.EIP && window.EIP.store) || null; }
   function read(k, d) { var s = store(); return s ? s.get(k, d) : d; }
@@ -180,9 +186,9 @@
       it = itemById(rec.ids[i]);
       if (it) items.push(it); else missing++;
     }
-    if (!items.length) { alert('그때의 문항을 은행에서 찾지 못했습니다.'); return; }
+    if (!items.length) { say('그때의 문항을 은행에서 찾지 못했습니다', '그 사이 문항이 바뀐 것입니다.'); return; }
     if (missing) {
-      alert('문항 ' + missing + '개는 은행에서 찾지 못해 빼고 냅니다. 그 사이 문항이 바뀐 것입니다.');
+      say('문항 ' + missing + '개를 빼고 냅니다', '은행에서 찾지 못했습니다 — 그 사이 문항이 바뀐 것입니다.');
     }
     current = {
       seed: rec.seed, items: items, mins: 0,
@@ -663,7 +669,7 @@
       acts.appendChild(again);
 
       /* 🔒 한 건 삭제는 그 자리에서 한 번 더 묻는다.
-         confirm() 은 제목 줄에 앱 이름·도메인이 붙어 무슨 창인지 알아볼 수 없다 (T28).
+         ✅ 여기는 처음부터 confirm() 을 안 썼다 — 행 안에서 바꾸는 쪽이 더 낫다.
          행 안에서 「지울까요? 예 / 아니오」로 바꾸는 편이 무엇을 지우는지도 분명하다. */
       var del = el('button', 'exam__histdel', '삭제');
       del.type = 'button';
@@ -930,10 +936,10 @@
 
     if (scope === 'wrong') {
       opts.pool = wrongPool(pools);
-      if (!opts.pool.length) { alert('아직 틀린 문제가 없습니다. 먼저 문제를 풀어 주세요.'); return; }
+      if (!opts.pool.length) { say('아직 틀린 문제가 없습니다', '먼저 문제를 풀어 주세요.'); return; }
     } else if (scope !== 'all') {
       opts.pool = pools[numOf(scope)] || [];
-      if (!opts.pool.length) { alert('이 단원은 아직 문제 은행이 없습니다.'); return; }
+      if (!opts.pool.length) { say('이 단원은 아직 문제 은행이 없습니다'); return; }
     } else {
       var cap = {}, c;
       for (c in pools) {
@@ -943,7 +949,7 @@
     }
 
     var items = pickItems(opts);
-    if (!items.length) { alert('문항을 뽑지 못했습니다.'); return; }
+    if (!items.length) { say('문항을 뽑지 못했습니다'); return; }
 
     current = {
       seed: seed, items: items, mins: mins,

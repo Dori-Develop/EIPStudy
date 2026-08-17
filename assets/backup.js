@@ -29,6 +29,13 @@
     return n;
   }
 
+  /* 🚨 `alert()` 도 제목 줄을 못 바꾼다 — 앱 이름이나 도메인이 붙는다.
+     알림도 `dialog.js` 한 벌로 낸다 (T32). */
+  function say(title, body) {
+    if (window.EIP_DIALOG) window.EIP_DIALOG.alert(title, body);
+    else window.alert(title + (body ? '\n\n' + body : ''));
+  }
+
   function pad(n) { return n < 10 ? '0' + n : String(n); }
 
   function today() {
@@ -51,7 +58,7 @@
     var data = m.exportable(s);
     var sum = m.summarize(data);
     if (!sum.keys) {
-      alert('아직 저장된 학습 기록이 없습니다.\n섹션을 읽거나 퀴즈를 풀면 기록이 쌓입니다.');
+      say('내보낼 기록이 없습니다', '섹션을 읽거나 퀴즈를 풀면 기록이 쌓입니다.');
       return;
     }
 
@@ -93,10 +100,10 @@
       reader.onload = function () {
         var parsed;
         try { parsed = JSON.parse(String(reader.result)); }
-        catch (e) { alert('읽을 수 없는 파일입니다.\nEIP Study 에서 내보낸 .json 파일인지 확인해 주세요.'); return; }
+        catch (e) { say('읽을 수 없는 파일입니다', 'EIP Study 에서 내보낸 .json 파일인지 확인해 주세요.'); return; }
         review(parsed, f.name);
       };
-      reader.onerror = function () { alert('파일을 읽지 못했습니다.'); };
+      reader.onerror = function () { say('파일을 읽지 못했습니다'); };
       reader.readAsText(f);
     });
 
@@ -109,12 +116,12 @@
     if (!m) return;
 
     if (!parsed || typeof parsed !== 'object' || !parsed.data || typeof parsed.data !== 'object') {
-      alert('EIP Study 백업 파일이 아닙니다.');
+      say('EIP Study 백업 파일이 아닙니다', '내보내기로 만든 .json 파일인지 확인해 주세요.');
       return;
     }
     var go = function () {
       var sum = m.summarize(parsed.data);
-      if (!sum.keys) { alert('파일에 학습 기록이 없습니다.'); return; }
+      if (!sum.keys) { say('파일에 학습 기록이 없습니다'); return; }
       openDialog(parsed, filename, sum);
     };
 
