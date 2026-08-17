@@ -1822,3 +1822,23 @@ mark, .hl {
 @media (min-width: 1060px) {
   .backnav--aside { left: calc(var(--sidebar-w) + 14px); }
 }
+
+/* ---------- 기출문제집 회차 고르기 (past.js) ---------- */
+/* 🔒 자료가 없으면 이 화면 자체가 안 그려진다 — 안내 한 줄만 남는다 */
+.past__rounds {
+  display: grid; gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  margin: 14px 0 0;
+}
+.past__round {
+  display: flex; flex-direction: column; gap: 3px;
+  padding: 13px 14px; text-align: left;
+  background: var(--bg-elev);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  color: var(--fg); cursor: pointer;
+  transition: border-color .15s, transform .1s;
+}
+.past__round strong { font-size: 15px; letter-spacing: -.01em; }
+.past__round span { font-size: 12px; color: var(--fg-faint); }
+.past__round:hover { border-color: var(--accent); }
+.past__round:active { transform: translateY(1px); }

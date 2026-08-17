@@ -630,5 +630,27 @@ card_n="$first_card"
 rm -f .cardcount
 echo "  ✓ assets/cards-data.js (카드 ${card_n}장)"
 
+# ---- 10) 🔒 기출 풀 목록 (있을 때만) ----
+# past.js 가 어느 회차 파일을 불러야 하는지 알려 주는 목록.
+# 🚨 pool/ 은 **비공개 자료**다 — .git/info/exclude 에 있어 공개 저장소에 이름조차 안 남는다.
+#    폴더가 없으면 이 단계는 통째로 건너뛴다. 빌드는 pool/ 없이도 정상이어야 한다.
+if [ -d pool ]; then
+  {
+    printf '/* build.sh 가 생성한다. 직접 고치지 말 것.\n'
+    printf '   🔒 기출 풀 파일 목록. 이 파일과 pool/*.js 는 공개 저장소에 넣지 않는다. */\n'
+    printf 'window.EIP_POOL_FILES = ['
+    sep=''
+    for f in pool/*.js; do
+      base="$(basename "$f")"
+      [ "$base" = "pool-index.js" ] && continue
+      printf '%s"%s"' "$sep" "$base"
+      sep=','
+    done
+    printf '];\n'
+  } > "pool/pool-index.js"
+  pool_n="$(ls pool/*.js 2>/dev/null | grep -v 'pool-index.js' | wc -l | tr -d ' ')"
+  echo "  🔒 pool/pool-index.js (기출 ${pool_n}회차 — 비공개)"
+fi
+
 echo ""
 echo "빌드 완료. ${sources[*]} → 챕터 목차 + 섹션 페이지"

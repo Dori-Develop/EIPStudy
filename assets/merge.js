@@ -22,6 +22,8 @@
                                            **소수**일 수 있고 `score` 는 문항 수 그대로다)
    exam.recent  [[문항 id,…], …]        → 앞에서부터 번갈아, 최대 RECENT_KEEP
    exam.answers {seed: {at, a}}          → 회차마다 at 최신 쪽, 최대 ANSWERS_KEEP
+   past.hist    [{key,y,r,src,ts,pt,…}] → 🔒 기출문제집 응시 이력. ts 로 묶어 최신순
+                                          (**점수만** 오간다 — 기출 원문은 안 들어온다)
    theme · ui.* → **아예 옮기지 않는다** (학습 기록이 아니라 이 기기의 화면 설정이다)
 
    ⚠️ ES5 문법으로 작성한다.
@@ -34,6 +36,7 @@
   var EXAM_HISTORY_KEEP = 200;   /* exam.js HISTORY_KEEP */
   var EXAM_RECENT_KEEP = 3;      /* exam.js RECENT_KEEP */
   var EXAM_ANSWERS_KEEP = 40;    /* exam.js ANSWERS_KEEP */
+  var PAST_HISTORY_KEEP = 60;    /* past.js 의 이력 상한 */
 
   function has(o, k) { return Object.prototype.hasOwnProperty.call(o, k); }
   function isArr(v) { return Object.prototype.toString.call(v) === '[object Array]'; }
@@ -215,6 +218,25 @@
   }
 
   /* 시험 이력 — 합쳐서 at 내림차순, 같은 seed 는 하나만 */
+  /* 🔒 기출문제집 응시 이력 — [{key,y,r,src,ts,pt,ptMax,ok,total}].
+     `ts`(응시 시각)가 응시 하나를 가리킨다. **같은 회차를 여러 번 풀 수 있어**
+     회차 키로 묶으면 성적 변화가 뭉개진다 — 모의 문제지에서 이미 겪은 일이다.
+     🚨 기출 원문은 여기 안 들어온다. **점수만** 오간다. */
+  function mergePastHistory(mine, theirs) {
+    var all = (isArr(mine) ? mine : []).concat(isArr(theirs) ? theirs : []);
+    var seen = {}, out = [], i, r, id;
+    for (i = 0; i < all.length; i++) {
+      r = all[i];
+      if (!isObj(r)) continue;
+      id = r.ts ? ('t' + String(r.ts)) : (String(r.key) + '|' + String(r.pt));
+      if (seen[id]) continue;
+      seen[id] = 1;
+      out.push(r);
+    }
+    out.sort(function (x, y) { return (y.ts || 0) - (x.ts || 0); });
+    return out.slice(0, PAST_HISTORY_KEEP);
+  }
+
   function mergeExamHistory(mine, theirs) {
     var all = (isArr(mine) ? mine : []).concat(isArr(theirs) ? theirs : []);
     var seen = {}, out = [], i, r;
@@ -284,6 +306,7 @@
     if (key === 'fav.all') return unionStamped(mine, theirs);
     if (key === 'card.saved') return unionArray(mine, theirs);
     if (key === 'exam.history') return mergeExamHistory(mine, theirs);
+    if (key === 'past.hist') return mergePastHistory(mine, theirs);
     if (key === 'exam.recent') return mergeExamRecent(mine, theirs);
     if (key === 'exam.answers') return mergeExamAnswers(mine, theirs);
 

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="robots" content="noindex, nofollow">
+<title>기출문제집 · EIP Study</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+<link rel="stylesheet" href="assets/style.css">
+<script>
+/* 첫 페인트 전에 테마를 적용해 깜빡임 방지 */
+(function(){try{var t=JSON.parse(localStorage.getItem('eip.theme'));
+if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr__title" style="padding-left:8px">
+    <a href="index.html" class="js-back js-exam-back">← 홈</a>
+    <small class="js-where js-exam-where">기출문제집</small>
+  </div>
+  <span class="hdr__brand">정보처리기사 실기</span>
+  <button type="button" class="iconbtn js-theme" aria-label="테마 전환">🌙</button>
+</header>
+
+<div class="layout">
+  <main class="main">
+    <div class="wrap">
+
+      <section class="hero">
+        <h1>기출문제집</h1>
+        <p>
+          회차를 골라 <strong>20문항 100점</strong>으로 풉니다. 채점 규칙은 모의 문제지와 같습니다.
+          <strong>기록은 이 브라우저에만</strong> 남고, 오답노트에는 쌓이지 않습니다.
+        </p>
+      </section>
+
+      <div id="past-setup"></div>
+      <div id="past-sheet" style="display:none"></div>
+
+      <footer class="footer">
+        <p>
+          기록은 이 브라우저에만 저장됩니다.
+        </p>
+        <nav class="toolnav js-toolnav" aria-label="다른 학습 도구"></nav>
+      </footer>
+
+    </div>
+  </main>
+</div>
+
+<!-- 🖼️ 그림 문항이 쓴다. 본문 페이지와 같은 버전을 쓸 것 — 설정을 app.js 가 한 벌로 준다 -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script src="assets/app.js"></script>
+<script src="assets/toc.js"></script>
+<script src="assets/memo.js"></script>
+<script src="assets/qcard.js"></script>
+<script src="assets/concept.js"></script>
+<script src="assets/past.js"></script>
+
+</body>
+</html>
