@@ -382,6 +382,7 @@ KLOC	소스 코드 천 줄
 L2TP	2계층 터널링 프로토콜
 LFU	최소 빈도 사용
 LRU	최근 최소 사용
+MAC	강제 접근 통제 · 매체 접근 제어(MAC 주소)
 MEMS	초소형 정밀 기계 기술
 NAC	네트워크 접근 제어
 NDN	데이터 중심 네트워킹
@@ -411,6 +412,7 @@ SDN	소프트웨어 정의 네트워킹
 SIEM	보안 정보·이벤트 관리
 SJF	최단 작업 우선
 SPICE	소프트웨어 처리 개선 및 능력 평가
+SQL	구조적 질의 언어
 SRT	최단 잔여 시간 우선
 SSH	보안 셸
 SSO	통합 인증
@@ -530,7 +532,12 @@ for md in "${sources[@]}"; do
     function emit(a, full, kor) {
       if (!isAbbr(a)) return
       if (a == toupper(a) && (a in BLOCK)) return
-      if (full != "" && !expands(a, full)) full = ""
+      # 🚨 **풀이가 아니면 그 자리의 한글명도 못 믿는다.**
+      #    `### 동적 SQL(Dynamic SQL)` 은 SQL 을 **풀이하는 것이 아니라 한정하는** 자리다.
+      #    (풀이 안에 약어가 그대로 있어 expands() 가 걸러 낸다.)
+      #    그런데 앞의 「동적」을 이름으로 캐서 **SQL 의 한글명이 「동적」** 이 돼 있었다.
+      #    사용자가 잡았다 — 💬 *"SQL 뜻이 동적 인데 이거 맞아?"*
+      if (full != "" && !expands(a, full)) { full = ""; kor = "" }
       if (full == "" && kor == "") return
       # 풀네임이 없으면 짧은 것만 — DIFFERENCE 같은 전각 용어가 섞이는 것을 막는다
       if (full == "" && length(a) > 6) return
@@ -578,9 +585,13 @@ for md in "${sources[@]}"; do
         # ① 한글명(ABBR; Full Name)
         if (inner ~ /;/) {
           p = index(inner, ";")
-          korRank = 2
-          emit(trim(substr(inner, 1, p - 1)), trim(substr(inner, p + 1)),
-               (kor != "" ? kor : innerKor))
+          # 🚨 `korRank` 를 여기서 무조건 2 로 덮어썼다가 **제목에서 캔 이름(1등급)이
+          #    표 칸(2등급)에 밀렸다.** `### 통합 개발 환경(IDE; …)` 이 있는데도
+          #    `| 구현 도구(IDE) |` 가 이겨서 IDE 의 한글명이 「구현 도구」였다.
+          #    괄호 안에서 캔 것(innerKor)을 쓸 때만 2 로 내린다.
+          kor1 = kor
+          if (kor1 == "") { kor1 = innerKor; if (kor1 != "") korRank = 2 }
+          emit(trim(substr(inner, 1, p - 1)), trim(substr(inner, p + 1)), kor1)
           continue
         }
         # ② ABBR(Full Name) — 괄호 바로 앞 낱말이 약어

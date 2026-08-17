@@ -70,7 +70,7 @@ window.EIP_GLOSSARY = [
 ,{a:"HTML",f:"HyperText Markup Language",k:"하이퍼텍스트 마크업 언어",n:9,s:[["ch05",5],["ch03",6],["ch03",7],["ch04",0],["ch06",2],["ch09",1],["ch09",15],["ch10",10]]}
 ,{a:"HTTP",f:"HyperText Transfer Protocol",k:"하이퍼텍스트 전송 규약",n:9,s:[["ch05",5],["ch03",7],["ch03",9],["ch04",0],["ch05",11],["ch05",13],["ch07",11],["ch09",13]]}
 ,{a:"ICMP",f:"Internet Control Message Protocol",k:"인터넷 제어 메시지 프로토콜",n:2,s:[["ch11",11],["ch09",9]]}
-,{a:"IDE",f:"Integrated Development Environment",k:"구현 도구",n:3,s:[["ch04",0],["ch04",9],["ch04",7]]}
+,{a:"IDE",f:"Integrated Development Environment",k:"통합 개발 환경",n:3,s:[["ch04",0],["ch04",9],["ch04",7]]}
 ,{a:"IDEA",f:"International Data Encryption Algorithm",k:"국제 데이터 암호화 알고리즘",n:3,s:[["ch09",8],["ch02",24],["ch09",15]]}
 ,{a:"IDS",f:"Intrusion Detection System",k:"침입 탐지 시스템",n:2,s:[["ch09",13],["ch09",15]]}
 ,{a:"IGMP",f:"Internet Group Management Protocol",k:"인터넷 그룹 관리 프로토콜",n:1,s:[["ch11",11]]}
@@ -92,7 +92,7 @@ window.EIP_GLOSSARY = [
 ,{a:"LOD",f:"Linked Open Data",k:"",n:1,s:[["ch11",13]]}
 ,{a:"LRU",f:"Least Recently Used",k:"최근 최소 사용",n:3,s:[["ch11",2],["ch11",1],["ch11",15]]}
 ,{a:"LSP",f:"Liskov Substitution Principle",k:"리스코프 치환 원칙",n:2,s:[["ch04",3],["ch04",14]]}
-,{a:"MAC",f:"Mandatory Access Control",k:"강제 접근통제",n:7,s:[["ch02",24],["ch02",32],["ch09",2],["ch09",13],["ch11",10],["ch11",11],["ch11",15]]}
+,{a:"MAC",f:"Mandatory Access Control",k:"강제 접근 통제 · 매체 접근 제어(MAC 주소)",n:7,s:[["ch02",24],["ch02",32],["ch09",2],["ch09",13],["ch11",10],["ch11",11],["ch11",15]]}
 ,{a:"MD5",f:"Message Digest 5",k:"",n:2,s:[["ch09",8],["ch09",15]]}
 ,{a:"MEMS",f:"Micro-Electro Mechanical Systems",k:"초소형 정밀 기계 기술",n:1,s:[["ch11",13]]}
 ,{a:"MFA",f:"",k:"다중 요소 인증",n:1,s:[["ch09",10]]}
@@ -142,7 +142,7 @@ window.EIP_GLOSSARY = [
 ,{a:"SOAP",f:"Simple Object Access Protocol",k:"",n:3,s:[["ch03",7],["ch03",3],["ch03",9]]}
 ,{a:"SOLID",f:"",k:"객체 지향 설계 원칙",n:2,s:[["ch04",3],["ch04",14]]}
 ,{a:"SPICE",f:"Software Process Improvement and Capability dEtermination",k:"소프트웨어 처리 개선 및 능력 평가",n:2,s:[["ch01",27],["ch01",30]]}
-,{a:"SQL",f:"Structured Query Language",k:"동적",n:18,s:[["ch08",0],["ch08",14],["ch02",16],["ch04",11],["ch04",14],["ch08",10],["ch08",11],["ch08",12]]}
+,{a:"SQL",f:"Structured Query Language",k:"구조적 질의 언어",n:18,s:[["ch08",0],["ch02",16],["ch04",11],["ch04",14],["ch08",10],["ch08",11],["ch08",12],["ch08",13]]}
 ,{a:"SRP",f:"Single Responsibility Principle",k:"단일 책임 원칙",n:2,s:[["ch04",3],["ch04",14]]}
 ,{a:"SRT",f:"Shortest Remaining Time",k:"최단 잔여 시간 우선",n:2,s:[["ch11",3],["ch11",15]]}
 ,{a:"SSD",f:"Solid State Drive",k:"",n:1,s:[["ch11",13]]}
@@ -171,5 +171,5 @@ window.EIP_GLOSSARY = [
 ,{a:"XML",f:"eXtensible Markup Language",k:"확장 마크업 언어",n:12,s:[["ch03",6],["ch03",2],["ch03",7],["ch03",9],["ch04",9],["ch04",14],["ch05",9],["ch05",13]]}
 ,{a:"XP",f:"eXtreme Programming",k:"",n:3,s:[["ch01",0],["ch01",2],["ch01",30]]}
 ,{a:"XSL",f:"eXtensible Stylesheet Language",k:"확장 스타일시트 언어",n:1,s:[["ch03",6]]}
-,{a:"XSS",f:"",k:"크로스사이트 스크립팅",n:6,s:[["ch04",11],["ch09",1],["ch04",14],["ch09",9],["ch09",13],["ch09",15]]}
+,{a:"XSS",f:"",k:"크로스사이트 스크립팅",n:6,s:[["ch04",11],["ch04",14],["ch09",1],["ch09",9],["ch09",13],["ch09",15]]}
 ];
