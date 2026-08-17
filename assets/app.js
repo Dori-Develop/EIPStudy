@@ -743,12 +743,12 @@
     wrapTables(doc);
     decorateQuotes(doc);
     paintStars(doc);          /* 🔒 중요도 ★ 는 여기서 한 번만 칠한다 */
-    var diagrams = extractDiagrams(doc);
+    extractDiagrams(doc);
 
     buildSidebar(doc);
     buildPageNav();
     buildDoneButton(doc);
-    renderDiagrams(diagrams);
+    renderDiagrams();
     initReadingProgress();
 
     /* 검색 결과로 들어온 경우 해당 부분으로 이동 */
@@ -826,27 +826,32 @@
     });
   }
 
+  /* 🔒 **그림은 본문에만 있는 것이 아니다.** 문항에도 붙는다(`fig`) —
+     그래서 「정의 문자열 → 그릴 상자」를 여기 한 벌만 두고 `EIP.diagram` 으로 내보낸다.
+     mermaid 설정을 두 벌로 만들면 본문과 문항의 그림이 서로 다르게 그려진다. */
+  var diagramReg = [];
+
+  function diagramBox(definition) {
+    var box = el('div', 'diagram diagram--pending');
+    var target = el('div', 'mermaid');
+    target.textContent = definition;
+    box.appendChild(target);
+
+    var zoom = el('button', 'diagram__zoom', '⤢');
+    zoom.type = 'button';
+    zoom.title = '크게 보기';
+    zoom.setAttribute('aria-label', '다이어그램 크게 보기');
+    box.appendChild(zoom);
+
+    diagramReg.push({ box: box, target: target, def: definition });
+    return box;
+  }
+
   function extractDiagrams(doc) {
-    var diagrams = [];
     $$('pre > code.language-mermaid', doc).forEach(function (code) {
-      var definition = code.textContent;
       var pre = code.parentNode;
-
-      var box = el('div', 'diagram diagram--pending');
-      var target = el('div', 'mermaid');
-      target.textContent = definition;
-      box.appendChild(target);
-
-      var zoom = el('button', 'diagram__zoom', '⤢');
-      zoom.type = 'button';
-      zoom.title = '크게 보기';
-      zoom.setAttribute('aria-label', '다이어그램 크게 보기');
-      box.appendChild(zoom);
-
-      pre.parentNode.replaceChild(box, pre);
-      diagrams.push({ box: box, target: target, def: definition });
+      pre.parentNode.replaceChild(diagramBox(code.textContent), pre);
     });
-    return diagrams;
   }
 
   /* 이 섹션의 학습 완료 버튼 */
@@ -924,9 +929,13 @@
   }
 
   /* --------------------------------------------------- 다이어그램(mermaid) */
-  function renderDiagrams(diagrams) {
-    var lb = $('#lightbox');
-    var lbInner = $('#lightbox-inner');
+  /* 🚨 **여러 번 불릴 수 있다.** 본문은 한 번이지만 문항은 화면이 바뀔 때마다 새로 그린다 —
+     그래서 **배선(테마 변경·확대 창)은 한 번만** 하고 그리기만 되풀이한다.
+     안 그러면 테마를 한 번 바꿀 때 렌더가 문제지 수만큼 돈다. */
+  var diagramWired = false;
+
+  function renderDiagrams() {
+    var diagrams = diagramReg;
 
     if (diagrams.length) {
       if (typeof window.mermaid === 'undefined') {
@@ -990,11 +999,34 @@
         };
 
         run();
-        document.addEventListener('themechange', debounce(run, 60));
+        if (!diagramWired) document.addEventListener('themechange', debounce(run, 60));
       }
     }
 
-    if (!lb || !lbInner) return;
+    if (diagramWired) return;
+    diagramWired = true;
+
+    /* 🔒 **확대 창은 없으면 만든다.** 본문 페이지에만 껍데기가 들어 있어서
+       모의 문제지·오답노트의 그림 문항은 ⤢ 를 눌러도 아무 일이 없었다.
+       226개 산출물을 다시 만들지 않고 여기서 채운다 (아래·↓ 버튼과 같은 방식). */
+    var lb = $('#lightbox');
+    var lbInner = $('#lightbox-inner');
+    if (!lb) {
+      lb = el('div', 'lightbox');
+      lb.id = 'lightbox';
+      lb.setAttribute('role', 'dialog');
+      lb.setAttribute('aria-modal', 'true');
+      lb.setAttribute('aria-label', '다이어그램 크게 보기');
+      var close = el('button', 'lightbox__close', '✕');
+      close.type = 'button';
+      close.setAttribute('aria-label', '닫기');
+      lb.appendChild(close);
+      lbInner = el('div', 'lightbox__inner');
+      lbInner.id = 'lightbox-inner';
+      lb.appendChild(lbInner);
+      document.body.appendChild(lb);
+    }
+    if (!lbInner) return;
 
     document.addEventListener('click', function (e) {
       var btn = e.target.closest ? e.target.closest('.diagram__zoom') : null;
@@ -1318,7 +1350,7 @@
     if (CH && CH.page === 'index') {
       buildSidebar(null);
       initChapterIndex();
-      renderDiagrams([]);
+      renderDiagrams();
     }
     if (CH && CH.page === 'section') {
       initSection();
@@ -1334,5 +1366,9 @@
 
   /* exam.js 는 한 페이지 안에서 화면이 바뀌므로 「← 홈」 상태로 되돌릴 때
      같은 규칙(직전이 우리 사이트면 뒤로)을 다시 적용해야 한다. */
-  window.EIP = { store: store, theme: theme, initBack: initBackLink, setBack: setBack };
+  window.EIP = {
+    store: store, theme: theme, initBack: initBackLink, setBack: setBack,
+    /* 🔒 그림은 여기 한 벌로만 그린다 — qcard 의 `fig` 문항이 이것을 쓴다 */
+    diagram: { box: diagramBox, render: renderDiagrams }
+  };
 })();

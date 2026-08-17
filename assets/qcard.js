@@ -287,6 +287,16 @@
     return '';
   }
 
+  /* 🚨 **문항마다 그리면 안 된다.** 20문항짜리 문제지에 그림이 셋이면
+     `render()` 가 세 번 돌고 그때마다 **이미 그린 것까지 다시** 그린다.
+     한 판을 다 만든 뒤 **한 번만** 그리도록 모아 둔다. */
+  var figPending = false;
+  function flushFigs() {
+    if (!figPending) return;
+    figPending = false;
+    if (window.EIP && window.EIP.diagram) window.EIP.diagram.render();
+  }
+
   /* ------------------------------------------------------------ 위젯 생성 */
   function create(item, container) {
     var graded = false;
@@ -295,6 +305,19 @@
     var partIn = null;      /* parts — 칸마다 하나씩 */
 
     container.appendChild(html('div', 'quiz__q', item.q));
+
+    /* 그림 문항 — `fig` 에 mermaid 정의를 담는다.
+       🔒 **그리는 규칙은 app.js 한 벌뿐이다.** 여기서 mermaid 를 직접 부르면
+          본문의 그림과 설정이 어긋난다 (테마·줄바꿈·확대 버튼).
+       ⚠️ mermaid 가 없는 페이지에서는 app.js 가 **정의를 코드로 보여 준다** —
+          그림 대신 글자가 나오지만 문항 자체는 풀 수 있다. */
+    if (item.fig && window.EIP && window.EIP.diagram) {
+      container.appendChild(window.EIP.diagram.box(item.fig));
+      if (!figPending) {
+        figPending = true;
+        setTimeout(flushFigs, 0);   /* 이 판의 문항을 다 만든 뒤에 한 번 */
+      }
+    }
 
     /* 코드는 유형과 무관하게 있으면 낸다 — 빈칸 채우기형 프로그래밍은
        t 가 'code' 가 아니라 parts 를 쓴다 */

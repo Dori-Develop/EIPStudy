@@ -367,6 +367,11 @@
      0.15 로 하면 4.67 로 위쪽 끝에 붙는다. */
   var PICK_SHARE = 0.10;
 
+  /* 🖼️ **그림 문항도 같다** — 기출은 회차마다 흐름도가 하나쯤 나오는데
+     은행에 12문항뿐이라 그냥 뽑으면 **세 회차에 한 번**(0.33)밖에 안 나왔다.
+     넘침을 막지 않으므로 목표 1 로 잡아도 실제로는 1.5 안팎이 된다. */
+  var FIG_SHARE = 0.05;
+
   function pickItems(opts) {
     var rng = makeRng(opts.seed);
     var rounds = recentRounds();
@@ -375,6 +380,8 @@
     var codeGot = 0;
     var pickWant = Math.round(opts.n * PICK_SHARE);
     var pickGot = 0;
+    var figWant = Math.round(opts.n * FIG_SHARE);
+    var figGot = 0;
 
     function scoreOf(item) {
       var s = rng();
@@ -388,6 +395,7 @@
          난수보다 큰 값을 더해 같은 신선도 안에서는 코드가 먼저 서게 한다. */
       if (item.t === 'code' && codeGot < codeWant) s += 10;
       /* 보기 선택도 같은 방식으로. 코드보다 가산점이 낮아 **코드가 먼저 선다** */
+      else if (item.fig && figGot < figWant) s += 7;    /* 코드 다음, 보기 선택 앞 */
       else if (item.pool && pickGot < pickWant) s += 5;
       return s;
     }
@@ -414,6 +422,12 @@
           if (it2.t === 'code') {
             if (!allowOverCode && codeGot >= codeWant) continue;   /* 예산 초과 */
             codeGot++;
+          } else if (it2.fig) {
+            /* 🚨 그림만은 **막는다.** 은행에 12문항뿐이라 넘치게 두면 회차마다 1.75 가
+               들어오고 **같은 그림이 자꾸 되돌아온다**(이웃 겹침 2.0 → 2.45).
+               기출도 회차당 하나쯤이라 막는 편이 실제에 가깝다. */
+            if (!allowOverCode && figGot >= figWant) continue;
+            figGot++;
           } else if (it2.pool) {
             /* 🚨 보기 선택은 **넘쳐도 막지 않는다.** 코드와 달리 개념 문항이라
                몇 개 더 들어와도 시험지가 이상해지지 않고, 막으면 은행이 얇은
