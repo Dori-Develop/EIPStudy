@@ -262,6 +262,14 @@
       }
     });
 
+    /* 🔤 본문 툴팁의 「약어 사전에서 보기」가 `?q=DFD` 로 온다 (T21).
+       검색창에 그대로 넣어 준다 — 온 사람이 그 약어를 찾고 있었다는 뜻이다. */
+    var m = /[?&]q=([^&]*)/.exec(location.search);
+    if (m) {
+      query = decodeURIComponent(m[1].replace(/\+/g, ' ')).trim();
+      inputEl.value = query;
+    }
+
     renderLetters();
     renderList();
   }

@@ -62,9 +62,14 @@ for md in "${sources[@]}"; do
   # 🚨 quiz.js 뒤여야 한다 — 둘 다 "학습 완료" 버튼 앞에 끼워 넣는 방식이라
   #    먼저 실린 쪽이 위로 간다. 메모 카드는 퀴즈 아래에 와야 한다.
   # dialog.js 는 memo.js 의 「메모 지우기」가 쓴다 (T32 에서 confirm 을 걷어냈다)
+  # 🔤 약어 툴팁(T21) — 사전 하나로 전 챕터에 자동 적용된다. 본문은 손대지 않는다.
+  #    17KB 를 섹션마다 더 싣는 값으로 본문 어디서나 뜻을 볼 수 있다.
+  #    ⚠️ abbr.js 는 app.js 의 후처리 단계가 부른다 — 순서는 상관없지만 둘 다 있어야 한다.
   sec_scripts="${quiz_scripts}
 <script src=\"../assets/dialog.js\"></script>
-<script src=\"../assets/memo.js\"></script>"
+<script src=\"../assets/memo.js\"></script>
+<script src=\"../assets/glossary-data.js\"></script>
+<script src=\"../assets/abbr.js\"></script>"
 
   # 본문에 </script> 가 있으면 인라인 삽입이 깨진다
   if grep -q '</script>' "$md"; then

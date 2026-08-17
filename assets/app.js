@@ -763,6 +763,9 @@
     decorateQuotes(doc);
     paintStars(doc);          /* 🔒 중요도 ★ 는 여기서 한 번만 칠한다 */
     extractDiagrams(doc);
+    /* 🚨 **다이어그램을 걷어낸 뒤**라야 한다 — `.mermaid` 안에는 아직 안 그려진
+       정의 문자열이 들어 있어서 그 전에 손대면 mermaid 가 문법 오류를 낸다. */
+    if (window.EIP_ABBR) window.EIP_ABBR.decorate(doc);
 
     buildSidebar(doc);
     buildPageNav();

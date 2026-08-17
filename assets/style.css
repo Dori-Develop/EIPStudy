@@ -1866,3 +1866,37 @@ mark, .hl {
 
 /* 지운 메모 한 번 되살리기 (T32) */
 .memo__undo { color: var(--accent); }
+
+/* ---------- 본문 약어 툴팁 (T21) ---------- */
+/* 🚨 밑줄만 아주 옅게 — 본문에 DFD·UML 이 자주 나와서 눈에 띄게 하면 글이 얼룩진다.
+   그래서 abbr.js 도 한 섹션에서 같은 약어를 3번까지만 표시한다. */
+abbr.gl {
+  text-decoration: none;
+  border-bottom: 1px dotted var(--fg-faint);
+  cursor: help;
+}
+abbr.gl:hover, abbr.gl:focus-visible {
+  border-bottom-color: var(--accent);
+  color: var(--accent);
+  outline: none;
+}
+
+.gltip {
+  position: absolute; z-index: 60;
+  display: none; flex-direction: column; gap: 3px;
+  max-width: min(290px, calc(100vw - 24px));
+  padding: 11px 13px;
+  background: var(--bg-elev); color: var(--fg);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .18);
+  font-size: 13px; line-height: 1.6; word-break: keep-all;
+}
+.gltip.is-open { display: flex; }
+.gltip__a { font-size: 14px; letter-spacing: -.01em; }
+.gltip__k { color: var(--fg); font-weight: 600; }
+.gltip__f { color: var(--fg-faint); font-size: 12px; }
+.gltip__more {
+  margin-top: 5px; font-size: 12px;
+  color: var(--accent); text-decoration: none;
+}
+.gltip__more:hover { text-decoration: underline; }
