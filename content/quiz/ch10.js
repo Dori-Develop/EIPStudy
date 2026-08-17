@@ -4064,6 +4064,178 @@ window.EIP_BANK_ch10 = [
        + '<code>"7kg"</code> 는 <b>7</b>, 처음부터 숫자가 아닌 <code>"kg7"</code> 는 <b>0</b> 이다. '
        + '🚨 그래서 <b>「변환 실패」와 「진짜 0」을 구분할 수 없다.</b>',
     d: 2, y: [], tag: ['stdlib.h', 'atoi', '라이브러리']
+  },
+
+  /* ======================================================================
+     🚨 T46 7절 — 보기 선택 문항 (`pool` + `t:'pick'`) · 2026-08-17
+
+     ch10 은 코드 문항이 150개라 여기서는 **개념 섹션만** 골랐다 —
+     자료형·연산자 우선순위·언어 분류·라이브러리·예외·Python 자료형.
+     ====================================================================== */
+
+  {
+    id: 'ch10-s01-16', ch: 10, sec: 1,
+    t: 'multi-blank',
+    q: 'C 언어의 기억 클래스에 대한 설명이다. 각 설명에 해당하는 것을 <b>보기에서 골라</b> 쓰시오.<br>'
+     + '㉠ 기억 영역은 <b>스택</b>이고 존재 범위는 함수 내부다<br>'
+     + '㉡ 기억 영역은 <b>데이터 영역</b>이고 존재 범위는 프로그램 전체다. 내부·외부 모두에 쓸 수 있다<br>'
+     + '㉢ 기억 영역이 <b>레지스터</b>다',
+    pool: ['auto(자동 변수)', 'register(레지스터 변수)',
+           'static(정적 변수)', 'extern(외부 변수)'],
+    parts: [
+      { label: '㉠', t: 'pick', a: ['auto(자동 변수)'] },
+      { label: '㉡', t: 'pick', a: ['static(정적 변수)'] },
+      { label: '㉢', t: 'pick', a: ['register(레지스터 변수)'] }
+    ],
+    why: '🚨 <b>static 과 extern 은 둘 다 데이터 영역이라 헷갈린다</b> — '
+       + '<b>static</b> 은 함수 안에 써도 <b>값이 유지되는</b> 변수이고, '
+       + '<b>extern</b> 은 <b>다른 파일에 있는 변수를 끌어다 쓰겠다</b>는 선언이다. '
+       + '📌 아무것도 안 붙이면 <b>auto</b> 다 — 함수가 끝나면 사라진다.',
+    d: 3, y: [], tag: ['기억클래스', 'static', 'auto'], lang: null, code: null
+  },
+
+  {
+    id: 'ch10-s02-20', ch: 10, sec: 2,
+    t: 'multi-blank',
+    q: '연산자 우선순위에 대한 설명이다. 각 자리에 해당하는 연산자 무리를 <b>보기에서 골라</b> 쓰시오.<br>'
+     + '㉠ <b>산술 연산자 바로 다음</b> 순위<br>'
+     + '㉡ <b>논리 연산자 바로 다음</b> 순위<br>'
+     + '㉢ <b>가장 낮은</b> 순위',
+    pool: ['단항 연산자', '산술 연산자', '시프트 연산자', '관계 연산자',
+           '비트 연산자', '논리 연산자', '삼항 연산자', '대입 연산자', '순서 연산자'],
+    parts: [
+      { label: '㉠', t: 'pick', a: ['시프트 연산자'] },
+      { label: '㉡', t: 'pick', a: ['삼항 연산자'] },
+      { label: '㉢', t: 'pick', a: ['순서 연산자'] }
+    ],
+    why: '📌 <b>단산시관비논삼대순</b> — 단항 → 산술 → 시프트 → 관계 → 비트 → 논리 → 삼항 → 대입 → 순서. '
+       + '🚨 <b>시프트가 산술보다 낮다</b>는 것이 함정이다 — '
+       + '<code>a &lt;&lt; 1 + 1</code> 은 <code>a &lt;&lt; 2</code> 로 읽힌다. '
+       + '비트는 그 안에서 <b><code>&amp;</code> → <code>^</code> → <code>|</code></b> 순이다.',
+    d: 3, y: [], tag: ['연산자우선순위', '단산시관비논삼대순'], lang: null, code: null
+  },
+
+  {
+    id: 'ch10-s09-22', ch: 10, sec: 9,
+    t: 'multi-blank',
+    q: '객체 지향 개념에 대한 설명이다. 각 설명에 해당하는 것을 <b>보기에서 골라</b> 쓰시오.<br>'
+     + '㉠ <b>같은 클래스 안</b>에서 같은 이름의 메소드를 매개변수만 다르게 여러 개 정의한다<br>'
+     + '㉡ <b>상속 관계</b>에서 상위 클래스의 메소드를 매개변수·반환형을 <b>그대로 두고</b> 다시 정의한다<br>'
+     + '㉢ <b>구현을 강제</b>하는 것이 목적이고 <b>다중 구현</b>이 가능하다',
+    pool: ['오버로딩', '오버라이딩', '추상 클래스', '인터페이스',
+           '캡슐화', '정보 은닉', '다형성'],
+    parts: [
+      { label: '㉠', t: 'pick', a: ['오버로딩'] },
+      { label: '㉡', t: 'pick', a: ['오버라이딩'] },
+      { label: '㉢', t: 'pick', a: ['인터페이스'] }
+    ],
+    why: '🚨 <b>오버로딩은 매개변수가 달라야 하고 오버라이딩은 같아야 한다</b> — 정반대다. '
+       + '반환형도 오버로딩은 상관없지만 오버라이딩은 같아야 한다. '
+       + '<b>추상 클래스는 공통 기능을 물려주려는 것(단일 상속)</b>, '
+       + '<b>인터페이스는 구현을 강제하려는 것(다중 구현)</b> 이다.',
+    d: 2, y: [], tag: ['오버로딩', '오버라이딩', '인터페이스'], lang: null, code: null
+  },
+
+  {
+    id: 'ch10-s10-33', ch: 10, sec: 10,
+    t: 'multi-blank',
+    q: 'Python 의 자료형에 대한 설명이다. 각 설명에 해당하는 것을 <b>보기에서 골라</b> 쓰시오.<br>'
+     + '㉠ <code>(1, 2, 3)</code> 처럼 쓴다. <b>순서는 있지만 변경할 수 없다</b><br>'
+     + '㉡ <code>{1, 2, 3}</code> 처럼 쓴다. <b>순서가 없고 중복을 허용하지 않는다</b><br>'
+     + '㉢ <code>{\'a\': 1}</code> 처럼 쓴다. <b>키-값 쌍</b>이고 키는 중복될 수 없다',
+    pool: ['리스트(List)', '튜플(Tuple)', '딕셔너리(Dictionary)', '세트(Set)'],
+    parts: [
+      { label: '㉠', t: 'pick', a: ['튜플(Tuple)'] },
+      { label: '㉡', t: 'pick', a: ['세트(Set)'] },
+      { label: '㉢', t: 'pick', a: ['딕셔너리(Dictionary)'] }
+    ],
+    why: '⚠️ <b>괄호 모양으로 먼저 갈린다</b> — <code>[ ]</code> 리스트 · <code>( )</code> 튜플 · '
+       + '<code>{ }</code> 는 세트와 딕셔너리 둘이라 <b>안에 콜론이 있으면 딕셔너리</b> 다. '
+       + '🚨 <b>튜플은 변경 불가, 세트는 중복 불가</b> 가 가장 자주 나오는 두 가지다.',
+    d: 1, y: [], tag: ['Python', '자료형', '튜플', '세트'], lang: null, code: null
+  },
+
+  {
+    id: 'ch10-s11-09', ch: 10, sec: 11,
+    t: 'multi-blank',
+    q: '프로그래밍 언어에 대한 설명이다. 각 설명에 해당하는 언어를 <b>보기에서 골라</b> 쓰시오.<br>'
+     + '㉠ 1980년대 앨런 케이가 개발. <b>최초로 GUI 를 제공</b>한 객체 지향 언어<br>'
+     + '㉡ 논리학을 기초로 한 언어. 인공지능 분야의 <b>논리적 추론이나 삼단 논법</b> 표현에 적합<br>'
+     + '㉢ 서버용 스크립트 언어이며 <b>Windows 계열에서만</b> 수행할 수 있다',
+    pool: ['C', 'COBOL', 'JAVA', 'Smalltalk', 'JavaScript',
+           'JSP', 'PHP', 'ASP', 'LISP', 'PROLOG'],
+    parts: [
+      { label: '㉠', t: 'pick', a: ['Smalltalk'] },
+      { label: '㉡', t: 'pick', a: ['PROLOG'] },
+      { label: '㉢', t: 'pick', a: ['ASP'] }
+    ],
+    why: '🚨 <b>LISP 와 PROLOG 를 바꿔 쓰기 쉽다</b> — 둘 다 인공지능이지만 '
+       + '<b>LISP 는 함수형</b>(1960년 매카시), <b>PROLOG 는 논리형</b> 이다. '
+       + '스크립트는 <b>서버용(ASP·JSP·PHP·Python)</b> 과 '
+       + '<b>클라이언트용(JavaScript·VBScript)</b> 으로 갈린다.',
+    d: 3, y: [], tag: ['언어분류', 'Smalltalk', 'PROLOG', 'ASP'], lang: null, code: null
+  },
+
+  {
+    id: 'ch10-s12-14', ch: 10, sec: 12,
+    t: 'multi-blank',
+    q: 'C 언어의 표준 라이브러리에 대한 설명이다. 각 함수가 들어 있는 <b>헤더 파일</b>을 보기에서 골라 쓰시오.<br>'
+     + '㉠ <code>malloc</code>, <code>free</code>, <code>atoi</code>, <code>rand</code><br>'
+     + '㉡ <code>sqrt</code>, <code>pow</code>, <code>ceil</code>, <code>floor</code><br>'
+     + '㉢ <code>strlen</code>, <code>strcpy</code>, <code>strcmp</code>, <code>strcat</code>',
+    pool: ['stdio.h', 'math.h', 'string.h', 'stdlib.h', 'time.h'],
+    parts: [
+      { label: '㉠', t: 'pick', a: ['stdlib.h'] },
+      { label: '㉡', t: 'pick', a: ['math.h'] },
+      { label: '㉢', t: 'pick', a: ['string.h'] }
+    ],
+    why: '이름이 그대로 힌트다 — <b>std<u>io</u></b> 입·출력 · <b>math</b> 수학 · '
+       + '<b>string</b> 문자열 · <b>std<u>lib</u></b> 그 밖의 잡다한 것(형 변환·난수·메모리) · <b>time</b> 시간. '
+       + '🚨 <b>메모리 할당(<code>malloc</code>)이 stdlib.h 에 있다</b>는 것이 가장 잘 틀리는 자리다.',
+    d: 2, y: [], tag: ['라이브러리', '헤더파일', 'stdlib.h'], lang: null, code: null
+  },
+
+  {
+    id: 'ch10-s13-18', ch: 10, sec: 13,
+    t: 'multi-blank',
+    q: 'Java 의 예외 객체에 대한 설명이다. 각 상황에 해당하는 예외를 <b>보기에서 골라</b> 쓰시오.<br>'
+     + '㉠ <b>0으로 나누는</b> 등 산술 연산에 오류가 생겼다<br>'
+     + '㉡ <b>숫자로 바꿀 수 없는 문자열</b>을 변환하려 했다<br>'
+     + '㉢ <b>null 인 객체</b>의 멤버에 접근했다',
+    pool: ['ClassNotFoundException', 'NoSuchMethodException', 'FileNotFoundException',
+           'ArithmeticException', 'IllegalArgumentException', 'NumberFormatException',
+           'ArrayIndexOutOfBoundsException', 'NullPointerException'],
+    parts: [
+      { label: '㉠', t: 'pick', a: ['ArithmeticException'] },
+      { label: '㉡', t: 'pick', a: ['NumberFormatException'] },
+      { label: '㉢', t: 'pick', a: ['NullPointerException'] }
+    ],
+    why: '🚨 <b>이름 자체를 쓰게 하는 출제가 많다</b> — 철자까지 외워 둔다. '
+       + '📌 <code>Integer.parseInt("12A")</code> 는 <b>NumberFormatException</b>, '
+       + '<code>new int[3]</code> 의 인덱스 3 은 <b>ArrayIndexOutOfBoundsException</b> 이다. '
+       + '<b>finally 는 예외가 나든 안 나든 항상 실행된다.</b>',
+    d: 2, y: [], tag: ['예외처리', '예외객체'], lang: null, code: null
+  },
+
+  {
+    id: 'ch10-s07-18', ch: 10, sec: 7,
+    t: 'multi-blank',
+    q: '매개변수 전달 방식과 함수에 대한 설명이다. 각 설명에 해당하는 것을 <b>보기에서 골라</b> 쓰시오.<br>'
+     + '㉠ 매개변수에 <b>값을 복사해서</b> 전달한다. 원본 값이 변경되지 않는다<br>'
+     + '㉡ 매개변수에 <b>주소를 전달</b>한다. 원본 값이 변경된다<br>'
+     + '㉢ 자기 자신을 다시 호출하는 함수. <b>종료 조건이 없으면</b> 스택 오버플로가 난다',
+    pool: ['값에 의한 호출(Call by Value)', '주소에 의한 호출(Call by Reference)',
+           '재귀 함수', '사용자 정의 함수', '라이브러리 함수'],
+    parts: [
+      { label: '㉠', t: 'pick', a: ['값에 의한 호출(Call by Value)'] },
+      { label: '㉡', t: 'pick', a: ['주소에 의한 호출(Call by Reference)'] },
+      { label: '㉢', t: 'pick', a: ['재귀 함수'] }
+    ],
+    why: '🔑 <b>C 는 기본이 값에 의한 호출</b>이라 원본을 바꾸려면 <b>포인터로 주소를 넘겨야</b> 한다 — '
+       + '<code>swapValue(x, y)</code> 는 안 바뀌고 <code>swapRef(&amp;x, &amp;y)</code> 는 바뀐다. '
+       + '📌 <b>Java 도 값에 의한 호출이지만 참조 타입은 「주소값」이 복사</b>되어 '
+       + '가리키는 객체의 내용은 바뀐다 — 배열을 넘기면 원본이 바뀌는 이유다.',
+    d: 2, y: [], tag: ['매개변수전달', 'CallByValue', '재귀함수'], lang: null, code: null
   }
 
 ];
