@@ -1001,12 +1001,46 @@
     /* 방금 푼 회차가 이력에 보여야 한다. 설정은 건드리지 않고 이력만 다시 그린다 —
        buildSetup 을 통째로 부르면 골라 둔 범위·분포가 초기화된다. */
     refreshHistory();
+    paintResume();
     window.scrollTo(0, 0);
   }
 
+  /* 「방금 문제지로」 — 히스토리를 안 쌓는 대신 화면에 돌아갈 길을 둔다.
+     시험지가 아직 살아 있을 때만 뜬다. */
+  function paintResume() {
+    var old = setupBox.querySelector('.exam__resume');
+    if (old) old.parentNode.removeChild(old);
+    if (!sheetTag || !sheetBox.childNodes.length) return;
+
+    var graded = cards.length && cards[0].card.isGraded();
+    var btn = el('button', 'exam__resume', (graded ? '← 방금 채점 결과로' : '← 풀던 문제지로') +
+      (current && current.seed ? ' #' + current.seed : ''));
+    btn.type = 'button';
+    btn.addEventListener('click', function () {
+      showSheetAgain();
+      pushView(sheetTag);   /* 다시 [설정, 시험지] 둘이 된다 */
+    });
+    setupBox.insertBefore(btn, setupBox.firstChild);
+  }
+
+  /* 🚨 **히스토리를 쌓지 않는다.** 「홈으로」가 항목을 밀어 넣으면 만들고 나가기를
+     되풀이할수록 쌓여 **설정에서 사이트 홈까지 뒤로가기를 여러 번** 눌러야 한다
+     (세 번 되풀이하면 7번이었다).
+
+     시험지 항목이 바로 뒤에 있으므로 `back()` 이 곧 「나가기」다. 그러면 항목은
+     늘 **[설정, 시험지] 둘**로 고정되고 뒤로가기가 예측대로 움직인다.
+
+       시험지 → 뒤로가기 → 설정 → 뒤로가기 → 사이트 홈
+
+     📌 방금 보던 시험지로는 설정 화면의 **「방금 문제지로」 버튼**으로 돌아간다 —
+        브라우저 앞으로가기는 모바일에서 잘 쓰지 않는다. */
   function backToSetup() {
+    var s = history.state || {};
+    if (s.exam && s.exam === sheetTag && window.history && history.back) {
+      history.back();     /* popstate 가 showSetup 을 부른다 */
+      return;
+    }
     showSetup();
-    pushView('setup');
   }
 
   /* 뒤로가기로 시험지에 되돌아왔을 때 */

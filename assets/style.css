@@ -1096,6 +1096,17 @@ mark, .hl {
 }
 .exam__ghost:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
 
+/* 「방금 문제지로」 — 설정 화면 맨 위. 히스토리를 안 쌓는 대신 둔 길이라
+   눈에 띄어야 한다. 시험지가 살아 있을 때만 뜬다. */
+.exam__resume {
+  display: block; width: 100%;
+  margin: 0 0 16px; padding: 11px 16px;
+  background: var(--accent-weak); color: var(--accent);
+  border: 1px solid var(--accent); border-radius: var(--radius-s);
+  font-size: 13.5px; font-weight: 700; text-align: left;
+}
+.exam__resume:hover { background: var(--accent); color: var(--accent-fg); }
+
 /* ---- 결과 ---- */
 .exam__result {
   margin: 22px 0 8px; padding: 18px;
