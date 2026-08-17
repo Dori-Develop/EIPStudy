@@ -54,6 +54,21 @@ document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
           <div class="card__meta"><span>12개 단원 200개 섹션 →</span></div>
         </a>
 
+        <!-- 🔒 기출문제집 — **자료가 있을 때만** 나타난다 (본인 전용).
+             기출 원문(pool/)은 비공개라 남에게는 이 카드가 아예 안 보인다.
+             아래 script 가 목록 파일을 찾아보고 있으면 hidden 을 뗀다. -->
+        <a class="card" href="past.html" id="tool-past" hidden>
+          <div class="card__top">
+            <span class="card__badge">기출</span>
+            <span class="card__title">기출문제집</span>
+          </div>
+          <p class="card__desc">
+            회차를 골라 20문항 100점으로 풉니다. 채점 규칙은 모의 문제지와 같습니다.
+            기록은 이 브라우저에만 남고, 오답노트에는 쌓이지 않습니다.
+          </p>
+          <div class="card__meta"><span>바로 가기 →</span></div>
+        </a>
+
         <a class="card" href="exam.html">
           <div class="card__top">
             <span class="card__badge">시험</span>
@@ -145,5 +160,23 @@ document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
 <script src="assets/memo.js"></script>
 <script src="assets/merge.js"></script>
 <script src="assets/backup.js"></script>
+
+<!-- 🔒 기출문제집 카드는 **자료가 있을 때만** 나타난다.
+     `pool/pool-index.js` 는 비공개 자료라 공개 배포본에는 없다 —
+     남에게는 404 로 조용히 끝나고 카드도 안 보인다. 내용이 새지 않는다.
+     ⚠️ `fetch()` 를 쓰지 않는다 (file:// 에서 CORS 로 막힌다). -->
+<script>
+(function () {
+  var s = document.createElement('script');
+  s.src = 'pool/pool-index.js';
+  s.onload = function () {
+    var card = document.getElementById('tool-past');
+    if (card && window.EIP_POOL_FILES && window.EIP_POOL_FILES.length) card.hidden = false;
+  };
+  s.onerror = function () {};
+  document.head.appendChild(s);
+})();
+</script>
+
 </body>
 </html>
