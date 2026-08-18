@@ -69,13 +69,8 @@
   var busy = false;        /* 날아가는 중에는 입력을 받지 않는다 */
 
   /* --------------------------------------------------------------- DOM */
-  function el(tag, cls, text) {
-    var n = document.createElement(tag);
-    if (cls) n.className = cls;
-    if (text != null) n.textContent = text;
-    return n;
-  }
-  function has(o, k) { return Object.prototype.hasOwnProperty.call(o, k); }
+  var el = window.EIP_UTIL.el;
+  var has = window.EIP_UTIL.has;
 
   /* ------------------------------------------------------------- 저장소 */
   function loadSaved() {

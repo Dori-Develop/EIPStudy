@@ -32,12 +32,7 @@
 
   var scrim = null, box = null, lastFocus = null;
 
-  function el(tag, cls, text) {
-    var n = document.createElement(tag);
-    if (cls) n.className = cls;
-    if (text != null) n.textContent = text;
-    return n;
-  }
+  var el = window.EIP_UTIL.el;
 
   function close() {
     if (scrim && scrim.parentNode) scrim.parentNode.removeChild(scrim);

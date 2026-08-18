@@ -17,13 +17,8 @@
   var DIR = 'pool/';
   var LABELS = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧'];
 
-  function $(sel, root) { return (root || document).querySelector(sel); }
-  function el(tag, cls, text) {
-    var n = document.createElement(tag);
-    if (cls) n.className = cls;
-    if (text != null) n.textContent = text;
-    return n;
-  }
+  var $ = window.EIP_UTIL.$;
+  var el = window.EIP_UTIL.el;
   function html(tag, cls, markup) {
     var n = document.createElement(tag);
     if (cls) n.className = cls;

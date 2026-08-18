@@ -19,14 +19,9 @@
   var root, ctlEl, listEl, statEl;
   var keyword = '';
 
-  function el(tag, cls, text) {
-    var n = document.createElement(tag);
-    if (cls) n.className = cls;
-    if (text != null) n.textContent = text;
-    return n;
-  }
+  var el = window.EIP_UTIL.el;
 
-  function has(obj, k) { return Object.prototype.hasOwnProperty.call(obj, k); }
+  var has = window.EIP_UTIL.has;
 
   /* ------------------------------------------------------------ 자료 모으기 */
   /* [{ ch, title, items: [{ file, n, t, memo }] }] — 챕터 순 · 섹션 순 */

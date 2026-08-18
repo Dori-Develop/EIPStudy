@@ -51,12 +51,7 @@
   var favs = {};
 
   /* --------------------------------------------------------------- DOM */
-  function el(tag, cls, text) {
-    var n = document.createElement(tag);
-    if (cls) n.className = cls;
-    if (text != null) n.textContent = text;
-    return n;
-  }
+  var el = window.EIP_UTIL.el;
   /* ------------------------------------------------------- 문항 위치 이름 */
   /* 'ch10-s05-03' → { ch:'ch10', sec:5 } */
   function locate(id) {
@@ -132,7 +127,7 @@
   }
 
   /* ------------------------------------------------------------- 목록 계산 */
-  function has(obj, k) { return Object.prototype.hasOwnProperty.call(obj, k); }
+  var has = window.EIP_UTIL.has;
 
   function inFilter(id) {
     if (!chFilter) return true;

@@ -38,7 +38,7 @@
   var EXAM_ANSWERS_KEEP = 40;    /* exam.js ANSWERS_KEEP */
   var PAST_HISTORY_KEEP = 60;    /* past.js 의 이력 상한 */
 
-  function has(o, k) { return Object.prototype.hasOwnProperty.call(o, k); }
+  var has = window.EIP_UTIL.has;
   function isArr(v) { return Object.prototype.toString.call(v) === '[object Array]'; }
   function isObj(v) { return v !== null && typeof v === 'object' && !isArr(v); }
   function keys(o) {

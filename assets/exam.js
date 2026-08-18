@@ -160,7 +160,7 @@
     write('exam.answers', out);
   }
 
-  function has(o, k) { return Object.prototype.hasOwnProperty.call(o, k); }
+  var has = window.EIP_UTIL.has;
 
   /* 문항 id → 문항. 은행은 boot 에서 전부 실려 있다 */
   function itemById(id) {
@@ -482,13 +482,8 @@
   }
 
   /* ============================================================== 화면 */
-  function el(tag, cls, text) {
-    var n = document.createElement(tag);
-    if (cls) n.className = cls;
-    if (text != null) n.textContent = text;
-    return n;
-  }
-  function $(sel) { return document.querySelector(sel); }
+  var el = window.EIP_UTIL.el;
+  var $ = window.EIP_UTIL.$;
 
   var setupBox, sheetBox, cards = [], timerId = null, current = null;
   var submitBtn = null, againBtn = null;

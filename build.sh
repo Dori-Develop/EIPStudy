@@ -240,6 +240,9 @@ HEAD
 
 <script src="${MARKED_CDN}"></script>
 <script src="${MERMAID_CDN}"></script>
+<!-- 🚨 util.js 가 맨 앞이다 — 나머지가 el·has 를 여기서 받는다 (T35).
+     빠지면 그 화면이 통째로 죽는다. -->
+<script src="${base}assets/util.js"></script>
 <script src="${base}assets/app.js"></script>
 <script src="${base}assets/toc.js"></script>
 <!-- 🔒 섹션별 출제 빈도 (T50). EIP_CHAPTER 이 있어야 하므로 app.js 다음 -->
@@ -885,4 +888,19 @@ if [ -d pool ]; then
 fi
 
 echo ""
+# ---- 12) 🚨 util.js 를 빠뜨린 페이지가 없는지 (T35) ----
+# `el`·`has` 를 EIP_UTIL 에서 받으므로 **하나라도 빠지면 그 화면이 통째로 죽는다.**
+# 수작업 페이지가 9개라 새로 만들 때 잊기 쉽다 — 빌드가 세어 준다.
+missing=""
+for page in *.html ch*/s*.html; do
+  [ -f "$page" ] || continue
+  grep -q 'assets/[a-z-]*\.js' "$page" || continue      # 스크립트가 없는 페이지는 넘어간다
+  grep -q 'assets/util\.js' "$page" || missing="${missing} ${page}"
+done
+if [ -n "$missing" ]; then
+  echo "!! util.js 를 안 싣는 페이지가 있습니다 —${missing}"
+  echo "   assets/util.js 를 **다른 스크립트보다 먼저** 넣어 주세요."
+  exit 1
+fi
+
 echo "빌드 완료. ${sources[*]} → 챕터 목차 + 섹션 페이지"

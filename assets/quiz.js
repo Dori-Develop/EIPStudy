@@ -68,12 +68,7 @@
   }
 
   /* ------------------------------------------------------------- DOM 헬퍼 */
-  function el(tag, cls, text) {
-    var n = document.createElement(tag);
-    if (cls) n.className = cls;
-    if (text != null) n.textContent = text;
-    return n;
-  }
+  var el = window.EIP_UTIL.el;
 
   /* --------------------------------------------------------------- 렌더링 */
   /* ⚠️ 반드시 app.js 가 본문을 그린 뒤에 실행해야 한다.

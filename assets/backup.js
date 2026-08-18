@@ -22,12 +22,7 @@
   function store() { return (window.EIP && window.EIP.store) || null; }
   function M() { return window.EIP_MERGE || null; }
 
-  function el(tag, cls, text) {
-    var n = document.createElement(tag);
-    if (cls) n.className = cls;
-    if (text != null) n.textContent = text;
-    return n;
-  }
+  var el = window.EIP_UTIL.el;
 
   /* 🚨 `alert()` 도 제목 줄을 못 바꾼다 — 앱 이름이나 도메인이 붙는다.
      알림도 `dialog.js` 한 벌로 낸다 (T32). */

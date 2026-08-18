@@ -45,12 +45,7 @@
   var TOP = 4;
 
   /* ------------------------------------------------------------- DOM 헬퍼 */
-  function el(tag, cls, text) {
-    var n = document.createElement(tag);
-    if (cls) n.className = cls;
-    if (text != null) n.textContent = text;
-    return n;
-  }
+  var el = window.EIP_UTIL.el;
 
   function title(id) {
     var t = TOC[id] && TOC[id].t;
@@ -77,11 +72,9 @@
   }
 
   /* ------------------------------------------------------------ 챕터 집계 */
-  /* ES3 에는 Array.indexOf 가 없다 (JScript 검사기가 걸린다) */
-  function has(arr, v) {
-    for (var i = 0; i < arr.length; i++) if (arr[i] === v) return true;
-    return false;
-  }
+  /* 🚨 예전에는 이것도 `has()` 였다 — **다른 파일의 `has(obj, key)` 와 이름만 같고
+     하는 일이 달랐다.** 한 벌로 모으면서 드러났다. 배열 검사는 `inArray` 다. */
+  var inArray = window.EIP_UTIL.inArray;
 
   function measure(chId, pct, wrong) {
     var toc = TOC[chId];
@@ -99,7 +92,7 @@
 
     for (i = 0; i < secs.length; i++) {
       s = secs[i];
-      if (has(readList, s.f)) readSecs++;
+      if (inArray(readList, s.f)) readSecs++;
       else if (!next) next = s;
 
       if (!s.q) continue;

@@ -47,12 +47,7 @@
   var host = document.getElementById('strategy');
   if (!host) return;                     /* 홈이 아니면 띠는 안 그린다 */
 
-  function el(tag, cls, text) {
-    var n = document.createElement(tag);
-    if (cls) n.className = cls;
-    if (text != null) n.textContent = text;
-    return n;
-  }
+  var el = window.EIP_UTIL.el;
 
   function title(id) {
     var t = window.EIP_TOC && window.EIP_TOC[id] && window.EIP_TOC[id].t;

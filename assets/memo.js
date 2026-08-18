@@ -38,7 +38,7 @@
     return (v && typeof v === 'object') ? v : {};
   }
 
-  function has(obj, k) { return Object.prototype.hasOwnProperty.call(obj, k); }
+  var has = window.EIP_UTIL.has;
 
   /* 옛 형식(값이 문자열)도 읽어 준다. u 가 0 이면 "시각을 모른다" 는 뜻이고
      동기화 병합에서 항상 진다 — 오답 기록(wrongstore.js)의 at 과 같은 규칙이다. */
@@ -172,12 +172,7 @@
   var sec = CH.sections && CH.sections[CH.index];
   if (!sec) return;
 
-  function el(tag, cls, text) {
-    var n = document.createElement(tag);
-    if (cls) n.className = cls;
-    if (text != null) n.textContent = text;
-    return n;
-  }
+  var el = window.EIP_UTIL.el;
 
   var ta, head, state, bodyBox, savedEl, saveTimer = null, lastSaved = 0;
 

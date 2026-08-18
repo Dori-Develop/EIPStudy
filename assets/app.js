@@ -69,16 +69,9 @@
   };
 
   /* -------------------------------------------------------------- 작은 도구 */
-  function $(sel, root) { return (root || document).querySelector(sel); }
-  function $$(sel, root) {
-    return Array.prototype.slice.call((root || document).querySelectorAll(sel));
-  }
-  function el(tag, cls, text) {
-    var n = document.createElement(tag);
-    if (cls) n.className = cls;
-    if (text != null) n.textContent = text;
-    return n;
-  }
+  var $ = window.EIP_UTIL.$;
+  var $$ = window.EIP_UTIL.$$;
+  var el = window.EIP_UTIL.el;
   function debounce(fn, ms) {
     var t;
     return function () {

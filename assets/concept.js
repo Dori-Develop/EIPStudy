@@ -37,12 +37,7 @@
     return (CH && CH.base) || '';
   }
 
-  function el(tag, cls, text) {
-    var n = document.createElement(tag);
-    if (cls) n.className = cls;
-    if (text != null) n.textContent = text;
-    return n;
-  }
+  var el = window.EIP_UTIL.el;
 
   function sectionOf(ch, file) {
     var c = TOC()[ch];
