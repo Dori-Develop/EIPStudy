@@ -19,7 +19,7 @@
 
   var FORMAT = 1;   /* 🚨 형식 판. 나중에 형식을 바꾸려면 이것이 있어야 한다 */
 
-  function store() { return (window.EIP && window.EIP.store) || null; }
+  var store = window.EIP_UTIL.store;
   function M() { return window.EIP_MERGE || null; }
 
   var el = window.EIP_UTIL.el;

@@ -56,6 +56,18 @@
     return pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
   }
 
+  /* ── 저장소 ────────────────────────────────────────────────────────
+     `app.js` 가 `window.EIP.store` 로 노출한다 (키에 `eip.` 접두사를 붙여 준다).
+
+     🚨 **반드시 부를 때 찾는다.** `util.js` 는 `app.js` 보다 **먼저** 실리므로
+        여기서 미리 잡아 두면 언제나 `undefined` 다.
+     📌 이름이 파일마다 달랐다 — `store()`·`box()`·`S`. 해석기만 한 벌로 모은다.
+        각 파일의 `read`/`write`/`getJSON` 은 **그대로 둔다.** 저장소는 사용자
+        데이터라, 한 번에 다 바꾸면 무엇이 깨졌는지 못 찾는다. */
+  function store() {
+    return (window.EIP && window.EIP.store) || null;
+  }
+
   /* ── 문항 id 를 읽는다 — `ch10-s05-03` ──────────────────────────────
      🚨 **id 를 쪼개는 자리가 네 곳이었고 방식이 두 가지였다** —
         `slice(0, 4)` 둘(exam·weak)과 정규식 하나(wrong).
@@ -111,6 +123,7 @@
     mmdd: mmdd,
     locate: locate,
     chOf: chOf,
+    store: store,
     loadBanks: loadBanks
   };
 }());

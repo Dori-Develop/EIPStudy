@@ -97,7 +97,7 @@
   }
 
   /* ------------------------------------------------------------- 저장소 */
-  function store() { return (window.EIP && window.EIP.store) || null; }
+  var store = window.EIP_UTIL.store;
   function read(k, d) { var s = store(); return s ? s.get(k, d) : d; }
   function write(k, v) { var s = store(); if (s) s.set(k, v); }
 

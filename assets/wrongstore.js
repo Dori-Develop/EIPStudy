@@ -22,7 +22,7 @@
   'use strict';
 
   /* app.js 가 window.EIP.store 로 노출한다 (키에 'eip.' 접두사를 붙여 준다) */
-  function box() { return (window.EIP && window.EIP.store) || null; }
+  var box = window.EIP_UTIL.store;
   function read(key, fallback) { var s = box(); return s ? s.get(key, fallback) : fallback; }
   function write(key, value) { var s = box(); if (s) s.set(key, value); }
   function now() { return (new Date()).getTime(); }

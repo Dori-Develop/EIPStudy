@@ -132,7 +132,7 @@
   /* ⚠️ **불러올 때가 아니라 쓸 때 찾는다.** 섹션 페이지에서는 `memo.js` 가
      이 파일보다 **뒤에** 실린다 (자기 위젯을 퀴즈 다음 자리에 넣어야 해서다).
      위에서 한 번 잡아 두면 섹션 퀴즈에서만 메모가 통째로 빠진다. */
-  function store() { return (window.EIP && window.EIP.store) || null; }
+  var store = window.EIP_UTIL.store;
   function memo() { return window.EIP_MEMO && window.EIP_MEMO.q; }
 
   function showAll() {

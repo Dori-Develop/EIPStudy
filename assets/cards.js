@@ -37,7 +37,9 @@
 
   var CARDS = window.EIP_CARDS || [];
   var TOC = window.EIP_TOC || {};
-  var S = (window.EIP && window.EIP.store) || null;
+  /* 📌 여기서는 **한 번 잡아 둔다** — 이 파일은 app.js 다음에 실린다.
+     해석하는 방법만 util 한 벌을 쓴다 (부르는 자리는 그대로 `S.get`). */
+  var S = window.EIP_UTIL.store();
 
   var SWIPE_MIN = 55;      /* 이만큼 밀어야 넘김으로 친다 (px) */
   var ZONE = 0.34;         /* 카드 좌·우 끝 34% 가 넘김 구역, 가운데 32% 가 뒤집기 */

@@ -30,7 +30,7 @@
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
     });
   }
-  function store() { return window.EIP && window.EIP.store; }
+  var store = window.EIP_UTIL.store;
 
   var setupBox, sheetBox, rounds = [], cards = [], current = null, submitBtn;
 

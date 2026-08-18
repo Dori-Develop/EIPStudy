@@ -34,7 +34,7 @@
 
   /* --------------------------------------------------------------- 저장소 */
   /* app.js 가 window.EIP.store 로 노출한다 (키에 'eip.' 접두사를 붙여 준다) */
-  var store = (window.EIP && window.EIP.store) || null;
+  var store = window.EIP_UTIL.store();
 
   function getJSON(key, fallback) {
     if (store) return store.get(key, fallback);

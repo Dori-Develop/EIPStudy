@@ -29,7 +29,7 @@
   'use strict';
 
   /* app.js 가 window.EIP.store 로 노출한다 (키에 'eip.' 접두사를 붙여 준다) */
-  function box() { return (window.EIP && window.EIP.store) || null; }
+  var box = window.EIP_UTIL.store;
   function now() { return (new Date()).getTime(); }
 
   function chapterMemos(ch) {
