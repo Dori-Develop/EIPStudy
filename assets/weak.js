@@ -4,19 +4,28 @@
       정답률만 늘어놓으면 1%짜리 3단원과 33%짜리 10단원이 같은 크기로 보인다.
 
         손실   = 출제 비중(%) × (1 − 숙련도)
-        숙련도 = (맞힌 문항 − 아직 틀리는 문항) ÷ 그 단원 전체 문항
+        숙련도 = 진도 × 정확도        ← **읽은 만큼 나아가고, 틀린 만큼 되돌아온다**
+          진도   = 학습 완료한 섹션 ÷ 전체 섹션        (eip.done.chNN)
+          정확도 = (맞힌 문항 − 아직 틀리는 문항) ÷ 푼 문항   (안 풀었으면 1)
 
-   🚨 **분모가 「푼 문항」이 아니라 「전체 문항」이다.** 안 푼 섹션이 저절로 감점으로
-      들어가서 진행률을 따로 곱할 필요가 없다 — 한 식으로 끝난다.
+   🚨 **진도가 기준이고 퀴즈는 보정이다** (사용자 확인, 08-18). 처음에는 「퀴즈를
+      푼 섹션」으로 진행을 셌는데, **이 사이트의 학습은 정리본을 읽는 것**이고
+      퀴즈는 확인하는 수단이다. 읽고 체크만 해도 진도가 나가야 맞다.
+      💬 *"섹션 문제를 푸는게 아니라 이 섹션 학습 완료에 따라서 체크되어야 할 것 같아."*
+   🚨 **퀴즈를 안 풀었다고 깎지 않는다** — 깎으면 읽기만 하는 사람은 영원히 0 이다.
+      대신 **풀어서 틀린 것은 그대로 깎는다.**
    🚨 **오답노트를 빼지 않으면 「다시 풀어 맞혔다」가 취약을 지운다.** 섹션 퀴즈는
       최근 성적만 남기므로, 여러 번 틀린 이력은 eip.wrong.all 에만 남아 있다.
 
    🔒 새 저장 키를 만들지 않는다 (T8 동기화 순서에 영향이 없다). 읽기만 한다 —
+        eip.done.chNN = ["s01.html", …]                  ← 학습 완료 섹션 (진도)
         eip.quiz.chNN = { 섹션번호: {score, total, at} }   ← 섹션 퀴즈 최근 성적
         eip.wrong.all = { 문항id: {w,o,last,at,cat} }      ← 아직 틀리는 문항
       출제 비중은 assets/strategy.js 의 표 **한 벌**을 그대로 쓴다 (EIP_STRATEGY).
       섹션별 문항 수는 build.sh 가 toc.js 에 심어 둔 `q` 다 —
       🚨 **은행 12개는 700KB 라 여기서 싣지 않는다.**
+   📌 진도의 분모는 **부록을 포함한 전체 섹션**이다 — 위쪽 진도 막대(app.js)와
+      같은 분모여야 한 화면에서 두 숫자가 어긋나 보이지 않는다.
 
    ES5 로 쓴다 (화살표·const·템플릿 리터럴 금지) → CLAUDE.md 3장 */
 (function () {
@@ -68,51 +77,63 @@
   }
 
   /* ------------------------------------------------------------ 챕터 집계 */
+  /* ES3 에는 Array.indexOf 가 없다 (JScript 검사기가 걸린다) */
+  function has(arr, v) {
+    for (var i = 0; i < arr.length; i++) if (arr[i] === v) return true;
+    return false;
+  }
+
   function measure(chId, pct, wrong) {
     var toc = TOC[chId];
     var secs = (toc && toc.s) || [];
     var rec = store.get('quiz.' + chId, {}) || {};
+    var readList = store.get('done.' + chId, []);
+    if (Object.prototype.toString.call(readList) !== '[object Array]') readList = [];
     var i, s, r;
 
-    var quizSecs = 0;      /* 문항이 있는 섹션 (없는 섹션은 「안 풀었다」가 아니다) */
-    var doneSecs = 0;
-    var qTotal = 0;        /* 그 단원 전체 문항 — 숙련도의 분모 */
+    var readSecs = 0;      /* 학습 완료로 체크한 섹션 */
+    var qTotal = 0;        /* 그 단원 전체 문항 — 아직 안 푼 섹션까지 */
     var got = 0, asked = 0;
     var last = '';
-    var next = null;       /* 아직 안 푼 첫 섹션 — 「여기부터」의 착지점 */
+    var next = null;       /* 아직 학습 완료가 아닌 첫 섹션 — 「여기부터」의 착지점 */
 
     for (i = 0; i < secs.length; i++) {
       s = secs[i];
+      if (has(readList, s.f)) readSecs++;
+      else if (!next) next = s;
+
       if (!s.q) continue;
-      quizSecs++;
       qTotal += s.q;
       r = rec[String(i + 1)];             /* quiz.js: secNo = index + 1 */
       if (r && r.total) {
-        doneSecs++;
         got += r.score || 0;
         asked += r.total;
         if (r.at && r.at > last) last = r.at;   /* YYYY-MM-DD 는 사전순 = 날짜순 */
-      } else if (!next) {
-        next = s;
       }
     }
 
-    /* 🚨 모의 문제지도 오답을 적립하므로 wrong 이 got 를 넘을 수 있다 — 0 에서 막는다 */
-    var safe = got - wrong;
-    if (safe < 0) safe = 0;
-    var mastery = qTotal ? safe / qTotal : 1;
+    var read = secs.length ? readSecs / secs.length : 0;
+
+    /* 🚨 모의 문제지도 오답을 적립하므로 wrong 이 got 를 넘을 수 있다 — 0 에서 막는다.
+       퀴즈를 한 번도 안 풀었으면 깎지 않는다(1). 단 오답노트에 남은 것은 깎는다. */
+    var acc = 1;
+    if (asked) acc = (got - wrong) / asked;
+    else if (qTotal) acc = 1 - wrong / qTotal;
+    if (acc < 0) acc = 0;
+    if (acc > 1) acc = 1;
 
     return {
       id: chId,
       pct: pct,
-      quizSecs: quizSecs,
-      doneSecs: doneSecs,
+      secs: secs.length,
+      readSecs: readSecs,
       qTotal: qTotal,
       wrong: wrong,
-      acc: asked ? got / asked : 0,       /* 화면에 적는 정답률은 「푼 것 기준」 */
+      asked: asked,
+      shown: asked ? got / asked : 0,     /* 화면에 적는 정답률은 「푼 것 그대로」 */
       last: last,
       next: next,
-      loss: pct * (1 - mastery)
+      loss: pct * (1 - read * acc)
     };
   }
 
@@ -127,7 +148,7 @@
 
   var touched = 0, maxLoss = 0;
   for (i = 0; i < rows.length; i++) {
-    if (rows[i].doneSecs) touched++;
+    if (rows[i].readSecs) touched++;
     if (rows[i].loss > maxLoss) maxLoss = rows[i].loss;
   }
 
@@ -140,8 +161,8 @@
 
   var head = el('div', 'weak__head');
   head.appendChild(el('p', 'weak__eyebrow',
-    touched ? '섹션 퀴즈 성적과 오답노트로 계산한 순서입니다'
-            : '아직 푼 섹션 퀴즈가 없어 출제 비중 순으로 보여 줍니다'));
+    touched ? '진도와 퀴즈 성적으로 계산한 순서입니다'
+            : '아직 학습 완료한 섹션이 없어 출제 비중 순으로 보여 줍니다'));
 
   /* ── 🔑 한 줄 결론 — 「여기부터 보세요」 ─────────────────────────
      🚨 문장으로만 두지 않고 **누를 수 있게** 만든다. 다음에 할 일을 알려 놓고
@@ -158,7 +179,7 @@
     doneT.appendChild(el('b', null, '모의 문제지로'));
     lead.appendChild(doneT);
     lead.appendChild(el('span', 'weak__lead-why',
-      '12단원을 다 풀었고 아직 틀리는 문항도 없습니다'));
+      '12단원을 다 읽었고 아직 틀리는 문항도 없습니다'));
   } else {
     lead.href = top.next ? top.id + '/' + top.next.f : top.id + '.html';
     lead.appendChild(el('span', 'weak__lead-k', '여기부터'));
@@ -169,14 +190,14 @@
     lead.appendChild(leadT);
 
     var why = '출제 비중 ' + top.pct.toFixed(1) + '% · ';
-    if (!top.doneSecs) {
-      why += '아직 한 섹션도 안 풀었습니다';
-    } else if (top.doneSecs < top.quizSecs) {
-      why += (top.quizSecs - top.doneSecs) + '개 섹션이 남았습니다';
+    if (!top.readSecs) {
+      why += '아직 한 섹션도 안 봤습니다';
+    } else if (top.readSecs < top.secs) {
+      why += (top.secs - top.readSecs) + '개 섹션이 남았습니다';
     } else if (top.wrong) {
-      why += '아직 틀리는 문항 ' + top.wrong + '개가 남았습니다';
+      why += '다 읽었지만 아직 틀리는 문항이 ' + top.wrong + '개';
     } else {
-      why += '정답률 ' + Math.round(top.acc * 100) + '% — 다시 한 바퀴';
+      why += '정답률 ' + Math.round(top.shown * 100) + '% — 다시 한 바퀴';
     }
     lead.appendChild(el('span', 'weak__lead-why', why));
   }
@@ -209,14 +230,17 @@
     /* 🚨 숫자를 늘어놓지 않고 **상태 한 마디**로 적는다.
        「정답률 62% · 진행 4/16」 은 무엇을 하라는 말인지 읽는 데 시간이 걸린다. */
     var meta = el('p', 'weak__meta');
-    if (!d.quizSecs) {
-      meta.appendChild(el('span', 'weak__tag', '퀴즈 없음'));
-    } else if (!d.doneSecs) {
+    if (!d.readSecs) {
       meta.appendChild(el('span', 'weak__tag is-new', '시작 전'));
-      meta.appendChild(el('span', null, d.quizSecs + '개 섹션 · ' + d.qTotal + '문항'));
+      meta.appendChild(el('span', null, d.secs + '개 섹션 · ' + d.qTotal + '문항'));
     } else {
-      meta.appendChild(el('span', 'weak__tag', '정답률 ' + Math.round(d.acc * 100) + '%'));
-      meta.appendChild(el('span', null, '섹션 ' + d.doneSecs + '/' + d.quizSecs));
+      /* 🔑 앞머리는 **진도**다. 정답률은 퀴즈를 풀었을 때만 뒤에 붙는다 —
+         안 풀었는데 「정답률 0%」가 뜨면 못한 것처럼 보인다. */
+      meta.appendChild(el('span', 'weak__tag',
+        '진도 ' + d.readSecs + '/' + d.secs));
+      if (d.asked) {
+        meta.appendChild(el('span', null, '정답률 ' + Math.round(d.shown * 100) + '%'));
+      }
       if (d.wrong) meta.appendChild(el('span', 'weak__wrong', '아직 틀림 ' + d.wrong));
       if (d.last) meta.appendChild(el('span', 'weak__at', '마지막 ' + d.last.slice(5)));
     }

@@ -1788,7 +1788,12 @@ mark, .hl {
   background: var(--accent); color: #fff;
   font-size: 11px; font-weight: 700; white-space: nowrap;
 }
-.weak__lead-t { min-width: 0; font-size: 14px; line-height: 1.5; }
+/* 🚨 섹션 제목이 길다 — `min-width: 0` 만으로는 **긴 영문 토큰**을 못 접는다.
+   (`UML(Unified Modeling Language)의 개요` 같은 것) 좁은 화면에서 가로 스크롤이 난다. */
+.weak__lead-t {
+  min-width: 0; font-size: 14px; line-height: 1.5;
+  overflow-wrap: anywhere; word-break: keep-all;
+}
 .weak__lead-t b { font-weight: 700; }
 .weak__lead-why {
   grid-column: 2; margin: 0;
@@ -1835,6 +1840,7 @@ mark, .hl {
 .weak__meta {
   grid-column: 2 / -1;
   display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px;
+  min-width: 0;                 /* 🚨 flex 자식은 기본이 min-width:auto — 안 주면 안 줄어든다 */
   margin: -2px 0 2px; color: var(--fg-faint); font-size: 12px;
 }
 .weak__tag {
