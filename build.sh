@@ -111,6 +111,17 @@ for md in "${sources[@]}"; do
   rm -rf "$id"; mkdir -p "$id"
 
   # ---- 2) 섹션 목록(JS 배열) 만들기 ----
+  # 🚨 섹션마다 문항이 몇 개인지 여기서 세어 목차에 박는다.
+  #    취약 챕터 대시보드(weak.js)가 「안 푼 섹션」을 세려면 이 값이 필요한데,
+  #    은행 12개를 다 실으면 700KB 다. 빌드가 한 번 세면 목차에 몇 바이트로 끝난다.
+  #    문항이 0 인 섹션은 애초에 퀴즈가 안 뜨므로 「안 풀었다」로 세면 안 된다.
+  : > "$TMP/qcount.txt"
+  if [ -f "content/quiz/${id}.js" ]; then
+    grep -o 'sec:[[:space:]]*[0-9]*' "content/quiz/${id}.js" \
+      | sed 's/.*[^0-9]//' | sort -n | uniq -c \
+      | awk '{ print $2 " " $1 }' > "$TMP/qcount.txt"
+  fi
+
   sections_js=""
   i=0
   while IFS= read -r raw; do
@@ -125,8 +136,11 @@ for md in "${sources[@]}"; do
       label="$(printf '%s' "$raw" | sed -e 's/^📌[[:space:]]*//' -e 's/^🖼️[[:space:]]*//' -e 's/^[[:space:]]*//')"
     fi
     printf '%s\n' "$label" >> "$TMP/labels.txt"
+    qn="$(awk -v s="$i" '$1 == s { print $2 }' "$TMP/qcount.txt")"
     [ -n "$sections_js" ] && sections_js="${sections_js},"
-    sections_js="${sections_js}{f:\"${page}\",n:\"$(esc "$num")\",t:\"$(esc "$label")\"}"
+    sections_js="${sections_js}{f:\"${page}\",n:\"$(esc "$num")\",t:\"$(esc "$label")\""
+    [ -n "$qn" ] && sections_js="${sections_js},q:${qn}"
+    sections_js="${sections_js}}"
   done < "$TMP/titles.txt"
 
   # 전 챕터 목차에 이 챕터를 얹는다. bank 는 이 챕터에 문제 은행이 있는지 —
@@ -312,7 +326,8 @@ done
 # fetch 로 읽으면 file:// 에서 CORS 로 막히므로 전역 변수를 담은 스크립트로 만든다.
 {
   printf '/* build.sh 가 생성한다. 직접 고치지 말 것.\n'
-  printf '   t = 챕터 제목 · bank = 문제 은행 유무 · s = 섹션 목록 {f 파일, n 번호, t 제목} */\n'
+  printf '   t = 챕터 제목 · bank = 문제 은행 유무 · s = 섹션 목록 {f 파일, n 번호, t 제목, q 문항 수}
+   q 는 문항이 있는 섹션에만 붙는다 (없으면 퀴즈 자체가 안 뜬다). */\n'
   printf 'window.EIP_TOC = {%s};\n' "$toc_js"
 } > "assets/toc.js"
 echo "  ✓ assets/toc.js (전 챕터 목차)"

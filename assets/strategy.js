@@ -6,12 +6,14 @@
 (function () {
   'use strict';
 
-  var host = document.getElementById('strategy');
-  if (!host) return;                     /* 홈이 아니면 아무것도 안 한다 */
-
   /* ── 챕터별 출제 비율 — 20회차 400문항 ────────────────────────────
      pick: 먼저 볼 여섯 장(2장 + 7~11장). 이 여섯이 합쳐 85% 다.
-     hint: 그 장에서 무엇부터 볼지 한 줄. 없으면 생략한다. */
+     hint: 그 장에서 무엇부터 볼지 한 줄. 없으면 생략한다.
+
+     🔒 **이 표는 여기 한 벌뿐이다.** 취약 챕터 대시보드(T23)도 이것을 쓴다 —
+        비중을 두 곳에 적으면 반드시 어긋난다. 아래에서 `EIP_STRATEGY` 로 내보낸다.
+        🚨 **띠를 그리는 것과 데이터를 내보내는 것은 다른 일이다** — 처음에는
+        `#strategy` 가 없으면 즉시 물러나서 **다른 화면이 이 표를 못 봤다.** */
   var CH = [
     { id: 'ch10', pct: 33.3, pick: true
     , hint: '배열과 문자열 · Python · Java 상속 · 제어문 · 구조체 · 포인터' }
@@ -37,6 +39,13 @@
      3장은 2021-1, 6장은 2022-1 이 마지막이고 그 뒤로 각각 15·12회차 0 이다.
      그래서 「나중에」로 적는다. → exam-archive/chapters.md 2장 */
   var LATE = { ch03: 1, ch06: 1, ch05: 1, ch12: 1 };
+
+  /* 📤 다른 화면이 쓸 수 있게 내보낸다 — 취약 챕터 대시보드(`weak.js`)가 비중을 곱한다.
+     `pct` 는 내림차순으로 정렬돼 있고, 그 순서가 곧 「먼저 볼 순서」다. */
+  window.EIP_STRATEGY = { ch: CH, late: LATE };
+
+  var host = document.getElementById('strategy');
+  if (!host) return;                     /* 홈이 아니면 띠는 안 그린다 */
 
   function el(tag, cls, text) {
     var n = document.createElement(tag);

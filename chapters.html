@@ -43,6 +43,9 @@ document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
         <div class="bar"><i class="js-overall-bar"></i></div>
       </section>
 
+      <!-- 취약 단원 (T23) — assets/weak.js 가 채운다. 비면 아무것도 안 그린다 -->
+      <div id="weak"></div>
+
       <div class="cards">
 
         <a class="card" href="ch01.html">
@@ -263,6 +266,11 @@ document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
 </div>
 
 <script src="assets/toc.js"></script>
+<script src="assets/strategy.js"></script>
 <script src="assets/app.js"></script>
+<!-- 🚨 순서가 있다 — weak.js 는 toc(섹션·문항 수) · strategy(출제 비중) ·
+     app(EIP.store) · wrongstore(오답 분류) 넷이 먼저 실려 있어야 한다 -->
+<script src="assets/wrongstore.js"></script>
+<script src="assets/weak.js"></script>
 </body>
 </html>

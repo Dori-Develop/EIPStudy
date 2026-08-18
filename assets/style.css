@@ -1756,6 +1756,112 @@ mark, .hl {
 }
 
 /* ══════════════════════════════════════════════════════════════
+   취약 단원 (T23) — 정리본 목록(chapters.html) 에만 나온다
+   🔑 막대는 **남은 손실**이다 = 출제 비중 × (1 − 숙련도). 길수록 급하다.
+      🚨 전략 띠(`.strat`)와 **한 줄 짜임을 맞춘다** — 같은 데이터의 다른 얼굴이라
+         칸이 어긋나면 두 화면을 오갈 때 눈이 다시 적응해야 한다
+   ══════════════════════════════════════════════════════════════ */
+.weak {
+  margin: 0 0 16px;
+  padding: 14px 18px 12px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.weak__eyebrow { margin: 0 0 8px; color: var(--fg-faint); font-size: 12px; }
+
+/* ── 🔑 한 줄 결론 — 누르면 바로 그 섹션으로 간다 ───────────────── */
+.weak__lead {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: baseline;
+  gap: 4px 10px;
+  padding: 10px 12px;
+  background: var(--accent-weak);
+  border-radius: var(--radius-s);
+  text-decoration: none; color: var(--fg);
+}
+.weak__lead:hover { outline: 1px solid var(--accent); }
+.weak__lead-k {
+  padding: 2px 8px; border-radius: 999px;
+  background: var(--accent); color: #fff;
+  font-size: 11px; font-weight: 700; white-space: nowrap;
+}
+.weak__lead-t { min-width: 0; font-size: 14px; line-height: 1.5; }
+.weak__lead-t b { font-weight: 700; }
+.weak__lead-why {
+  grid-column: 2; margin: 0;
+  color: var(--fg-muted); font-size: 12px;
+}
+
+.weak__list { list-style: none; margin: 12px 0 0; padding: 0; }
+
+/* 한 줄 = [번호+이름] [막대] [비중] / 아래에 상태 한 마디 */
+.weak__row {
+  display: grid;
+  grid-template-columns: minmax(0, 8.5em) 1fr 3.2em;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  border-top: 1px solid var(--border-soft);
+}
+.weak__row:first-child { border-top: 0; }
+.weak__row[hidden] { display: none; }
+
+.weak__name {
+  display: flex; align-items: center; gap: 6px;
+  min-width: 0; text-decoration: none; color: var(--fg);
+  font-size: 13px;
+}
+.weak__name:hover .weak__t { color: var(--accent); text-decoration: underline; }
+.weak__no {
+  flex: none; width: 1.6em; height: 1.6em;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--bg-sunken); color: var(--fg-muted);
+  border-radius: var(--radius-s);
+  font-size: 11px; font-weight: 700; font-variant-numeric: tabular-nums;
+}
+.weak__t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.weak__bar { height: 8px; background: var(--bg-sunken); border-radius: 999px; overflow: hidden; }
+.weak__fill { display: block; height: 100%; background: var(--accent); border-radius: 999px; }
+.weak__pct {
+  text-align: right; font-size: 12px; color: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 상태는 이름 칸 아래로 흘려보낸다 (막대 열을 침범하지 않게) */
+.weak__meta {
+  grid-column: 2 / -1;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px;
+  margin: -2px 0 2px; color: var(--fg-faint); font-size: 12px;
+}
+.weak__tag {
+  padding: 1px 7px; border-radius: 999px;
+  background: var(--bg-sunken); color: var(--fg-muted);
+  font-weight: 700; font-size: 11px; white-space: nowrap;
+}
+.weak__tag.is-new { background: var(--accent-weak); color: var(--accent); }
+.weak__wrong { color: var(--warn); font-weight: 700; }
+.weak__at { margin-left: auto; font-variant-numeric: tabular-nums; }
+
+.weak__more {
+  margin: 10px 0 0; padding: 5px 12px;
+  background: none; border: 1px solid var(--border); border-radius: 999px;
+  color: var(--fg-muted); font-size: 12px; cursor: pointer;
+}
+.weak__more:hover { border-color: var(--accent); color: var(--accent); }
+
+@media (max-width: 520px) {
+  .weak { padding: 12px 14px 10px; }
+  .weak__row { grid-template-columns: minmax(0, 1fr) 3.2em; }
+  .weak__bar { display: none; }
+  .weak__meta { grid-column: 1 / -1; margin: 0 0 2px; }
+  .weak__at { margin-left: 0; }
+}
+
+/* ══════════════════════════════════════════════════════════════
    섹션별 출제 빈도 (T50) — assets/secrank.js 가 붙인다
    🔑 별은 **제목을 밀어내지 않는다.** 목록에서 줄이 밀리면 훑기가 나빠진다
    ══════════════════════════════════════════════════════════════ */
