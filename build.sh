@@ -743,12 +743,13 @@ echo "  ✓ assets/glossary-data.js (약어 ${gloss_n}개)"
 #    어차피 12개를 다 싣는다. 쪼개면 요청만 11개 늘어난다. 전체가 40KB 남짓이다.
 {
   printf '/* build.sh 가 content/*.md 의 부록 표에서 뽑아 생성한다. 직접 고치지 말 것.\n'
-  printf '   id · ch 챕터 · s 부록 섹션 순번(0부터) · f 앞면(구분) · b 뒷면(암기 포인트) */\n'
+  printf '   id · ch 챕터 · s **그 개념을 가르치는 섹션** 순번(0부터) · f 앞면 · b 뒷면\n'
+  printf '   s 는 content/cardmap.tsv 가 준다 — 부록 순번이 아니다 (T34). 못 찾으면 없다. */\n'
   printf 'window.EIP_CARDS = [\n'
 
   first_card=0
   for md in "${sources[@]}"; do
-    awk -v ch="$(basename "$md" .md)" -v first="$first_card" '
+    awk -v ch="$(basename "$md" .md)" -v first="$first_card" -v map="content/cardmap.tsv" '
       function trim(s) { gsub(/^[ \t]+|[ \t]+$/, "", s); return s }
 
       # 마크다운 강조를 HTML 로. <br> 는 살린다.
@@ -792,7 +793,17 @@ echo "  ✓ assets/glossary-data.js (약어 ${gloss_n}개)"
         return out
       }
 
-      BEGIN { sec = 0; fence = 0; inApx = 0; n = first + 0 }
+      # 🔑 카드 ↔ 개념 섹션 표를 먼저 읽는다 (T34).
+      #    없으면 조용히 지나간다 — 링크만 안 붙고 카드는 그대로 나온다.
+      BEGIN {
+        while ((getline mline < map) > 0) {
+          if (substr(mline, 1, 1) == "#") continue
+          mk = split(mline, mp, "\t")
+          if (mk >= 2) SEC[mp[1]] = mp[2]
+        }
+        close(map)
+        sec = 0; fence = 0; inApx = 0; n = first + 0
+      }
 
       {
         line = $0; sub(/\r$/, "", line)
@@ -814,8 +825,12 @@ echo "  ✓ assets/glossary-data.js (약어 ${gloss_n}개)"
         if (id == "") id = "row"
         if (id in used) { used[id]++; key = id "-" used[id] } else { used[id] = 1; key = id }
 
-        printf "%s{id:\"%s-card-%s\",ch:\"%s\",s:%d,f:\"%s\",b:\"%s\"}\n", \
-               (n ? "," : ""), ch, key, ch, sec - 1, render(f), render(b)
+        cid = ch "-card-" key
+        # 🚨 못 찾은 카드는 `s` 를 아예 안 낸다 — **틀린 링크는 없는 링크보다 나쁘다.**
+        where = ""
+        if (cid in SEC) where = ",s:" SEC[cid]
+        printf "%s{id:\"%s\",ch:\"%s\"%s,f:\"%s\",b:\"%s\"}\n", \
+               (n ? "," : ""), cid, ch, where, render(f), render(b)
         n++
       }
 
@@ -829,7 +844,23 @@ echo "  ✓ assets/glossary-data.js (약어 ${gloss_n}개)"
 
 card_n="$first_card"
 rm -f .cardcount
-echo "  ✓ assets/cards-data.js (카드 ${card_n}장)"
+
+# 🚨 **몇 장이 안 이어졌는지 반드시 센다.** cardmap.tsv 의 카드 id 는
+#    build.sh 의 slug() 로 만든 것과 한 글자도 달라선 안 되는데, 문장부호를
+#    여덟 개 빠뜨렸다가 **317장 중 19장이 조용히 안 이어졌다** (T34).
+#    빌드가 안 알렸으면 카드 화면에서 링크가 없는 것을 하나씩 눌러 봐야 알았다.
+# 🚨 `set -euo pipefail` 이라 **못 찾은 grep(종료코드 1)이 빌드를 죽인다.**
+#    cardmap.tsv 가 없으면 `,s:` 가 한 건도 없어 실제로 죽었다 — `|| true` 를 붙인다.
+linked="$( { grep -o ',s:[0-9]*' assets/cards-data.js || true; } | wc -l | tr -d ' ')"
+if [ ! -f content/cardmap.tsv ]; then
+  echo "  ✓ assets/cards-data.js (카드 ${card_n}장 · 🚨 cardmap.tsv 가 없어 섹션 링크 없음)"
+elif [ "$linked" != "$card_n" ]; then
+  echo "  ✓ assets/cards-data.js (카드 ${card_n}장)"
+  echo "  🚨 섹션에 안 이어진 카드 $((card_n - linked))장 — content/cardmap.tsv 를 다시 만들 것"
+  echo "     PYTHONIOENCODING=utf-8 python EIPStudy-notes/tools/cardmap.py"
+else
+  echo "  ✓ assets/cards-data.js (카드 ${card_n}장 · 전부 개념 섹션에 연결)"
+fi
 
 # ---- 10) 🔒 기출 풀 목록 (있을 때만) ----
 # past.js 가 어느 회차 파일을 불러야 하는지 알려 주는 목록.

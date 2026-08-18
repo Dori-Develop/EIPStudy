@@ -411,20 +411,28 @@
       hintEl.appendChild(el('span', 'chint__side', spec[k].label));
     });
 
-    /* 어느 챕터에서 온 카드인지.
-       📌 섹션 이름은 붙이지 않는다 — 언제나 「📌 부록 — 핵심 암기 요약」이라
-          알려 주는 것이 없다. card.s 도 그 부록을 가리킨다. */
+    /* 어디서 온 카드인지 — 챕터 + **그 개념을 가르치는 섹션** (T34).
+       🚨 한 번 뒤집힌 결정이다. 예전에는 `card.s` 가 **언제나 부록**을 가리켜
+          눌러 봐야 방금 본 카드와 같은 표가 나왔다. 그래서 링크를 뺐었다.
+          지금은 `content/cardmap.tsv` 가 개념 섹션을 대므로 되살렸다.
+       🚨 **못 찾은 카드는 `s` 가 아예 없다** — 그때는 챕터 이름만 적고 안 건다.
+          틀린 링크는 없는 링크보다 나쁘다. */
     var chapter = TOC[card.ch];
-    var where = card.ch.slice(2) +
+    var chName = card.ch.slice(2) +
       (chapter ? ' · ' + chapter.t.replace(/^\d+\.\s*/, '') : '');
+    var sec = null;
+    if (card.s != null && chapter && chapter.s) sec = chapter.s[card.s];
 
     metaEl.innerHTML = '';
-    /* 🚨 **링크를 걸지 않는다.**
-       카드는 챕터 끝의 「📌 부록 — 핵심 암기 요약」 표에서 뽑은 것이라
-       card.s 가 가리키는 곳은 **언제나 그 부록**이다. 개념이 설명된 섹션이 아니다.
-       눌러 봐야 방금 본 카드와 같은 표가 나온다.
-       → 개념 섹션으로 잇는 일은 따로 해야 한다 (TODO T34). */
-    metaEl.appendChild(el('span', 'cmeta__where', where));
+    if (sec) {
+      var link = el('a', 'cmeta__where');
+      link.href = card.ch + '/' + sec.f;
+      link.appendChild(el('span', 'cmeta__ch', chName));
+      link.appendChild(el('span', 'cmeta__sec', sec.t));
+      metaEl.appendChild(link);
+    } else {
+      metaEl.appendChild(el('span', 'cmeta__where', chName));
+    }
     if (saved[card.id]) metaEl.appendChild(el('span', 'cmeta__saved', '★ 저장됨'));
     metaEl.appendChild(el('span', 'cmeta__pos', (pos + 1) + ' / ' + deck.length));
 
