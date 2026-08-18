@@ -62,10 +62,11 @@
     if (!W) return out;
     var all = W.all(), id, c, ch;
     for (id in all) {
-      if (!Object.prototype.hasOwnProperty.call(all, id)) continue;
+      if (!window.EIP_UTIL.has(all, id)) continue;
       c = W.classify(all[id]);
       if (c !== 1 && c !== 3) continue;
-      ch = id.slice(0, 4);                 /* "ch10-s05-03" → "ch10" */
+      ch = window.EIP_UTIL.chOf(id);       /* "ch10-s05-03" → "ch10" */
+      if (!ch) continue;                   /* 모양이 안 맞는 id 는 안 센다 */
       out[ch] = (out[ch] || 0) + 1;
     }
     return out;

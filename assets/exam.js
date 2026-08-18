@@ -164,8 +164,8 @@
 
   /* 문항 id → 문항. 은행은 boot 에서 전부 실려 있다 */
   function itemById(id) {
-    var ch = String(id).slice(0, 4);
-    var bank = window['EIP_BANK_' + ch] || [];
+    var ch = window.EIP_UTIL.chOf(id);
+    var bank = ch ? (window['EIP_BANK_' + ch] || []) : [];
     var i;
     for (i = 0; i < bank.length; i++) { if (bank[i].id === id) return bank[i]; }
     return null;

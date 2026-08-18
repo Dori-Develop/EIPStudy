@@ -56,6 +56,29 @@
     return pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
   }
 
+  /* ── 문항 id 를 읽는다 — `ch10-s05-03` ──────────────────────────────
+     🚨 **id 를 쪼개는 자리가 네 곳이었고 방식이 두 가지였다** —
+        `slice(0, 4)` 둘(exam·weak)과 정규식 하나(wrong).
+        id 규칙이 바뀌면 조용히 어긋난다. 여기 한 벌로 둔다.
+
+     📌 **문항 객체를 갖고 있으면 이것을 쓰지 말 것.** `item.ch`·`item.sec` 가
+        숫자로 들어 있다 (`qcard.js` 참고). id 는 **그것밖에 없을 때** 읽는다 —
+        오답노트·취약 단원은 `eip.wrong.all` 의 **키**만 갖고 있다. */
+  var ID_RE = /^(ch\d\d)-s(\d\d)-\d\d$/;
+
+  function locate(id) {
+    var m = ID_RE.exec(id || '');
+    if (!m) return null;
+    return { ch: m[1], sec: parseInt(m[2], 10) };
+  }
+
+  /* 챕터만 필요할 때. 🚨 모양이 안 맞으면 **빈 문자열**이다 — 예전 `slice(0,4)` 는
+     엉뚱한 id 에도 앞 네 글자를 돌려줘서 없는 챕터를 만들어 냈다. */
+  function chOf(id) {
+    var loc = locate(id);
+    return loc ? loc.ch : '';
+  }
+
   /* 문제 은행을 필요한 것만 내려받는다 (모의 문제지·오답노트).
      🚨 `fetch()` 를 안 쓴다 — `file://` 에서 CORS 로 막힌다. → CLAUDE.md 3장
 
@@ -86,6 +109,8 @@
     pad2: pad2,
     ymd: ymd,
     mmdd: mmdd,
+    locate: locate,
+    chOf: chOf,
     loadBanks: loadBanks
   };
 }());

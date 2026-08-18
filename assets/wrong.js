@@ -54,11 +54,7 @@
   var el = window.EIP_UTIL.el;
   /* ------------------------------------------------------- 문항 위치 이름 */
   /* 'ch10-s05-03' → { ch:'ch10', sec:5 } */
-  function locate(id) {
-    var m = /^(ch\d\d)-s(\d\d)-\d\d$/.exec(id || '');
-    if (!m) return null;
-    return { ch: m[1], sec: parseInt(m[2], 10) };
-  }
+  var locate = window.EIP_UTIL.locate;
 
   function locationText(id) {
     var loc = locate(id);
