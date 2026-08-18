@@ -31,11 +31,11 @@
     else window.alert(title + (body ? '\n\n' + body : ''));
   }
 
-  function pad(n) { return n < 10 ? '0' + n : String(n); }
+  var pad = window.EIP_UTIL.pad2;
 
+  /* 파일 이름에 넣을 `YYYYMMDD` — 구분자가 없어야 파일명이 안 지저분하다 */
   function today() {
-    var d = new Date();
-    return d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate());
+    return window.EIP_UTIL.ymd().replace(/-/g, '');
   }
 
   function dateText(ms) {

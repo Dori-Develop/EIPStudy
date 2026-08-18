@@ -79,9 +79,7 @@
 
   function dateText(ms) {
     if (!ms) return '';
-    var d = new Date(ms);
-    var mm = d.getMonth() + 1, dd = d.getDate();
-    return (mm < 10 ? '0' : '') + mm + '-' + (dd < 10 ? '0' : '') + dd;
+    return window.EIP_UTIL.mmdd(new Date(ms));
   }
 
   /* ------------------------------------------------------------ 은행 로드 */
@@ -103,18 +101,7 @@
     return out;
   }
 
-  function loadBanks(list, done) {
-    var left = list.length;
-    if (!left) { done(); return; }
-    list.forEach(function (ch) {
-      if (window['EIP_BANK_' + ch]) { if (--left === 0) done(); return; }
-      var s = document.createElement('script');
-      s.src = 'assets/bank-' + ch + '.js';
-      /* 실패해도 계속 간다 — 그 챕터 문항만 빠진다 */
-      s.onload = s.onerror = function () { if (--left === 0) done(); };
-      document.head.appendChild(s);
-    });
-  }
+  var loadBanks = window.EIP_UTIL.loadBanks;
 
   function indexBanks() {
     var k, bank, i;

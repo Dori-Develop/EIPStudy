@@ -57,12 +57,12 @@
 
   function saveScore(score, total) {
     var all = getJSON('quiz.' + CH.id, {}) || {};
-    var d = new Date();
-    var mm = d.getMonth() + 1, dd = d.getDate();
     all[String(secNo)] = {
       score: score,
       total: total,
-      at: d.getFullYear() + '-' + (mm < 10 ? '0' : '') + mm + '-' + (dd < 10 ? '0' : '') + dd
+      /* 🚨 `YYYY-MM-DD` — **사전순이 곧 날짜순**이라 취약 단원(weak.js)이
+         「마지막으로 푼 날」을 문자열 비교만으로 고른다. 모양을 바꾸면 그것이 깨진다. */
+      at: window.EIP_UTIL.ymd()
     };
     setJSON('quiz.' + CH.id, all);
   }

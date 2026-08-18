@@ -234,18 +234,7 @@
     return bankChapters().length === chapterKeys().length && chapterKeys().length > 0;
   }
 
-  function loadBanks(list, done) {
-    var left = list.length;
-    if (!left) { done(); return; }
-    list.forEach(function (ch) {
-      if (window['EIP_BANK_' + ch]) { if (--left === 0) done(); return; }
-      var s = document.createElement('script');
-      s.src = 'assets/bank-' + ch + '.js';
-      /* 실패해도 계속 간다 — 그 챕터 문항만 빠진다 */
-      s.onload = s.onerror = function () { if (--left === 0) done(); };
-      document.head.appendChild(s);
-    });
-  }
+  var loadBanks = window.EIP_UTIL.loadBanks;
 
   /* 단원 번호 → 문항 배열 */
   /* 🔒 **O/X 는 모의 문제지에 넣지 않는다.** 실기 기출 400문항 중 O/X 는 0이다 —

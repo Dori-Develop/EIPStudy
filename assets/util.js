@@ -45,12 +45,47 @@
 
   function pad2(n) { return (n < 10 ? '0' : '') + n; }
 
+  /* 날짜는 **쓰는 모양이 화면마다 다르다.** 모양까지 통일하지 않고 조각만 모은다 —
+     `YYYY-MM-DD`(퀴즈 기록) · `MM-DD`(오답노트) · `M/D`(병합) · `YYYYMMDD`(백업 파일명). */
+  function ymd(d) {
+    d = d || new Date();
+    return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
+  }
+  function mmdd(d) {
+    d = d || new Date();
+    return pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
+  }
+
+  /* 문제 은행을 필요한 것만 내려받는다 (모의 문제지·오답노트).
+     🚨 `fetch()` 를 안 쓴다 — `file://` 에서 CORS 로 막힌다. → CLAUDE.md 3장
+
+     📌 **TODO 는 `assets/bankload.js` 로 따로 빼자고 적혀 있었지만 여기 둔다.**
+        util.js 는 이미 **모든 페이지에 실리므로** 「어느 페이지에 넣는 걸 잊었다」가
+        원천적으로 안 생긴다. 12줄이라 실어 두는 값이 잊는 값보다 싸다. */
+  function loadBanks(list, done) {
+    var left = list.length;
+    if (!left) { done(); return; }
+    for (var i = 0; i < list.length; i++) {
+      (function (ch) {
+        if (window['EIP_BANK_' + ch]) { if (--left === 0) done(); return; }
+        var s = document.createElement('script');
+        s.src = 'assets/bank-' + ch + '.js';
+        /* 실패해도 계속 간다 — 그 챕터 문항만 빠진다 */
+        s.onload = s.onerror = function () { if (--left === 0) done(); };
+        document.head.appendChild(s);
+      }(list[i]));
+    }
+  }
+
   window.EIP_UTIL = {
     el: el,
     has: has,
     inArray: inArray,
     $: $,
     $$: $$,
-    pad2: pad2
+    pad2: pad2,
+    ymd: ymd,
+    mmdd: mmdd,
+    loadBanks: loadBanks
   };
 }());
