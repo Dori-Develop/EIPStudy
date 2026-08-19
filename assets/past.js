@@ -19,6 +19,7 @@
 
   var $ = window.EIP_UTIL.$;
   var el = window.EIP_UTIL.el;
+  var clear = window.EIP_UTIL.clear;
   function html(tag, cls, markup) {
     var n = document.createElement(tag);
     if (cls) n.className = cls;
@@ -158,7 +159,7 @@
 
   /* ---------------------------------------------------------------- 화면 1 */
   function buildSetup() {
-    setupBox.innerHTML = '';
+    clear(setupBox);
 
     if (!rounds.length) {
       setupBox.appendChild(html('div', 'exam__histnone',
@@ -207,10 +208,11 @@
     var head = el('div', 'exam__histhead');
     head.appendChild(el('h2', 'exam__histtitle', '응시 이력'));
     head.appendChild(el('span', 'exam__histn', all.length + '회'));
-    var clear = el('button', 'exam__histclear', '비우기');
-    clear.type = 'button';
+    var wipeBtn = el('button', 'exam__histclear', '비우기');
+    /* 🚨 이 변수를 clear 로 두면 위의 EIP_UTIL.clear 별명을 가린다 — 이름을 달리 한다 */
+    wipeBtn.type = 'button';
     /* 🚨 `confirm()` 을 쓰지 않는다 — 대화상자는 `dialog.js` 한 벌뿐이다 */
-    clear.addEventListener('click', function () {
+    wipeBtn.addEventListener('click', function () {
       var D = window.EIP_DIALOG;
       if (!D) return;
       D.confirm({
@@ -225,7 +227,7 @@
         }
       });
     });
-    head.appendChild(clear);
+    head.appendChild(wipeBtn);
     wrap.appendChild(head);
 
     var list = el('div', 'exam__histlist');
@@ -257,7 +259,7 @@
 
   function renderSheet() {
     setupBox.style.display = 'none';
-    sheetBox.innerHTML = '';
+    clear(sheetBox);
     sheetBox.style.display = '';
     cards = [];
 
@@ -302,7 +304,7 @@
     current = null;
     cards = [];
     sheetBox.style.display = 'none';
-    sheetBox.innerHTML = '';
+    clear(sheetBox);
     setupBox.style.display = '';
     buildSetup();
     if (window.EIP && window.EIP.initBack) window.EIP.initBack();

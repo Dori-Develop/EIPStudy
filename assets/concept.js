@@ -38,6 +38,7 @@
   }
 
   var el = window.EIP_UTIL.el;
+  var clear = window.EIP_UTIL.clear;
 
   function sectionOf(ch, file) {
     var c = TOC()[ch];
@@ -225,7 +226,7 @@
         if (!box) return;
         var md = bodyOf(ch, file);
         var out = ok2 ? render(md) : null;
-        body.innerHTML = '';
+        clear(body);
         if (out) {
           var art = el('article', 'doc concept__doc');
           art.innerHTML = out;
@@ -245,7 +246,7 @@
   }
 
   function fail(body, ch, file) {
-    body.innerHTML = '';
+    clear(body);
     body.appendChild(el('p', 'concept__loading',
       '본문을 불러오지 못했습니다. 아래 「섹션 전체 보기」로 열어 주세요.'));
   }

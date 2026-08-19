@@ -1325,6 +1325,31 @@ mark, .hl {
   white-space: pre-wrap; word-break: break-word;
 }
 
+/* ---------- 문항 메모 (T41) ---------- */
+/* 🔑 **묶음 제목은 양쪽이 다 있을 때만** 나온다 — 하나뿐이면 화면만 길어진다 */
+.nkind {
+  margin: 0; font-size: 12px; font-weight: 700;
+  color: var(--fg-faint); letter-spacing: .04em;
+}
+.nkind + .ngroup { margin-top: -14px; }   /* 제목과 첫 묶음이 벌어지지 않게 */
+
+/* 🚨 문항 본문은 **메모가 아니다.** 인용처럼 들여 두어 눈이 안 헷갈리게 한다 —
+   메모(내가 쓴 글)와 문항(주어진 글)이 같은 모양이면 뭐가 뭔지 모른다. */
+.ncard__q {
+  margin: 8px 0 0; padding: 7px 11px;
+  border-left: 3px solid var(--border);
+  background: var(--bg-sunken);
+  border-radius: 0 var(--radius-s) var(--radius-s) 0;
+  color: var(--fg-muted); font-size: 13px; line-height: 1.7;
+  word-break: break-word;
+}
+.ncard__q b { color: var(--fg); }
+.ncard__q code {
+  padding: 1px 4px; border-radius: 4px;
+  background: var(--bg); font-size: 12.5px;
+}
+.ncard--q .ncard__body { border-top: 1px dashed var(--border-soft); padding-top: 9px; }
+
 /* ---------- 기록 내보내기·가져오기 (backup.js) ---------- */
 /* 푸터가 세 줄이 됐다 — 줄 사이가 붙어 보이지 않게 */
 .footer p + p { margin-top: 7px; }

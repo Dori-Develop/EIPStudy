@@ -72,6 +72,7 @@
   var $ = window.EIP_UTIL.$;
   var $$ = window.EIP_UTIL.$$;
   var el = window.EIP_UTIL.el;
+  var clear = window.EIP_UTIL.clear;
   function debounce(fn, ms) {
     var t;
     return function () {
@@ -511,7 +512,7 @@
     /* 지금 보고 있는 페이지는 뺀다 — 제자리로 가는 링크는 눌러 볼 이유가 없다 */
     var here = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
 
-    host.innerHTML = '';
+    clear(host);
     /* 💬 "바로가기라는 말이 좀 애매해" · "제목같지 않고 뭔가 이상해"
        칩과 같은 줄에 두니 칩 하나로 보였다. **줄을 나눠 제목 자리를 준다.** */
     host.appendChild(el('h2', 'toolnav__title', '빠른 이동'));
@@ -960,7 +961,7 @@
           var code = el('code');
           code.textContent = d.def;
           pre.appendChild(code);
-          d.box.innerHTML = '';
+          clear(d.box);
           d.box.appendChild(pre);
         });
       } else {
@@ -989,7 +990,7 @@
 
           var nodes = diagrams.map(function (d) {
             d.target.removeAttribute('data-processed');
-            d.target.innerHTML = '';
+            clear(d.target);
             d.target.textContent = d.def;
             return d.target;
           });
@@ -1061,7 +1062,7 @@
 
     var closeLb = function () {
       lb.classList.remove('is-open');
-      lbInner.innerHTML = '';
+      clear(lbInner);
       document.body.style.overflow = '';
     };
     lb.addEventListener('click', function (e) {
@@ -1200,7 +1201,7 @@
     }
 
     function render(query) {
-      results.innerHTML = '';
+      clear(results);
       shown = [];
       cursor = -1;
 

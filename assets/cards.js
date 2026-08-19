@@ -72,6 +72,7 @@
 
   /* --------------------------------------------------------------- DOM */
   var el = window.EIP_UTIL.el;
+  var clear = window.EIP_UTIL.clear;
   var has = window.EIP_UTIL.has;
 
   /* ------------------------------------------------------------- 저장소 */
@@ -216,7 +217,7 @@
   }
 
   function renderTabs() {
-    tabsEl.innerHTML = '';
+    clear(tabsEl);
     [1, 2].forEach(function (k) {
       var b = el('button', 'ctab');
       b.type = 'button';
@@ -234,7 +235,7 @@
   }
 
   function renderControls() {
-    ctlEl.innerHTML = '';
+    clear(ctlEl);
 
     var chSel = el('select', 'cctl__sel');
     chSel.title = '챕터 고르기';
@@ -326,7 +327,7 @@
     if (!card) {
       deckEl.hidden = true;
       doneEl.hidden = false;
-      doneEl.innerHTML = '';
+      clear(doneEl);
 
       /* 🔒 버튼은 **"지금 조건으로 다시 만들면 무엇이 나오는가"** 로 정한다.
          방금 넘긴 덱 크기로 정하면 안 된다 — 저장함에서 다 「외웠다」로 넘기면
@@ -403,7 +404,7 @@
     /* 축이 좌우 하나가 되면서 라벨도 한 벌이 됐다.
        기기별로 갈리는 것은 「어떻게 조작하는가」뿐이라 그쪽(.ckeys)에만 남아 있다. */
     var spec = STAGES[stage];
-    hintEl.innerHTML = '';
+    clear(hintEl);
     ['left', 'right'].forEach(function (k) {
       hintEl.appendChild(el('span', 'chint__side', spec[k].label));
     });
@@ -420,7 +421,7 @@
     var sec = null;
     if (card.s != null && chapter && chapter.s) sec = chapter.s[card.s];
 
-    metaEl.innerHTML = '';
+    clear(metaEl);
     if (sec) {
       var link = el('a', 'cmeta__where');
       link.href = card.ch + '/' + sec.f;

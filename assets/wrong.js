@@ -52,6 +52,7 @@
 
   /* --------------------------------------------------------------- DOM */
   var el = window.EIP_UTIL.el;
+  var clear = window.EIP_UTIL.clear;
   /* ------------------------------------------------------- 문항 위치 이름 */
   /* 'ch10-s05-03' → { ch:'ch10', sec:5 } */
   var locate = window.EIP_UTIL.locate;
@@ -200,7 +201,7 @@
      새 localStorage 키를 만들면 T8 동기화의 병합 대상이 하나 늘어난다. */
   function renderControls() {
     var chapters = chaptersWithRecords();
-    ctlEl.innerHTML = '';
+    clear(ctlEl);
 
     /* ---- 챕터 필터 ---- */
     if (chapters.length > 1) {
@@ -336,7 +337,7 @@
 
   function renderTabs() {
     var c = counts();
-    tabsEl.innerHTML = '';
+    clear(tabsEl);
     TABS.forEach(function (t) {
       var b = el('button', 'wtab');
       b.type = 'button';
@@ -426,7 +427,7 @@
   }
 
   function renderList() {
-    listEl.innerHTML = '';
+    clear(listEl);
     paintWipe();     /* 🔒 목록이 바뀌는 길은 전부 여기를 지난다 */
     var all = idsFor(current);
 

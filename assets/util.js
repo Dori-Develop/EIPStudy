@@ -43,6 +43,19 @@
     return out;
   }
 
+  /* 자식을 전부 비운다.
+
+     🚨 **`innerHTML = ''` 대신 이것을 쓴다.** 뜻이 더 분명하고,
+        무엇보다 **동작 검사에서 지워지는 것을 볼 수 있다** — JScript 는 ES3 라
+        setter 를 못 만들어서 `innerHTML = ''` 를 가로챌 수 없다. 그래서 다시
+        그리는 화면이 검사에서 계속 쌓였다 (T41 에서 실제로 밟았다). */
+  function clear(node) {
+    if (!node) return node;
+    while (node.firstChild) node.removeChild(node.firstChild);
+    node.textContent = '';
+    return node;
+  }
+
   function pad2(n) { return (n < 10 ? '0' : '') + n; }
 
   /* 날짜는 **쓰는 모양이 화면마다 다르다.** 모양까지 통일하지 않고 조각만 모은다 —
@@ -116,6 +129,7 @@
     el: el,
     has: has,
     inArray: inArray,
+    clear: clear,
     $: $,
     $$: $$,
     pad2: pad2,

@@ -472,6 +472,7 @@
 
   /* ============================================================== 화면 */
   var el = window.EIP_UTIL.el;
+  var clear = window.EIP_UTIL.clear;
   var $ = window.EIP_UTIL.$;
 
   var setupBox, sheetBox, cards = [], timerId = null, current = null;
@@ -514,7 +515,7 @@
 
   /* ---------------------------------------------------------- 설정 화면 */
   function buildSetup() {
-    setupBox.innerHTML = '';
+    clear(setupBox);
 
     var form = el('div', 'exam__form');
 
@@ -672,7 +673,7 @@
 
   /* 버튼 줄을 「이 회차를 지울까요? 지운다 / 그만두기」로 잠깐 바꾼다 */
   function askDelete(li, acts, r) {
-    acts.innerHTML = '';
+    clear(acts);
     li.classList.add('is-asking');
 
     acts.appendChild(el('span', 'exam__histask', '이 회차를 지울까요?'));
@@ -760,7 +761,7 @@
 
     stopTimer();
     setupBox.style.display = 'none';
-    sheetBox.innerHTML = '';
+    clear(sheetBox);
     sheetBox.style.display = '';
     cards = [];
     current = null;
@@ -960,7 +961,7 @@
   function renderSheet() {
     stopTimer();
     setupBox.style.display = 'none';
-    sheetBox.innerHTML = '';
+    clear(sheetBox);
     sheetBox.style.display = '';
     cards = [];
 

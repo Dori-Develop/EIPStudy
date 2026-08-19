@@ -150,7 +150,9 @@
     if (!g) return;
 
     var b = tip();
-    b.innerHTML = '';
+    /* 📌 여기는 별명을 안 붙인다 — 이 파일은 `open(el)` 처럼 **`el` 을 인자 이름으로**
+       쓰고 있어 별명을 두면 가려진다. 한 곳뿐이라 그대로 부른다. */
+    window.EIP_UTIL.clear(b);
 
     var h = document.createElement('strong');
     h.className = 'gltip__a';

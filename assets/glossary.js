@@ -22,6 +22,7 @@
 
   /* --------------------------------------------------------------- DOM */
   var el = window.EIP_UTIL.el;
+  var clear = window.EIP_UTIL.clear;
   function escapeHtml(s) {
     return String(s).replace(/[&<>"']/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
@@ -100,7 +101,7 @@
     for (c = 65; c <= 90; c++) all.push(String.fromCharCode(c));
     if (hits['#']) all.push('#');
 
-    lettersEl.innerHTML = '';
+    clear(lettersEl);
 
     var allBtn = el('button', 'gletter', '전체');
     allBtn.type = 'button';
@@ -129,7 +130,7 @@
     var q = query.toLowerCase();
 
     countEl.textContent = items.length + ' / ' + DATA.length + '개';
-    listEl.innerHTML = '';
+    clear(listEl);
 
     if (!items.length) {
       emptyEl.hidden = false;
